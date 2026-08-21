@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { reactiveOmit } from '@vueuse/core'
 import type { AlertDialogActionProps } from 'reka-ui'
+import { AlertDialogAction } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import type { ButtonVariants } from '@/components/ui/button'
-import { reactiveOmit } from '@vueuse/core'
-import { AlertDialogAction } from 'reka-ui'
-import { cn } from '@/libs/utils'
 import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
 
 const props = withDefaults(
-  defineProps<AlertDialogActionProps & {
-    class?: HTMLAttributes['class']
-    variant?: ButtonVariants['variant']
-    size?: ButtonVariants['size']
-  }>(),
+  defineProps<
+    AlertDialogActionProps & {
+      class?: HTMLAttributes['class']
+      variant?: ButtonVariants['variant']
+      size?: ButtonVariants['size']
+    }
+  >(),
   {
     variant: 'default',
     size: 'default',

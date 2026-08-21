@@ -9,8 +9,8 @@ export type {
   MessageScrollerButtonDirection,
   MessageScrollerDefaultScrollPosition,
   MessageScrollerProviderProps,
-  MessageScrollerScrollable,
   MessageScrollerScrollAlign,
+  MessageScrollerScrollable,
   MessageScrollerScrollOptions,
   MessageScrollerVisibilityState,
 } from './useMessageScroller'

@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import type { MenubarCheckboxItemEmits, MenubarCheckboxItemProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCheck } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
-import {
-  MenubarCheckboxItem,
-  MenubarItemIndicator,
-  useForwardPropsEmits,
-} from 'reka-ui'
+import type { MenubarCheckboxItemEmits, MenubarCheckboxItemProps } from 'reka-ui'
+import { MenubarCheckboxItem, MenubarItemIndicator, useForwardPropsEmits } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<MenubarCheckboxItemProps & { class?: HTMLAttributes['class'] }>()

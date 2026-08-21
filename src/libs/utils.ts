@@ -1,6 +1,6 @@
-import type { ClassValue } from "clsx"
-import { clsx } from "clsx"
-import { extendTailwindMerge } from "tailwind-merge"
+import type { ClassValue } from 'clsx'
+import { clsx } from 'clsx'
+import { extendTailwindMerge } from 'tailwind-merge'
 
 /**
  * Text styles próprios do projeto (definidos com @utility em src/assets/index.css).
@@ -9,22 +9,29 @@ import { extendTailwindMerge } from "tailwind-merge"
  * apaga a tipografia silenciosamente.
  */
 const TEXT_STYLES = [
-  "title",
-  "heading",
-  "heading-caps",
-  "label",
-  "paragraph",
-  "paragraph-light",
-  "caption",
-  "caption-sm",
-  "button",
-  "button-sm",
+  'title',
+  'heading',
+  'heading-caps',
+  'label',
+  'paragraph',
+  'paragraph-light',
+  'caption',
+  'caption-sm',
+  'button',
+  'button-sm',
+  'eyebrow',
+  'nav-item',
+  'metric',
+  'page-title',
+  'card-title',
+  'topbar-title',
+  'topbar-meta',
 ]
 
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
-      "font-size": [{ text: TEXT_STYLES }],
+      'font-size': [{ text: TEXT_STYLES }],
     },
   },
 })

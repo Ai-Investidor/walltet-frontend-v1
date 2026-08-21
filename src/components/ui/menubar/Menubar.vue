@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import type { MenubarRootEmits, MenubarRootProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
 import { reactiveOmit } from '@vueuse/core'
-import {
-  MenubarRoot,
-  useForwardPropsEmits,
-} from 'reka-ui'
+import type { MenubarRootEmits, MenubarRootProps } from 'reka-ui'
+import { MenubarRoot, useForwardPropsEmits } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<MenubarRootProps & { class?: HTMLAttributes['class'] }>()

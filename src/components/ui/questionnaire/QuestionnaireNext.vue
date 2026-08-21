@@ -1,24 +1,29 @@
 <script setup lang="ts">
 import type { PrimitiveProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import type { ButtonVariants } from '@/components/ui/button'
 import { Primitive } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { computed } from 'vue'
-import { cn } from '@/libs/utils'
+import type { ButtonVariants } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
 import { injectQuestionnaireRootContext } from './useQuestionnaire'
 
-const props = withDefaults(defineProps<PrimitiveProps & {
-  class?: HTMLAttributes['class']
-  disabled?: boolean
-  size?: ButtonVariants['size']
-  variant?: ButtonVariants['variant']
-}>(), {
-  as: 'button',
-  disabled: false,
-  size: 'default',
-  variant: 'default',
-})
+const props = withDefaults(
+  defineProps<
+    PrimitiveProps & {
+      class?: HTMLAttributes['class']
+      disabled?: boolean
+      size?: ButtonVariants['size']
+      variant?: ButtonVariants['variant']
+    }
+  >(),
+  {
+    as: 'button',
+    disabled: false,
+    size: 'default',
+    variant: 'default',
+  },
+)
 
 const emits = defineEmits<{
   click: [event: MouseEvent]

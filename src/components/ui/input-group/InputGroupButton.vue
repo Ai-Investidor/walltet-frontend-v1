@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { InputGroupButtonProps } from '.'
-import { cn } from '@/libs/utils'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
+import type { InputGroupButtonProps } from '.'
 import { inputGroupButtonVariants } from '.'
 
 const props = withDefaults(defineProps<InputGroupButtonProps>(), {

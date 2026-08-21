@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import type { DropdownMenuSubTriggerProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCaretRight } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
-import {
-  DropdownMenuSubTrigger,
-  useForwardProps,
-} from 'reka-ui'
+import type { DropdownMenuSubTriggerProps } from 'reka-ui'
+import { DropdownMenuSubTrigger, useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
-const props = defineProps<DropdownMenuSubTriggerProps & { class?: HTMLAttributes['class'], inset?: boolean }>()
+const props = defineProps<
+  DropdownMenuSubTriggerProps & { class?: HTMLAttributes['class']; inset?: boolean }
+>()
 
 const delegatedProps = reactiveOmit(props, 'class', 'inset')
 const forwardedProps = useForwardProps(delegatedProps)

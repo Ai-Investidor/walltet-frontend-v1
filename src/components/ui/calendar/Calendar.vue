@@ -1,20 +1,41 @@
 <script lang="ts" setup>
-import type { CalendarRootEmits, CalendarRootProps, DateValue } from 'reka-ui'
-import type { HTMLAttributes, Ref } from 'vue'
-import type { LayoutTypes } from '.'
 import { getLocalTimeZone, today } from '@internationalized/date'
 import { createReusableTemplate, reactiveOmit, useVModel } from '@vueuse/core'
+import type { CalendarRootEmits, CalendarRootProps, DateValue } from 'reka-ui'
 import { CalendarRoot, useDateFormatter, useForwardPropsEmits } from 'reka-ui'
 import { createYear, createYearRange, toDate } from 'reka-ui/date'
+import type { HTMLAttributes, Ref } from 'vue'
 import { computed, toRaw } from 'vue'
-import { cn } from '@/libs/utils'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
-import { CalendarCell, CalendarCellTrigger, CalendarGrid, CalendarGridBody, CalendarGridHead, CalendarGridRow, CalendarHeadCell, CalendarHeader, CalendarHeading, CalendarNextButton, CalendarPrevButton } from '.'
+import { cn } from '@/libs/utils'
+import type { LayoutTypes } from '.'
+import {
+  CalendarCell,
+  CalendarCellTrigger,
+  CalendarGrid,
+  CalendarGridBody,
+  CalendarGridHead,
+  CalendarGridRow,
+  CalendarHeadCell,
+  CalendarHeader,
+  CalendarHeading,
+  CalendarNextButton,
+  CalendarPrevButton,
+} from '.'
 
-const props = withDefaults(defineProps<CalendarRootProps & { class?: HTMLAttributes['class'], layout?: LayoutTypes, yearRange?: DateValue[] }>(), {
-  modelValue: undefined,
-  layout: undefined,
-})
+const props = withDefaults(
+  defineProps<
+    CalendarRootProps & {
+      class?: HTMLAttributes['class']
+      layout?: LayoutTypes
+      yearRange?: DateValue[]
+    }
+  >(),
+  {
+    modelValue: undefined,
+    layout: undefined,
+  },
+)
 const emits = defineEmits<CalendarRootEmits>()
 
 const delegatedProps = reactiveOmit(props, 'class', 'layout', 'placeholder')
@@ -27,13 +48,24 @@ const placeholder = useVModel(props, 'placeholder', emits, {
 const formatter = useDateFormatter(props.locale ?? 'en')
 
 const yearRange = computed(() => {
-  return props.yearRange ?? createYearRange({
-    start: props?.minValue ?? (toRaw(props.placeholder) ?? props.defaultPlaceholder ?? today(getLocalTimeZone()))
-      .cycle('year', -100),
+  return (
+    props.yearRange ??
+    createYearRange({
+      start:
+        props?.minValue ??
+        (toRaw(props.placeholder) ?? props.defaultPlaceholder ?? today(getLocalTimeZone())).cycle(
+          'year',
+          -100,
+        ),
 
-    end: props?.maxValue ?? (toRaw(props.placeholder) ?? props.defaultPlaceholder ?? today(getLocalTimeZone()))
-      .cycle('year', 10),
-  })
+      end:
+        props?.maxValue ??
+        (toRaw(props.placeholder) ?? props.defaultPlaceholder ?? today(getLocalTimeZone())).cycle(
+          'year',
+          10,
+        ),
+    })
+  )
 })
 
 const [DefineMonthTemplate, ReuseMonthTemplate] = createReusableTemplate<{ date: DateValue }>()

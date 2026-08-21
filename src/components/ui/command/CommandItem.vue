@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { ListboxItemEmits, ListboxItemProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCheck } from '@phosphor-icons/vue'
 import { reactiveOmit, useCurrentElement } from '@vueuse/core'
+import type { ListboxItemEmits, ListboxItemProps } from 'reka-ui'
 import { ListboxItem, useForwardPropsEmits, useId } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { cn } from '@/libs/utils'
 import { useCommand, useCommandGroup } from '.'
@@ -23,8 +22,7 @@ const groupContext = useCommandGroup()
 const isRender = computed(() => {
   if (!filterState.search) {
     return true
-  }
-  else {
+  } else {
     const filteredCurrentItem = filterState.filtered.items.get(id)
     // If the filtered items is undefined means not in the all times map yet
     // Do the first render to add into the map
@@ -40,18 +38,16 @@ const isRender = computed(() => {
 const itemRef = ref()
 const currentElement = useCurrentElement(itemRef)
 onMounted(() => {
-  if (!(currentElement.value instanceof HTMLElement))
-    return
+  if (!(currentElement.value instanceof HTMLElement)) return
 
   // textValue to perform filter
-  allItems.value.set(id, currentElement.value.textContent ?? (props.value?.toString() ?? ''))
+  allItems.value.set(id, currentElement.value.textContent ?? props.value?.toString() ?? '')
 
   const groupId = groupContext?.id
   if (groupId) {
     if (!allGroups.value.has(groupId)) {
       allGroups.value.set(groupId, new Set([id]))
-    }
-    else {
+    } else {
       allGroups.value.get(groupId)?.add(id)
     }
   }

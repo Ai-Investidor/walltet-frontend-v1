@@ -4,12 +4,15 @@ import { onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'
 import { cn } from '@/libs/utils'
 import { SCROLL_KEYS, useMessageScrollerContext } from './useMessageScroller'
 
-const props = withDefaults(defineProps<{
-  class?: HTMLAttributes['class']
-  preserveScrollOnPrepend?: boolean
-}>(), {
-  preserveScrollOnPrepend: true,
-})
+const props = withDefaults(
+  defineProps<{
+    class?: HTMLAttributes['class']
+    preserveScrollOnPrepend?: boolean
+  }>(),
+  {
+    preserveScrollOnPrepend: true,
+  },
+)
 
 const {
   autoscrolling,
@@ -26,8 +29,7 @@ const viewportEl = useTemplateRef<HTMLElement>('viewport')
 watch(() => props.preserveScrollOnPrepend, setPreserveScrollOnPrepend, { immediate: true })
 
 function onKeyDown(event: KeyboardEvent) {
-  if (SCROLL_KEYS.has(event.key))
-    userScrollIntent()
+  if (SCROLL_KEYS.has(event.key)) userScrollIntent()
 }
 
 let resizeObserver: ResizeObserver | null = null
@@ -36,8 +38,7 @@ let resizeFrame = 0
 onMounted(() => {
   const viewport = viewportEl.value
   setViewportElement(viewport)
-  if (!viewport || typeof ResizeObserver === 'undefined')
-    return
+  if (!viewport || typeof ResizeObserver === 'undefined') return
   resizeObserver = new ResizeObserver(() => {
     window.cancelAnimationFrame(resizeFrame)
     resizeFrame = window.requestAnimationFrame(handleResize)

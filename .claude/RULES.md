@@ -710,8 +710,6 @@ Padrão de formatação do template: 2 espaços e aspas simples, alinhado ao que
 
 **Gate antes de entregar:** `bun check` limpo e `bun run build` passando.
 
-> Ajuste pendente: `biome.json` está com `formatter.indentStyle: "tab"` e `javascript.formatter.quoteStyle: "double"`, divergindo do padrão acima. Trocar para `"space"` (com `indentWidth: 2`) e `"single"`.
-
 ---
 
 ## Bibliotecas padrão

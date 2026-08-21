@@ -1,5 +1,5 @@
-import type { Component, Ref } from 'vue'
 import { createContext } from 'reka-ui'
+import type { Component, Ref } from 'vue'
 
 export { default as ChartContainer } from './ChartContainer.vue'
 export { default as ChartLegendContent } from './ChartLegendContent.vue'
@@ -14,8 +14,8 @@ export type ChartConfig = {
     label?: string | Component
     icon?: string | Component
   } & (
-    | { color?: string, theme?: never }
-    | { color?: never, theme: Record<keyof typeof THEMES, string> }
+    | { color?: string; theme?: never }
+    | { color?: never; theme: Record<keyof typeof THEMES, string> }
   )
 }
 

@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import type { PrimitiveProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import type { BubbleReactionsVariants } from '.'
 import { Primitive } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
+import type { BubbleReactionsVariants } from '.'
 import { bubbleReactionsVariants } from '.'
 
 interface Props extends PrimitiveProps {

@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import type { DialogContentEmits, DialogContentProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhX } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
-import {
-  DialogClose,
-  DialogContent,
-  DialogPortal,
-  useForwardPropsEmits,
-} from 'reka-ui'
-import { cn } from '@/libs/utils'
+import type { DialogContentEmits, DialogContentProps } from 'reka-ui'
+import { DialogClose, DialogContent, DialogPortal, useForwardPropsEmits } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
 import SheetOverlay from './SheetOverlay.vue'
 
 interface SheetContentProps extends DialogContentProps {

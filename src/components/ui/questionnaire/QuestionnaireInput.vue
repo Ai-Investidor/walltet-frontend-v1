@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import type { QuestionnaireInputType } from './useQuestionnaire'
 import { computed, nextTick, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { cn } from '@/libs/utils'
+import type { QuestionnaireInputType } from './useQuestionnaire'
 import {
   getAnswerKeyShortcuts,
   hasInputValue,
@@ -14,18 +14,21 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<{
-  class?: HTMLAttributes['class']
-  /** Fills the answer on mount and after a native form reset. */
-  defaultValue?: string | number
-  disabled?: boolean
-  /** Controlled value. Use with `v-model`. */
-  modelValue?: string | number
-  type?: QuestionnaireInputType
-}>(), {
-  disabled: false,
-  type: 'text',
-})
+const props = withDefaults(
+  defineProps<{
+    class?: HTMLAttributes['class']
+    /** Fills the answer on mount and after a native form reset. */
+    defaultValue?: string | number
+    disabled?: boolean
+    /** Controlled value. Use with `v-model`. */
+    modelValue?: string | number
+    type?: QuestionnaireInputType
+  }>(),
+  {
+    disabled: false,
+    type: 'text',
+  },
+)
 
 const emits = defineEmits<{
   'update:modelValue': [value: string]
@@ -44,7 +47,8 @@ const disabled = computed(() => item.disabled.value || props.disabled)
 // Vue re-applies `value` on every render, so the input always renders the value
 // the questionnaire owns instead of an undefined binding that would clear it.
 const value = computed(() =>
-  controlled.value ? String(props.modelValue ?? '') : uncontrolledValue.value)
+  controlled.value ? String(props.modelValue ?? '') : uncontrolledValue.value,
+)
 const filled = computed(() => hasInputValue(value.value))
 const selected = computed(() => item.selectedAnswerIds.value.includes(answerId))
 
@@ -73,23 +77,27 @@ const unregisterSelection = item.registerAnswerSelection(answerId, initialDefaul
 
 let unregisterControl: (() => void) | null = null
 
-watch([inputElement, disabled, () => props.disabled], ([element]) => {
-  unregisterControl?.()
-  unregisterControl = null
+watch(
+  [inputElement, disabled, () => props.disabled],
+  ([element]) => {
+    unregisterControl?.()
+    unregisterControl = null
 
-  if (!element) {
-    return
-  }
+    if (!element) {
+      return
+    }
 
-  unregisterControl = item.registerAnswerControl({
-    disabled: disabled.value,
-    element,
-    id: answerId,
-    ownDisabled: props.disabled,
-    type: 'input',
-    value: '',
-  })
-}, { flush: 'post' })
+    unregisterControl = item.registerAnswerControl({
+      disabled: disabled.value,
+      element,
+      id: answerId,
+      ownDisabled: props.disabled,
+      type: 'input',
+      value: '',
+    })
+  },
+  { flush: 'post' },
+)
 
 watch(defaultFilled, (nextDefaultFilled) => {
   item.setAnswerDefault(answerId, nextDefaultFilled)
@@ -97,11 +105,15 @@ watch(defaultFilled, (nextDefaultFilled) => {
 
 // Watching the value as well as `filled` lets a host update clear the skipped
 // state even when the answer stays filled.
-watch([value, filled], () => {
-  if (controlled.value) {
-    item.syncControlledAnswerSelection(answerId, filled.value)
-  }
-}, { immediate: true })
+watch(
+  [value, filled],
+  () => {
+    if (controlled.value) {
+      item.syncControlledAnswerSelection(answerId, filled.value)
+    }
+  },
+  { immediate: true },
+)
 
 watch(item.resetVersion, () => {
   if (!controlled.value) {
@@ -109,17 +121,21 @@ watch(item.resetVersion, () => {
   }
 })
 
-watch([value, inputElement], () => {
-  if (!inputElement.value) {
-    return
-  }
+watch(
+  [value, inputElement],
+  () => {
+    if (!inputElement.value) {
+      return
+    }
 
-  // A native form reset restores `defaultValue`, so keep it in sync with the
-  // value the questionnaire owns.
-  inputElement.value.defaultValue = String(
-    (controlled.value ? props.modelValue : props.defaultValue) ?? '',
-  )
-}, { flush: 'post' })
+    // A native form reset restores `defaultValue`, so keep it in sync with the
+    // value the questionnaire owns.
+    inputElement.value.defaultValue = String(
+      (controlled.value ? props.modelValue : props.defaultValue) ?? '',
+    )
+  },
+  { flush: 'post' },
+)
 
 onBeforeUnmount(() => {
   unregisterControl?.()

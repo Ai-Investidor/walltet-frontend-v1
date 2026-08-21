@@ -1,22 +1,22 @@
-import type { ComputedRef, Ref } from 'vue'
 import { createContext } from 'reka-ui'
+import type { ComputedRef, Ref } from 'vue'
 
 export type QuestionnaireItemStatus = 'unanswered' | 'answered' | 'skipped'
 export type QuestionnaireShortcutMode = 'letters' | 'numbers'
 
-export type QuestionnaireInputType
-  = | 'date'
-    | 'datetime-local'
-    | 'email'
-    | 'month'
-    | 'number'
-    | 'password'
-    | 'search'
-    | 'tel'
-    | 'text'
-    | 'time'
-    | 'url'
-    | 'week'
+export type QuestionnaireInputType =
+  | 'date'
+  | 'datetime-local'
+  | 'email'
+  | 'month'
+  | 'number'
+  | 'password'
+  | 'search'
+  | 'tel'
+  | 'text'
+  | 'time'
+  | 'url'
+  | 'week'
 
 export interface QuestionnaireChoiceDefinition {
   disabled?: boolean
@@ -108,15 +108,15 @@ export interface QuestionnaireItemContext {
   syncControlledAnswerSelection: (answerId: string, selected: boolean) => void
 }
 
-export const [injectQuestionnaireRootContext, provideQuestionnaireRootContext]
-  = createContext<QuestionnaireRootContext>('Questionnaire')
+export const [injectQuestionnaireRootContext, provideQuestionnaireRootContext] =
+  createContext<QuestionnaireRootContext>('Questionnaire')
 
-export const [injectQuestionnaireItemContext, provideQuestionnaireItemContext]
-  = createContext<QuestionnaireItemContext>('QuestionnaireItem')
+export const [injectQuestionnaireItemContext, provideQuestionnaireItemContext] =
+  createContext<QuestionnaireItemContext>('QuestionnaireItem')
 
 export function hasInputValue(value: unknown) {
   if (Array.isArray(value)) {
-    return value.some(item => String(item).trim().length > 0)
+    return value.some((item) => String(item).trim().length > 0)
   }
 
   return value !== undefined && value !== null && String(value).trim().length > 0
@@ -154,9 +154,9 @@ export function isAnswerFilled(answer: AnswerControlRegistration) {
 
 export function isEmptyNavigableInput(answer: AnswerControlRegistration | null) {
   return (
-    answer?.type === 'input'
-    && ['email', 'password', 'search', 'tel', 'text', 'url'].includes(answer.element.type)
-    && !hasInputValue(answer.element.value)
+    answer?.type === 'input' &&
+    ['email', 'password', 'search', 'tel', 'text', 'url'].includes(answer.element.type) &&
+    !hasInputValue(answer.element.value)
   )
 }
 
@@ -212,8 +212,8 @@ export function createQuestionnaireCollection(
   }
 
   return {
-    enabledItems: items.filter(item => !item.disabled),
-    itemByName: new Map(items.map(item => [item.name, item])),
+    enabledItems: items.filter((item) => !item.disabled),
+    itemByName: new Map(items.map((item) => [item.name, item])),
     items,
   }
 }

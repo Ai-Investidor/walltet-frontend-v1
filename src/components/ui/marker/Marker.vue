@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { PrimitiveProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import type { MarkerVariants } from '.'
 import { Primitive } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
+import type { MarkerVariants } from '.'
 import { markerVariants } from '.'
 
 interface Props extends PrimitiveProps {

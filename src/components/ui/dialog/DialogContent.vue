@@ -1,26 +1,25 @@
 <script setup lang="ts">
-import type { DialogContentEmits, DialogContentProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhX } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
-import {
-  DialogClose,
-  DialogContent,
-  DialogPortal,
-  useForwardPropsEmits,
-} from 'reka-ui'
-import { cn } from '@/libs/utils'
+import type { DialogContentEmits, DialogContentProps } from 'reka-ui'
+import { DialogClose, DialogContent, DialogPortal, useForwardPropsEmits } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
 import DialogOverlay from './DialogOverlay.vue'
 
 defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<DialogContentProps & { class?: HTMLAttributes['class'], showCloseButton?: boolean }>(), {
-  showCloseButton: true,
-})
+const props = withDefaults(
+  defineProps<
+    DialogContentProps & { class?: HTMLAttributes['class']; showCloseButton?: boolean }
+  >(),
+  {
+    showCloseButton: true,
+  },
+)
 const emits = defineEmits<DialogContentEmits>()
 
 const delegatedProps = reactiveOmit(props, 'class')

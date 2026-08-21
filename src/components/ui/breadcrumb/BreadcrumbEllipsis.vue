@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from 'vue'
-
 import { PhDotsThree } from '@phosphor-icons/vue'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<{

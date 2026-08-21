@@ -1,30 +1,32 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-
 import { PhCheck } from '@phosphor-icons/vue'
+import type { HTMLAttributes } from 'vue'
 import { computed, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { cn } from '@/libs/utils'
 import { getAnswerKeyShortcuts, injectQuestionnaireItemContext } from './useQuestionnaire'
 
-const props = withDefaults(defineProps<{
-  /** Controlled checked state. Use with `v-model:checked`. */
-  checked?: boolean
-  class?: HTMLAttributes['class']
-  /** Checks the choice on mount and after a native form reset. */
-  defaultChecked?: boolean
-  disabled?: boolean
-  /** Submitted as the answer of the parent item. */
-  value: string
-}>(), {
-  // `undefined` keeps the choice uncontrolled. Without this default, Vue casts
-  // the absent boolean prop to `false` and every choice looks controlled.
-  checked: undefined,
-  defaultChecked: false,
-  disabled: false,
-})
+const props = withDefaults(
+  defineProps<{
+    /** Controlled checked state. Use with `v-model:checked`. */
+    checked?: boolean
+    class?: HTMLAttributes['class']
+    /** Checks the choice on mount and after a native form reset. */
+    defaultChecked?: boolean
+    disabled?: boolean
+    /** Submitted as the answer of the parent item. */
+    value: string
+  }>(),
+  {
+    // `undefined` keeps the choice uncontrolled. Without this default, Vue casts
+    // the absent boolean prop to `false` and every choice looks controlled.
+    checked: undefined,
+    defaultChecked: false,
+    disabled: false,
+  },
+)
 
 const emits = defineEmits<{
-  'change': [event: Event]
+  change: [event: Event]
   'update:checked': [checked: boolean]
 }>()
 
@@ -46,10 +48,12 @@ const checked = computed(() => {
   return item.status.value === 'skipped' ? false : props.checked!
 })
 const type = computed(() => (item.multiple.value ? 'checkbox' : 'radio'))
-const shortcut = computed(() =>
-  item.shortcutByChoiceValue.value?.get(props.value)
-  ?? item.shortcutByAnswerId.value.get(answerId)
-  ?? null)
+const shortcut = computed(
+  () =>
+    item.shortcutByChoiceValue.value?.get(props.value) ??
+    item.shortcutByAnswerId.value.get(answerId) ??
+    null,
+)
 
 function syncCheckedElement() {
   if (inputElement.value && inputElement.value.checked !== checked.value) {
@@ -88,47 +92,62 @@ const unregisterSelection = item.registerAnswerSelection(answerId, initialDefaul
 
 let unregisterControl: (() => void) | null = null
 
-watch([inputElement, disabled, () => props.disabled, () => props.value], ([element]) => {
-  unregisterControl?.()
-  unregisterControl = null
+watch(
+  [inputElement, disabled, () => props.disabled, () => props.value],
+  ([element]) => {
+    unregisterControl?.()
+    unregisterControl = null
 
-  if (!element) {
-    return
-  }
+    if (!element) {
+      return
+    }
 
-  unregisterControl = item.registerAnswerControl({
-    disabled: disabled.value,
-    element,
-    id: answerId,
-    ownDisabled: props.disabled,
-    type: 'choice',
-    value: props.value,
-  })
-}, { flush: 'post' })
+    unregisterControl = item.registerAnswerControl({
+      disabled: disabled.value,
+      element,
+      id: answerId,
+      ownDisabled: props.disabled,
+      type: 'choice',
+      value: props.value,
+    })
+  },
+  { flush: 'post' },
+)
 
-watch(() => props.defaultChecked, (defaultChecked) => {
-  item.setAnswerDefault(answerId, defaultChecked)
-})
+watch(
+  () => props.defaultChecked,
+  (defaultChecked) => {
+    item.setAnswerDefault(answerId, defaultChecked)
+  },
+)
 
-watch([() => props.checked, item.resetVersion], () => {
-  if (controlled.value) {
-    item.syncControlledAnswerSelection(answerId, props.checked!)
-  }
-}, { immediate: true })
+watch(
+  [() => props.checked, item.resetVersion],
+  () => {
+    if (controlled.value) {
+      item.syncControlledAnswerSelection(answerId, props.checked!)
+    }
+  },
+  { immediate: true },
+)
 
 watch(item.controlSyncVersion, syncCheckedElement, { flush: 'post' })
 
-watch([checked, inputElement, () => props.defaultChecked, item.resetVersion], () => {
-  if (!inputElement.value) {
-    return
-  }
+watch(
+  [checked, inputElement, () => props.defaultChecked, item.resetVersion],
+  () => {
+    if (!inputElement.value) {
+      return
+    }
 
-  // Keep the native reset target aligned with the questionnaire owned default,
-  // including controlled choices whose `checked` prop stays authoritative.
-  inputElement.value.defaultChecked = controlled.value ? props.checked! : props.defaultChecked
+    // Keep the native reset target aligned with the questionnaire owned default,
+    // including controlled choices whose `checked` prop stays authoritative.
+    inputElement.value.defaultChecked = controlled.value ? props.checked! : props.defaultChecked
 
-  syncCheckedElement()
-}, { flush: 'post' })
+    syncCheckedElement()
+  },
+  { flush: 'post' },
+)
 
 onBeforeUnmount(() => {
   unregisterControl?.()

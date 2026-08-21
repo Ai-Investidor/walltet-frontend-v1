@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-
 import { PhMinus } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
 import { useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<{ class?: HTMLAttributes['class'] }>()

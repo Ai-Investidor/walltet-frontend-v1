@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import type { ContextMenuCheckboxItemEmits, ContextMenuCheckboxItemProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCheck } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
-import {
-  ContextMenuCheckboxItem,
-  ContextMenuItemIndicator,
-  useForwardPropsEmits,
-} from 'reka-ui'
+import type { ContextMenuCheckboxItemEmits, ContextMenuCheckboxItemProps } from 'reka-ui'
+import { ContextMenuCheckboxItem, ContextMenuItemIndicator, useForwardPropsEmits } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<ContextMenuCheckboxItemProps & { class?: HTMLAttributes['class'] }>()

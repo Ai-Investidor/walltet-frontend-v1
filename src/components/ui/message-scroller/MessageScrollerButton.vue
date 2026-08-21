@@ -1,43 +1,43 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import type { MessageScrollerButtonDirection } from './useMessageScroller'
-import type { ButtonVariants } from '@/components/ui/button'
 import { PhArrowDown } from '@phosphor-icons/vue'
+import type { HTMLAttributes } from 'vue'
 import { computed } from 'vue'
-import { cn } from '@/libs/utils'
+import type { ButtonVariants } from '@/components/ui/button'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
+import type { MessageScrollerButtonDirection } from './useMessageScroller'
 import { useMessageScroller, useMessageScrollerScrollable } from './useMessageScroller'
 
-const props = withDefaults(defineProps<{
-  class?: HTMLAttributes['class']
-  direction?: MessageScrollerButtonDirection
-  behavior?: ScrollBehavior
-  variant?: ButtonVariants['variant']
-  size?: ButtonVariants['size']
-}>(), {
-  direction: 'end',
-  behavior: 'smooth',
-  variant: 'secondary',
-  size: 'icon-sm',
-})
+const props = withDefaults(
+  defineProps<{
+    class?: HTMLAttributes['class']
+    direction?: MessageScrollerButtonDirection
+    behavior?: ScrollBehavior
+    variant?: ButtonVariants['variant']
+    size?: ButtonVariants['size']
+  }>(),
+  {
+    direction: 'end',
+    behavior: 'smooth',
+    variant: 'secondary',
+    size: 'icon-sm',
+  },
+)
 
 const { scrollToEnd, scrollToStart } = useMessageScroller()
 const scrollable = useMessageScrollerScrollable()
 
 const active = computed(() =>
-  props.direction === 'start' ? scrollable.value.start : scrollable.value.end)
+  props.direction === 'start' ? scrollable.value.start : scrollable.value.end,
+)
 
 function onClick(event: MouseEvent) {
-  if (!active.value)
-    return
+  if (!active.value) return
   const target = event.currentTarget as HTMLElement | null
   target?.blur()
-  if (event.defaultPrevented)
-    return
-  if (props.direction === 'start')
-    scrollToStart({ behavior: props.behavior })
-  else
-    scrollToEnd({ behavior: props.behavior })
+  if (event.defaultPrevented) return
+  if (props.direction === 'start') scrollToStart({ behavior: props.behavior })
+  else scrollToEnd({ behavior: props.behavior })
 }
 </script>
 

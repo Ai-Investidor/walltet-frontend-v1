@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import type { ListboxFilterProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhMagnifyingGlass } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
+import type { ListboxFilterProps } from 'reka-ui'
 import { ListboxFilter, useForwardProps } from 'reka-ui'
-import { cn } from '@/libs/utils'
+import type { HTMLAttributes } from 'vue'
 import { InputGroup, InputGroupAddon } from '@/components/ui/input-group'
+import { cn } from '@/libs/utils'
 import { useCommand } from '.'
 
 defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<ListboxFilterProps & {
-  class?: HTMLAttributes['class']
-}>()
+const props = defineProps<
+  ListboxFilterProps & {
+    class?: HTMLAttributes['class']
+  }
+>()
 
 const delegatedProps = reactiveOmit(props, 'class')
 

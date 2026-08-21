@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import type { SelectTriggerProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCaretDown } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
+import type { SelectTriggerProps } from 'reka-ui'
 import { SelectIcon, SelectTrigger, useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = withDefaults(
-  defineProps<SelectTriggerProps & { class?: HTMLAttributes['class'], size?: 'sm' | 'default' }>(),
+  defineProps<SelectTriggerProps & { class?: HTMLAttributes['class']; size?: 'sm' | 'default' }>(),
   { size: 'default' },
 )
 

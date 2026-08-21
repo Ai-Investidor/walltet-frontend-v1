@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import type { ComboboxInputEmits, ComboboxInputProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhMagnifyingGlass } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
+import type { ComboboxInputEmits, ComboboxInputProps } from 'reka-ui'
 import { ComboboxInput, useForwardPropsEmits } from 'reka-ui'
-import { cn } from '@/libs/utils'
+import type { HTMLAttributes } from 'vue'
 import { InputGroup, InputGroupAddon } from '@/components/ui/input-group'
+import { cn } from '@/libs/utils'
 
 defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<ComboboxInputProps & {
-  class?: HTMLAttributes['class']
-}>()
+const props = defineProps<
+  ComboboxInputProps & {
+    class?: HTMLAttributes['class']
+  }
+>()
 
 const emits = defineEmits<ComboboxInputEmits>()
 

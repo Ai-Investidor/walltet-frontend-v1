@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import type { RangeCalendarNextProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCaretRight } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
+import type { RangeCalendarNextProps } from 'reka-ui'
 import { RangeCalendarNext, useForwardProps } from 'reka-ui'
-import { cn } from '@/libs/utils'
+import type { HTMLAttributes } from 'vue'
 import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
 
 const props = defineProps<RangeCalendarNextProps & { class?: HTMLAttributes['class'] }>()
 

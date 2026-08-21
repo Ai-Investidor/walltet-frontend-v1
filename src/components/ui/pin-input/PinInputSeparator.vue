@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { PrimitiveProps } from 'reka-ui'
-
 import { PhMinus } from '@phosphor-icons/vue'
+import type { PrimitiveProps } from 'reka-ui'
 import { Primitive, useForwardProps } from 'reka-ui'
 
 const props = defineProps<PrimitiveProps>()

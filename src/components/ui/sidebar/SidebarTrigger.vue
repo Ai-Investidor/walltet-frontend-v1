@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-
 import { PhSidebarSimple } from '@phosphor-icons/vue'
-import { cn } from '@/libs/utils'
+import type { HTMLAttributes } from 'vue'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
 import { useSidebar } from './utils'
 
 const props = defineProps<{

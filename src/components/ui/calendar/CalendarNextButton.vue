@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import type { CalendarNextProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCaretRight } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
+import type { CalendarNextProps } from 'reka-ui'
 import { CalendarNext, useForwardProps } from 'reka-ui'
-import { cn } from '@/libs/utils'
+import type { HTMLAttributes } from 'vue'
 import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
 
 const props = defineProps<CalendarNextProps & { class?: HTMLAttributes['class'] }>()
 

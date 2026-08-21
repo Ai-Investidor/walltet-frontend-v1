@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { SelectScrollUpButtonProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCaretUp } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
+import type { SelectScrollUpButtonProps } from 'reka-ui'
 import { SelectScrollUpButton, useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<SelectScrollUpButtonProps & { class?: HTMLAttributes['class'] }>()

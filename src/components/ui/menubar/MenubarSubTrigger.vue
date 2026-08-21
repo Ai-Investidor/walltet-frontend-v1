@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import type { MenubarSubTriggerProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCaretRight } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
+import type { MenubarSubTriggerProps } from 'reka-ui'
 import { MenubarSubTrigger, useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
-const props = defineProps<MenubarSubTriggerProps & { class?: HTMLAttributes['class'], inset?: boolean }>()
+const props = defineProps<
+  MenubarSubTriggerProps & { class?: HTMLAttributes['class']; inset?: boolean }
+>()
 
 const delegatedProps = reactiveOmit(props, 'class', 'inset')
 const forwardedProps = useForwardProps(delegatedProps)

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
+import { cn } from '@/libs/utils'
 import type {
   ItemRegistration,
   QuestionnaireItemDefinition,
   QuestionnaireShortcutMode,
 } from './useQuestionnaire'
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
-import { cn } from '@/libs/utils'
 import {
   compareDocumentOrder,
   createQuestionnaireCollection,
@@ -18,25 +18,28 @@ import {
   provideQuestionnaireRootContext,
 } from './useQuestionnaire'
 
-const props = withDefaults(defineProps<{
-  class?: HTMLAttributes['class']
-  /** Item shown first. Ignored when `item` is provided. */
-  defaultItem?: string
-  /** Controlled active item. Use with `v-model:item`. */
-  item?: string
-  /** Declares the item order, and the choice order shortcuts are assigned in. */
-  items?: readonly QuestionnaireItemDefinition[]
-  /** Set to `false` to run native constraint validation on answered items. */
-  noValidate?: boolean
-  /** Assigns a keyboard shortcut to every choice. */
-  shortcuts?: QuestionnaireShortcutMode
-}>(), {
-  noValidate: true,
-})
+const props = withDefaults(
+  defineProps<{
+    class?: HTMLAttributes['class']
+    /** Item shown first. Ignored when `item` is provided. */
+    defaultItem?: string
+    /** Controlled active item. Use with `v-model:item`. */
+    item?: string
+    /** Declares the item order, and the choice order shortcuts are assigned in. */
+    items?: readonly QuestionnaireItemDefinition[]
+    /** Set to `false` to run native constraint validation on answered items. */
+    noValidate?: boolean
+    /** Assigns a keyboard shortcut to every choice. */
+    shortcuts?: QuestionnaireShortcutMode
+  }>(),
+  {
+    noValidate: true,
+  },
+)
 
 const emits = defineEmits<{
-  'reset': [event: Event]
-  'submit': [event: Event]
+  reset: [event: Event]
+  submit: [event: Event]
   'update:item': [item: string]
 }>()
 
@@ -51,9 +54,7 @@ const domVersion = ref(0)
 const pendingFocus = shallowRef<PendingFocus | null>(null)
 
 const collection = computed(() => createQuestionnaireCollection(props.items))
-const uncontrolledItem = ref<string | null>(
-  getInitialItemName(collection.value, props.defaultItem),
-)
+const uncontrolledItem = ref<string | null>(getInitialItemName(collection.value, props.defaultItem))
 const controlled = computed(() => props.item !== undefined)
 const activeItemName = computed(() => (controlled.value ? props.item! : uncontrolledItem.value))
 const shortcuts = computed(() => props.shortcuts ?? null)
@@ -66,18 +67,18 @@ const runtimeItems = computed(() => {
   void domVersion.value
 
   return registrations.value
-    .filter(registration => !registration.isDisabled())
+    .filter((registration) => !registration.isDisabled())
     .sort((first, second) => compareDocumentOrder(first.element, second.element))
 })
 const runtimeItemByName = computed(
-  () => new Map(runtimeItems.value.map(runtimeItem => [runtimeItem.name, runtimeItem])),
+  () => new Map(runtimeItems.value.map((runtimeItem) => [runtimeItem.name, runtimeItem])),
 )
 /** `items` is authoritative when provided, so items can be declared before they render. */
 const logicalItems = computed<readonly { name: string }[]>(
   () => collection.value?.enabledItems ?? runtimeItems.value,
 )
-const currentIndex = computed(
-  () => logicalItems.value.findIndex(logicalItem => logicalItem.name === activeItemName.value),
+const currentIndex = computed(() =>
+  logicalItems.value.findIndex((logicalItem) => logicalItem.name === activeItemName.value),
 )
 const activeItem = computed(() => {
   if (currentIndex.value < 0 || !activeItemName.value) {
@@ -138,13 +139,13 @@ function setItem(nextItem: string, focusTarget: PendingFocus['target'] = 'item')
 function registerItem(registration: ItemRegistration) {
   registrations.value = [
     ...registrations.value.filter(
-      current => current.element !== registration.element && current.name !== registration.name,
+      (current) => current.element !== registration.element && current.name !== registration.name,
     ),
     registration,
   ]
 
   return () => {
-    registrations.value = registrations.value.filter(current => current !== registration)
+    registrations.value = registrations.value.filter((current) => current !== registration)
   }
 }
 
@@ -225,8 +226,8 @@ function handleReset(event: Event) {
 
   const resetItemName = collection.value
     ? getInitialItemName(collection.value, props.defaultItem)
-    : (runtimeItems.value.find(registration => registration.name === props.defaultItem)?.name
-      ?? runtimeItems.value[0]?.name)
+    : (runtimeItems.value.find((registration) => registration.name === props.defaultItem)?.name ??
+      runtimeItems.value[0]?.name)
 
   if (resetItemName) {
     setItem(resetItemName)
@@ -234,7 +235,9 @@ function handleReset(event: Event) {
 }
 
 function handleSubmit(event: Event) {
-  const firstInvalidItem = orderedRegistrations.value.find(registration => !registration.validate())
+  const firstInvalidItem = orderedRegistrations.value.find(
+    (registration) => !registration.validate(),
+  )
 
   if (firstInvalidItem) {
     event.preventDefault()
@@ -253,16 +256,21 @@ function handleSubmit(event: Event) {
 
 function handleKeydown(event: KeyboardEvent) {
   if (
-    event.defaultPrevented
-    || event.isComposing
-    || event.keyCode === 229
-    || !activeItem.value
-    || !(event.target instanceof Element)
+    event.defaultPrevented ||
+    event.isComposing ||
+    event.keyCode === 229 ||
+    !activeItem.value ||
+    !(event.target instanceof Element)
   ) {
     return
   }
 
-  if (event.key === 'Enter' && (event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey) {
+  if (
+    event.key === 'Enter' &&
+    (event.metaKey || event.ctrlKey) &&
+    !event.altKey &&
+    !event.shiftKey
+  ) {
     event.preventDefault()
 
     if (!event.repeat) {
@@ -289,9 +297,9 @@ function handleKeydown(event: KeyboardEvent) {
   }
 
   if (
-    (event.key === 'ArrowLeft' || event.key === 'ArrowRight')
-    && !isTextEntryTarget(event.target)
-    && !isRadioTarget(event.target)
+    (event.key === 'ArrowLeft' || event.key === 'ArrowRight') &&
+    !isTextEntryTarget(event.target) &&
+    !isRadioTarget(event.target)
   ) {
     event.preventDefault()
 
@@ -301,8 +309,7 @@ function handleKeydown(event: KeyboardEvent) {
 
     if (event.key === 'ArrowLeft') {
       goPrevious()
-    }
-    else if (activeItem.value.status() !== 'unanswered') {
+    } else if (activeItem.value.status() !== 'unanswered') {
       goNext()
     }
 
@@ -388,8 +395,7 @@ watch(
 
     if (focus.target === 'invalid') {
       activeItem.value?.focusInvalid()
-    }
-    else {
+    } else {
       activeItem.value?.focus()
     }
 

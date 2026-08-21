@@ -4,24 +4,29 @@ import { computed, onMounted, ref } from 'vue'
 import { cn } from '@/libs/utils'
 import { useChart } from '.'
 
-const props = withDefaults(defineProps<{
-  hideIcon?: boolean
-  nameKey?: string
-  verticalAlign?: 'bottom' | 'top'
-  // payload?: any[]
-  class?: HTMLAttributes['class']
-}>(), {
-  verticalAlign: 'bottom',
-})
+const props = withDefaults(
+  defineProps<{
+    hideIcon?: boolean
+    nameKey?: string
+    verticalAlign?: 'bottom' | 'top'
+    // payload?: any[]
+    class?: HTMLAttributes['class']
+  }>(),
+  {
+    verticalAlign: 'bottom',
+  },
+)
 
 const { id, config } = useChart()
 
-const payload = computed(() => Object.entries(config.value).map(([key, value]) => {
-  return {
-    key: props.nameKey || key,
-    itemConfig: config.value[key],
-  }
-}))
+const payload = computed(() =>
+  Object.entries(config.value).map(([key]) => {
+    return {
+      key: props.nameKey || key,
+      itemConfig: config.value[key],
+    }
+  }),
+)
 
 const containerSelector = ref('')
 onMounted(() => {

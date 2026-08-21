@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import type { NavigationMenuTriggerProps } from 'reka-ui'
-
-import type { HTMLAttributes } from 'vue'
 import { PhCaretDown } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
-import {
-  NavigationMenuTrigger,
-  useForwardProps,
-} from 'reka-ui'
+import type { NavigationMenuTriggerProps } from 'reka-ui'
+import { NavigationMenuTrigger, useForwardProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 import { navigationMenuTriggerStyle } from '.'
 

@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import type { ToasterProps } from 'vue-sonner'
-
 import {
   PhCheckCircle,
-  PhInfo,
   PhCircleNotch,
-  PhXCircle,
+  PhInfo,
   PhWarning,
   PhX,
+  PhXCircle,
 } from '@phosphor-icons/vue'
 import { reactiveOmit } from '@vueuse/core'
+import type { ToasterProps } from 'vue-sonner'
 import { Toaster as Sonner } from 'vue-sonner'
 import { cn } from '@/libs/utils'
 

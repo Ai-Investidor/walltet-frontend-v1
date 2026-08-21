@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import type { WithClassAsProps } from './interface'
+import { PhCaretLeft } from '@phosphor-icons/vue'
 
 import type { ButtonVariants } from '@/components/ui/button'
-import { PhCaretLeft } from '@phosphor-icons/vue'
-import { cn } from '@/libs/utils'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/libs/utils'
+import type { WithClassAsProps } from './interface'
 import { useCarousel } from './useCarousel'
 
-const props = withDefaults(defineProps<{
-  variant?: ButtonVariants['variant']
-  size?: ButtonVariants['size']
-}
-& WithClassAsProps>(), {
-  variant: 'outline',
-  size: 'icon-sm',
-})
+const props = withDefaults(
+  defineProps<
+    {
+      variant?: ButtonVariants['variant']
+      size?: ButtonVariants['size']
+    } & WithClassAsProps
+  >(),
+  {
+    variant: 'outline',
+    size: 'icon-sm',
+  },
+)
 
 const { orientation, canScrollPrev, scrollPrev } = useCarousel()
 </script>

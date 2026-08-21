@@ -1,5 +1,5 @@
-import { getLenis } from "@boot/lenis";
+import { getLenis } from '@boot/lenis'
 
 export function useLenis() {
-	return getLenis();
+  return getLenis()
 }
