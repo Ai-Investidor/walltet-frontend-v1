@@ -114,9 +114,9 @@ function formatPercent(value: number) {
       </CardContent>
 
       <CardFooter class="justify-end border-border-strong p-3.5">
-        <Button variant="outline" size="sm" class="gap-2 rounded-sm px-4">
+        <Button variant="outline" size="lg" class="text-button-sm hover:border-border-strong h-10 gap-2.5 rounded-sm px-6">
           Ver carteira completa
-          <PhArrowRight class="size-3.5" aria-hidden="true" />
+          <PhArrowRight class="size-4" aria-hidden="true" />
         </Button>
       </CardFooter>
     </Card>

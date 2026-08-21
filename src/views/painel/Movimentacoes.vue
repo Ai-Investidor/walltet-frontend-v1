@@ -91,8 +91,8 @@ const DIRECTIONS: Record<Movement['direction'], { icon: Component; tone: string 
           </div>
         </div>
 
-        <Button class="text-button-sm rounded-md px-4">
-          <PhDownloadSimple class="size-4" weight="bold" aria-hidden="true" />
+        <Button size="lg" class="text-button h-11 gap-2.5 rounded-md px-5">
+          <PhDownloadSimple class="size-5" weight="bold" aria-hidden="true" />
           Baixar PDF
         </Button>
       </CardContent>
