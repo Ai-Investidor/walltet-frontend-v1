@@ -132,6 +132,7 @@ Importar sempre por alias. Caminho relativo fica restrito a arquivos irmãos den
 | `@composables/*` | `src/composables/*` |
 | `@config/*` | `src/config/*` |
 | `@constants/*` | `src/constants/*` |
+| `@data/*` | `src/data/*` |
 | `@layouts/*` | `src/layouts/*` |
 | `@libs/*` | `src/libs/*` |
 | `@pages/*` | `src/pages/*` |
@@ -431,43 +432,34 @@ import Saldo from '@views/wallet/Balance.vue'
 
 | Precisa de | Vai em |
 | --- | --- |
-| falar com a API de um domínio | classe de serviço em `src/services/<dominio>.service.ts` |
-| estado compartilhado entre telas | setup store Pinia em `src/stores/` |
-| superfície da UI para um domínio | composable em `src/composables/use-<dominio>.ts` |
+| dado de seção (card, tabela, gráfico, lista) | constante tipada em `src/data/<dominio>.ts` |
+| texto literal (título, rótulo, microcopy) | direto no template |
+| estado derivado de interação do usuário (filtro, paginação, seleção, open/closed) | `ref`/`reactive` na própria view |
 
-Hierarquia obrigatória:
+Page e view importam as constantes de `src/data/<dominio>.ts` direto, via `@data`. Sem camada intermediária: nesta fase o projeto não tem service, store nem composable de domínio — isso é conteúdo de uma skill separada, ainda não ativa. Estado puramente local de UI continua na view; antes de escrever algo genérico, verificar o VueUse.
 
-```
-page / view  →  composable  →  store e/ou service
-```
+Antes de criar arquivo novo em `src/data/`: procurar arquivo do mesmo domínio em `src/data/` e em manifests anteriores. Mesmo domínio → **estender** (novos exports), não duplicar.
 
-Page e view **não** importam `@services` nem `@stores`. Só o composable. Estado puramente local de UI (open/closed de um sheet sem domínio) fica em `ref`/`reactive` na própria view. Antes de escrever um composable genérico de UI, verificar o VueUse.
+### Dados estáticos
 
-Antes de criar service/store/composable novo: procurar arquivo do mesmo domínio em `src/` e em manifests anteriores. Mesmo domínio → **estender** (métodos/exports novos), não duplicar.
+Um arquivo por domínio, reunindo **todo** o conteúdo mockado daquele domínio. Tipos e valores ficam juntos; a view importa os `export const` direto — sem factory, sem classe, sem fetch.
 
-### Serviços
-
-Um serviço por domínio, reunindo **toda** a API daquele domínio numa classe. O consumidor recebe a instância por um factory `use<Dominio>Service()`. Métodos devolvem o dado já tipado. Quem chama o serviço na app é o **composable** (ou a store que o composable usa) — nunca a view.
-
-As chamadas usam axios através do cliente compartilhado da aplicação.
-
-❌ Errado — axios, service ou store soltos no componente:
+❌ Errado — axios ou store soltos no componente:
 
 ```vue
 <script setup lang="ts">
 import axios from 'axios'
-import { useWalletStore } from '@stores/wallet'
 
 const { data } = await axios.get('https://api.exemplo.com/v1/wallet/balance')
-const store = useWalletStore()
 </script>
 ```
 
 ✅ Certo:
 
 ```ts
-// src/services/wallet.service.ts
-...
+// src/data/wallet.ts
+// DADOS ESTÁTICOS — trocar por camada dinâmica (service/store/composable) quando a skill existir.
+// Assinaturas e tipos são o contrato; não alterar sem atualizar o manifesto.
 
 export interface Balance {
   total: number
@@ -478,96 +470,29 @@ export interface Transaction {
   id: string
   description: string
   amount: number
+  data: string
 }
 
-class WalletService {
-  private readonly base = '/wallet'
+export const balance: Balance = { total: 1240, blocked: 0 }
 
-  async getBalance(): Promise<Balance> {
-    const { data } = await http.get<Balance>(`${this.base}/balance`)
-    return data
-  }
-
-  async listTransactions(page = 1): Promise<Transaction[]> {
-    const { data } = await http.get<Transaction[]>(`${this.base}/transactions`, { params: { page } })
-    return data
-  }
-
-  async transfer(payload: { amount: number, destination: string }): Promise<Transaction> {
-    const { data } = await http.post<Transaction>(`${this.base}/transfers`, payload)
-    return data
-  }
-}
-
-const walletService = new WalletService()
-
-export function useWalletService() {
-  return walletService
-}
-```
-
-```ts
-// src/stores/wallet.ts
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import type { Balance } from '@services/wallet.service'
-import { useWalletService } from '@services/wallet.service'
-
-export const useWalletStore = defineStore('wallet', () => {
-  const service = useWalletService()
-
-  const balance = ref<Balance | null>(null)
-  const loading = ref(false)
-
-  async function fetchBalance() {
-    loading.value = true
-    try {
-      balance.value = await service.getBalance()
-    }
-    finally {
-      loading.value = false
-    }
-  }
-
-  return { balance, loading, fetchBalance }
-})
-```
-
-```ts
-// src/composables/use-wallet.ts
-import { storeToRefs } from 'pinia'
-import { useWalletService } from '@services/wallet.service'
-import { useWalletStore } from '@stores/wallet'
-
-export function useWallet() {
-  const store = useWalletStore()
-  const service = useWalletService()
-  const { balance, loading } = storeToRefs(store)
-
-  return {
-    balance,
-    loading,
-    fetchBalance: store.fetchBalance,
-    listTransactions: (page = 1) => service.listTransactions(page),
-  }
-}
+export const transactions: Transaction[] = [
+  { id: '1', description: 'Transferência recebida', amount: 250, data: '2026-08-20' },
+  { id: '2', description: 'Pagamento', amount: -89.9, data: '2026-08-19' },
+]
 ```
 
 ```vue
 <!-- view -->
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useWallet } from '@composables/use-wallet'
-
-const { balance, loading, fetchBalance } = useWallet()
-
-onMounted(() => {
-  void fetchBalance()
-})
+import { balance, transactions } from '@data/wallet'
 </script>
+
+<template>
+  <span>{{ balance.total }}</span>
+</template>
 ```
 
-**Por quê:** com um serviço por domínio, a superfície do backend fica legível num arquivo só. A store concentra estado compartilhado. O composable é o único contrato da UI — pages e views não precisam saber se o dado veio de store, service ou dos dois. O factory do serviço permite trocar a implementação (mock, versão da API) sem alterar quem chama. Reusar/estender o arquivo do domínio evita duplicar a mesma API em pastas diferentes.
+**Por quê:** um arquivo por domínio mantém o conteúdo mockado legível num lugar só, sem inventar camada que ainda não existe. A view não precisa saber se o dado é estático ou dinâmico — quando a skill de dados dinâmicos existir, ela troca o import de `@data/<dominio>` pelo composable equivalente, mantendo os mesmos nomes exportados sempre que possível, e a view muda o mínimo.
 ---
 
 ## R9 — Rotas e code-splitting

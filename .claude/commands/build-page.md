@@ -1,7 +1,7 @@
 ---
 description: >
   Fase 2 do build de página (2 fases: prep → page). Orquestra a implementação da
-  página inteira em batches: camada de dados mockada (service → store → composable),
+  página inteira em batches: camada de dados estática (arquivos em src/data/),
   Batch 0 de components shared serial via component-builder, Batches 1-N de seções
   via section-builder paralelo (max 3). bun check + bun run build uma única vez no
   fim. Roda APÓS /build-prep.
@@ -10,7 +10,7 @@ argument-hint: <page-name>
 
 # /build-page — Orquestrador da implementação de página
 
-Você está executando a **Fase 2** do workflow (2 fases: prep → page). Objetivo: criar/estender a camada de dados mockada (serviço → store → composable), implementar os componentes shared e todas as seções da página em batches isolados, sem lint/build no meio do caminho. Seu contexto deve permanecer leve — SFC `.vue` gerado pelos subagentes NÃO entra aqui.
+Você está executando a **Fase 2** do workflow (2 fases: prep → page). Objetivo: criar/estender a camada de dados estática (`src/data/`), implementar os componentes shared e todas as seções da página em batches isolados, sem lint/build no meio do caminho. Seu contexto deve permanecer leve — SFC `.vue` gerado pelos subagentes NÃO entra aqui.
 
 ## Princípio central
 
@@ -23,7 +23,7 @@ Contexto seu = manifesto (~5k) + N resumos de subagentes (~200 cada) + check/bui
 
 Se você se pegar lendo `.vue` gerado por um subagente ou tentando "ajustar" código direto, **PARE** — isso é violação do contrato. Devolva pro subagente.
 
-**Contrato de dados (R8):** page e view falam só com composable. Composable orquestra store e/ou service. Service = API do domínio (MOCK nesta fase). Store = estado compartilhado.
+**Contrato de dados (R8):** page e view importam constantes direto de `src/data/<dominio>.ts` (via `@data`). Sem camada intermediária — service/store/composable ficam para uma skill separada, ainda não ativa.
 
 ---
 
@@ -57,63 +57,57 @@ Antes de qualquer Task tool, validar **TODOS** os itens. Se **qualquer** falhar,
    - Inventário de seções (tabela com node-id, arquivo, reusa, **Dados**, paralelizável, screenshot + formato)
    - Plano de execução (batches de sections definidos no manifesto)
    - Critério de aceite
-   - `## Plano de dados` — serviços, stores e composables (`acao: criar | estender`); HTTP real fica pro usuário depois
+   - `## Plano de dados` — arquivos em `src/data/` (`acao: criar | estender`); camada dinâmica fica pra skill futura
    - `## Componentes compartilhados — specs` — quais com `status: proposto` (vão pra Batch 0)
    - `## Componentes do kit reusados` / `## Componentes do projeto reusados` (matches que NÃO precisam ser construídos; pode ter `evolucao_pedida` em update)
    - `## Estruturas inline-only` — candidatos com `usos_contados < 2`; section-builders inline
    - `## Status` (idempotência — quais shared/seções já estão `[x]`)
 2. Pra cada componente em `## Componentes compartilhados — specs`, `Glob` no `destino` da spec (ex.: `src/components/wallet/balance-card/`) — marcar quais pastas já existem com arquivos não vazios (pular no Batch 0).
 3. `Glob src/views/{page}/*.vue` — marcar seções já implementadas (pular nos batches 1-N).
-4. `Glob` nos paths de `## Plano de dados` (`src/services/*.service.ts`, `src/stores/*.ts`, `src/composables/*.ts`) — marcar o que já existe (criar vs estender no Passo 1).
+4. `Glob` nos paths de `## Plano de dados` (`src/data/*.ts`) — marcar o que já existe (criar vs estender no Passo 1).
 5. Confirmar stub: `src/pages/{Page}.vue` e pasta `src/views/{page}/`.
 
 Qualquer divergência: reportar ao usuário e pedir confirmação antes de prosseguir.
 
-### Passo 1 — Camada de dados mockada
+### Passo 1 — Camada de dados estática
 
-Implementa o contrato de `## Plano de dados` **antes** dos components e das sections. Ordem fixa: **service → store → composable**. O front consome só o composable; HTTP real é trabalho posterior do usuário.
+Implementa o contrato de `## Plano de dados` **antes** dos components e das sections. O front consome direto as constantes de `src/data/{dominio}.ts` — sem service, store ou composable (fica para uma skill separada, ainda não ativa).
 
 Se o plano de dados estiver vazio (todas as seções só `literal` / `estado-local`), **pular** este passo e seguir pro Passo 2.
 
 #### 1.1 — Filtrar o que criar ou estender
 
-Para cada entry do manifesto:
+Para cada entry de `### Dados propostos`:
 
 | `acao` | Arquivo existe? | Ação |
 | --- | --- | --- |
 | `criar` | não | criar do zero |
 | `criar` | sim | tratar como `estender` (aditivo) |
-| `estender` | sim | acrescentar só `metodos_novos` / `expõe_novos` |
+| `estender` | sim | acrescentar só `exports_novos` |
 | `estender` | não | criar com o conjunto completo listado |
 
-1. Serviços em `### Serviços propostos`
-2. Stores em `### Estado proposto` com path `src/stores/...`
-3. Composables em `### Composables propostos`
+Se a lista resulta em nada a fazer → pular Passo 1.
 
-Se as três listas resultam em nada a fazer → pular Passo 1.
+**Não inventar** exports, tipos ou arquivos fora do manifesto. Em modo `estender`, **não remover** exports existentes.
 
-**Não inventar** métodos, tipos ou arquivos fora do manifesto. Em modo `estender`, **não remover** exports/métodos existentes.
+#### 1.2 — Arquivos de dados
 
-#### 1.2 — Serviços mockados
+Pra cada entry (`criar` ou `estender`), arquivo `src/data/{dominio}.ts` no padrão R8:
 
-Pra cada serviço (`criar` ou `estender`), arquivo `src/services/{dominio}.service.ts` no padrão R8:
-
-- Interfaces/tipos do manifesto (novos só os listados em `metodos_novos` / `tipos` ao estender)
-- Classe + factory `use{Dominio}Service()`
-- Métodos com a **mesma assinatura** que a API real terá
-- Body: dados mockados estáticos — **sem** `http`, axios ou fetch
+- Interfaces/tipos do manifesto (novos só os listados em `tipos` / `exports_novos` ao estender)
+- `export const` tipados com valores estáticos — **sem** `http`, axios ou fetch
 - Cabeçalho obrigatório:
 
 ```ts
-// MOCK — substituir o body dos métodos por http quando a API existir.
+// DADOS ESTÁTICOS — trocar por camada dinâmica (service/store/composable) quando a skill existir.
 // Assinaturas e tipos são o contrato; não alterar sem atualizar o manifesto.
 ```
 
 Exemplo (domínio vem do manifesto):
 
 ```ts
-// src/services/wallet.service.ts
-// MOCK — substituir o body dos métodos por http quando a API existir.
+// src/data/wallet.ts
+// DADOS ESTÁTICOS — trocar por camada dinâmica (service/store/composable) quando a skill existir.
 
 export interface Balance {
   total: number
@@ -127,71 +121,19 @@ export interface Transaction {
   data: string
 }
 
-class WalletService {
-  async getBalance(): Promise<Balance> {
-    return { total: 1240, blocked: 0 }
-  }
+export const balance: Balance = { total: 1240, blocked: 0 }
 
-  async listTransactions(_page = 1): Promise<Transaction[]> {
-    return [
-      { id: '1', description: 'Transferência recebida', amount: 250, data: '2026-08-20' },
-      { id: '2', description: 'Pagamento', amount: -89.9, data: '2026-08-19' },
-    ]
-  }
-}
-
-const walletService = new WalletService()
-
-export function useWalletService() {
-  return walletService
-}
+export const transactions: Transaction[] = [
+  { id: '1', description: 'Transferência recebida', amount: 250, data: '2026-08-20' },
+  { id: '2', description: 'Pagamento', amount: -89.9, data: '2026-08-19' },
+]
 ```
 
 Quem escreve: o **orquestrador** **ou** 1 Task `generalPurpose` com prompt curto listando só o manifesto. Não usar `section-builder`/`component-builder` aqui.
 
-#### 1.3 — Stores Pinia
+Estado marcado como `local` no manifesto **não** vira arquivo em `src/data/` — a section-builder usa `ref`/`reactive` na própria view.
 
-Pra cada store (`criar` ou `estender`) em `src/stores/{dominio}.ts`:
-
-- Setup store Pinia (R8)
-- Consome o factory do serviço mock correspondente quando o manifesto liga store ↔ service
-- Expõe state + actions do manifesto; em `estender`, só acrescentar `expõe_novos`
-
-Estado marcado como `local` no manifesto **não** vira store — a section-builder usa `ref`/`reactive` na própria view.
-
-#### 1.4 — Composables
-
-Pra cada entry em `### Composables propostos` (`criar` ou `estender`), arquivo `src/composables/use-{dominio}.ts`:
-
-- Factory `use{Dominio}()` (ex.: `useWallet`)
-- Importa store e/ou service conforme campo `usa:` do manifesto (um, outro ou ambos)
-- Reexporta exatamente o que `expõe:` lista — essa é a superfície da UI
-- Em `estender`, acrescentar só o que falta em `expõe_novos`
-
-```ts
-// src/composables/use-wallet.ts
-import { storeToRefs } from 'pinia'
-import { useWalletService } from '@services/wallet.service'
-import { useWalletStore } from '@stores/wallet'
-
-export function useWallet() {
-  const store = useWalletStore()
-  const service = useWalletService()
-  const { balance, loading } = storeToRefs(store)
-
-  async function fetchBalance() {
-    await store.fetchBalance()
-  }
-
-  async function listTransactions(page = 1) {
-    return service.listTransactions(page)
-  }
-
-  return { balance, loading, fetchBalance, listTransactions }
-}
-```
-
-Page e view **só** importam este composable (além de UI/components). Não importam `@services` nem `@stores`.
+Page e view importam essas constantes direto (via `@data`, além de UI/components).
 
 ### Passo 2 — Batch 0 (Components serial)
 
@@ -261,7 +203,7 @@ Edits ao manifesto são **sequenciais** (single-writer). Anti-corrida by design.
 
 ### Passo 3 — Batches 1-N (Sections paralelo)
 
-Implementa todas as seções consumindo components shared (já prontos do Batch 0) + composables da camada de dados (Passo 1).
+Implementa todas as seções consumindo components shared (já prontos do Batch 0) + constantes da camada de dados (Passo 1).
 
 #### 3.1 — Plano de paralelismo
 
@@ -294,11 +236,9 @@ Pra cada batch:
      componentes_specs:        # subset das specs do manifesto que esta seção reusa
        - {Comp1}
        - {Comp2}
-     fonte_dados: literal | composable:{nome} | estado-local
+     fonte_dados: literal | data:{nome} | estado-local
      dados_contrato:           # do ## Plano de dados; null se literal / estado-local puro
-       composable: src/composables/use-{dominio}.ts   # ou null
-       service: src/services/{dominio}.service.ts     # dependência interna; a view NÃO importa
-       store: src/stores/{dominio}.ts                 # dependência interna; a view NÃO importa
+       data: src/data/{dominio}.ts   # ou null
      referencia_visual:        # do inventário (Passo 4 do /build-prep)
        tipo: figma | pencil
        screenshot_path: docs/{figma|pencil}/{page}-{secao_kebab}.webp
@@ -374,7 +314,7 @@ Após todos os batches paralelos, rodar serial: seções com `Paralelizável: n�
      </template>
      ```
 
-   - Views que precisam de dado de domínio consomem o **composable** por dentro (R8). A página **não** importa `@services` nem `@stores`, e não faz fetch.
+   - Views que precisam de dado de domínio importam as constantes de `src/data/{dominio}.ts` por dentro (R8, via `@data`). A página não importa dado direto, e não faz fetch.
 3. Conferir via `Grep`/`Read` que a rota lazy em `src/routers/` aponta pra `@pages/{Page}.vue` (prep já registra; se faltar, adicionar no padrão R9).
 4. Conferir via `Glob` que cada seção do inventário tem arquivo `.vue` em `src/views/{page}/`.
 5. Se alguma seção do inventário não tem arquivo correspondente, listar ao usuário — não auto-completar.
@@ -389,7 +329,7 @@ bun run build
 Se erros:
 - **Erro localizado em 1 seção** → re-disparar `section-builder` daquela seção com bloco extra `correcao_solicitada` no input contendo o output do erro.
 - **Erro localizado em 1 componente** → re-disparar `component-builder` em modo `update` pra esse componente.
-- **Erro localizado em serviço/store/composable** → o orquestrador corrige o arquivo da camada de dados (contrato R8); não reabrir Batch 0/sections só por typo de tipo no mock.
+- **Erro localizado em arquivo de `src/data/`** → o orquestrador corrige o arquivo da camada de dados (contrato R8); não reabrir Batch 0/sections só por typo de tipo no mock.
 - **Erro global** (config, import path quebrado, alias) → reportar ao usuário, NÃO tentar fix automático em arquivo compartilhado.
 
 Repetir até build limpo OU **2 tentativas** (se persistir, reportar).
@@ -399,7 +339,7 @@ Repetir até build limpo OU **2 tentativas** (se persistir, reportar).
 Lançar 1 Task tool com:
 - **subagent_type:** `review`
 - **description:** `"review {page}"`
-- **prompt:** `"Revise os arquivos novos em src/views/{page}/, src/components/ (novos do Batch 0), src/services/, src/stores/, src/composables/ desta página, e src/pages/{Page}.vue contra .claude/RULES.md. Use git diff. Escopo: código Vue/TS, boas práticas e acessibilidade — fidelidade visual NÃO é do review. Serviços MOCK (sem http real). Pages/views NÃO devem importar @services nem @stores — só @composables. Reporte BLOCKERS e MAJORs."`
+- **prompt:** `"Revise os arquivos novos em src/views/{page}/, src/components/ (novos do Batch 0), src/data/ desta página, e src/pages/{Page}.vue contra .claude/RULES.md. Use git diff. Escopo: código Vue/TS, boas práticas e acessibilidade — fidelidade visual NÃO é do review. Dados estáticos (sem http real). Pages/views só importam dado de @data — sem fetch, sem estado global. Reporte BLOCKERS e MAJORs."`
 
 Coletar resultado. Review **não bloqueia entrega** por default — só BLOCKERS reais (R1/R5/R6/R8/R13) param. Listar findings ao usuário e oferecer corrigir; se usuário pular, segue pra handoff.
 
@@ -410,7 +350,7 @@ Coletar resultado. Review **não bloqueia entrega** por default — só BLOCKERS
 Conteúdo mínimo:
 
 1. **Cabeçalho**: página `{page}`, data ISO, caminho do manifesto.
-2. **Tabela de dados (Passo 1)**: `arquivo`, `tipo` (service|store|composable), `status` (criado|estendido|já existia|pulado), `nota` (`HTTP real pendente` / `—`).
+2. **Tabela de dados (Passo 1)**: `arquivo`, `tipo` (dado estático), `status` (criado|estendido|já existia|pulado), `nota` (`camada dinâmica pendente (skill futura)` / `—`).
 3. **Tabela de components (Batch 0)**: `componente`, `status`, `mode_efetivo`, `props_implementadas|adicionadas`, `desvios_da_spec`, `bloqueios`.
 4. **Tabela de sections (Batches 1-N)**: `secao`, `status`, `assets_faltantes`, `desvios_do_manifesto`, `componentes_evolucao_pedida`, `bloqueios`, `notas`.
 5. **Code review**: BLOCKERS / MAJOR / MINOR / INFO (resumo); indicar se foram corrigidos ou ainda abertos.
@@ -429,9 +369,7 @@ Conteúdo mínimo:
 ## /build-page concluído — {page}
 
 ### Dados (Passo 1)
-- ✓ src/services/wallet.service.ts (MOCK, criado)
-- ✓ src/stores/wallet.ts (criado)
-- ✓ src/composables/use-wallet.ts (criado)
+- ✓ src/data/wallet.ts (dado estático, criado)
 
 ### Components (Batch 0)
 - ✓ BalanceCard (src/components/wallet/balance-card/, X arquivos)
@@ -449,7 +387,7 @@ Conteúdo mínimo:
 
 ### Pendências do usuário
 - [Reports] Imagem precisa de versão maior pra desktop
-- [wallet.service] Trocar MOCK por http quando a API existir
+- [wallet.ts] Trocar dado estático por camada dinâmica quando a skill existir
 - [Balance] Texto do CTA ficou como placeholder — definir copy real
 
 ### Handoff persistido
@@ -457,7 +395,7 @@ Conteúdo mínimo:
 
 ### Próximos passos
 1. Resolver pendências (lista acima) ou colar o prompt do handoff num novo turno
-2. Substituir bodies MOCK dos serviços por chamadas `http` reais (manter assinaturas)
+2. Substituir as constantes estáticas de `src/data/` por uma camada dinâmica quando a skill existir
 3. (opcional) Validação visual manual — comandos prontos abaixo
 4. (opcional) Se design tinha animações: aplicar skill de animação por seção
 
@@ -472,7 +410,7 @@ node scripts/visual-test.mjs --route {rota} --component "<SELETOR-DA-SECAO>" \
 
 ### Métricas
 - Tempo total: ~Nmin
-- Serviços/stores/composables (criados|estendidos): N
+- Arquivos de dados (criados|estendidos): N
 - Components implementados: N
 - Section-builders lançados: N
 - subagent_type_usado: section-builder|component-builder|generalPurpose
@@ -487,9 +425,9 @@ node scripts/visual-test.mjs --route {rota} --component "<SELETOR-DA-SECAO>" \
 
 - **NÃO** implementar seções nem componentes shared diretamente — sempre via subagente
 - **APENAS** `section-builder`/`component-builder` ou `generalPurpose` (com AGENT.md INTEIRO inline) como `subagent_type` pra UI. Qualquer outro tipo requer aprovação explícita no gate de pré-requisito
-- **NÃO** implementar HTTP real nos serviços desta fase — só MOCK com assinatura do manifesto
-- **NÃO** inventar métodos, tipos, stores ou composables fora de `## Plano de dados`
-- **NÃO** deixar page/view importar `@services` ou `@stores` — só `@composables`
+- **NÃO** implementar HTTP real nesta fase — só dado estático com o tipo do manifesto
+- **NÃO** inventar exports, tipos ou arquivos fora de `## Plano de dados`
+- **NÃO** deixar page/view acessar dado fora de `src/data/{dominio}.ts` — sem fetch, sem estado global
 - **NÃO** ler arquivos `.vue` em `src/views/` ou `src/components/` durante a execução (só pra resolver bloqueios pontuais via re-disparo de subagente)
 - **NÃO** acumular código no contexto — subagentes retornam só YAML
 - **NÃO** disparar mais de 3 section-builders em paralelo
@@ -517,22 +455,22 @@ Se você se pegar dizendo qualquer uma dessas frases internas, **PARE** — é v
 - "Vou rodar check depois de cada seção pra pegar erros cedo" → **NÃO**. Custa tempo e fragmenta o feedback. Single run no Passo 5.
 - "Vou usar `generalPurpose` sem o AGENT.md inteiro inline pra economizar tokens" → **NÃO**. Sem AGENT.md inline vira fallback silencioso (proibido).
 - "Vou só implementar uma seção rápida no fio principal pra ganhar tempo" → **NÃO**. Sem subagente = sem build. Aborta e pergunta.
-- "Vou já plugar axios/http no serviço pra ficar 'pronto'" → **NÃO**. Esta fase é MOCK. HTTP é do usuário depois.
-- "Vou importar a store direto na view, é mais rápido" → **NÃO**. View só fala com composable (R8).
+- "Vou já plugar axios/http direto na view pra ficar 'pronto'" → **NÃO**. Esta fase é dado estático. HTTP fica pra skill futura.
 
 ### Auto-checagem antes do resumo final
 
 Antes de imprimir o resumo final, validar:
-- `docs/build-handoff-{page}.md` existe com tabelas (incluindo dados service/store/composable) + análise priorizada + prompt copiável
-- Cada serviço/store/composable do plano de dados foi criado, estendido ou skip explícito
+- `docs/build-handoff-{page}.md` existe com tabelas (incluindo dados de `src/data/`) + análise priorizada + prompt copiável
+- Cada arquivo do plano de dados foi criado, estendido ou skip explícito
 - Cada componente shared do manifesto tem `Task component-builder` registrado em métricas (ou skip explícito)
 - Cada seção do inventário tem `Task section-builder` registrado em métricas (ou skip)
 - `git diff --stat` mostra apenas arquivos esperados — desvios declarados no handoff
-- `Grep` em `src/views/{page}/` e `src/pages/{Page}.vue` por imports de `@services` ou `@stores` → se achar, listar no handoff como BLOCKER R8
-- **Gate anti-TODO (mecânico, sem retry):** `Grep` por `<!-- TODO` **e** `{/* TODO` **e** `// TODO` em `src/views/{page}/`, nos `src/components/` novos do Batch 0, e nos services/stores/composables tocados. Cruzar com os `assets_faltantes` agregados dos YAMLs:
+- `Grep` em `src/views/{page}/` e `src/pages/{Page}.vue` por `axios` ou `fetch(` → se achar, listar no handoff como BLOCKER R8 (nada de HTTP real nesta fase)
+- `Grep` em seções com `fonte_dados: data:*` por import fora de `@data`/`@/data` para o dado esperado → se achar, listar no handoff como BLOCKER R8
+- **Gate anti-TODO (mecânico, sem retry):** `Grep` por `<!-- TODO` **e** `{/* TODO` **e** `// TODO` em `src/views/{page}/`, nos `src/components/` novos do Batch 0, e nos arquivos de `src/data/` tocados. Cruzar com os `assets_faltantes` agregados dos YAMLs:
   - TODO **declarado** por algum subagente → pendência normal (já está no handoff).
   - TODO **não declarado** → **"pendência HARD não reportada"**: listar com `arquivo:linha` em destaque no handoff (Passo 7) e no resumo (Passo 8). **NÃO re-disparar subagente, NÃO tentar corrigir** — é gate de relatório; quem decide é o humano.
-  - Comentário `// MOCK —` nos serviços **não** conta como TODO não declarado.
+  - Comentário `// DADOS ESTÁTICOS —` em `src/data/` **não** conta como TODO não declarado.
 
 ## Referências
 

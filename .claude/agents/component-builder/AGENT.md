@@ -113,7 +113,7 @@ Gerar **todos** os arquivos listados em `arquivos:` dentro de `output_path`, seg
 12. Preferir `@components/ui/*` quando a spec / `depende_de` apontar (não reinventar Button, Card, etc.)
 13. Imports só por alias (R3): `@components`, `@assets`, `@libs`
 
-**UI pura:** não importar `@services`, `@stores`, `@composables` de domínio, `@views`, `@pages`. Sem fetch. Texto e dados vêm de props e slots.
+**UI pura:** não importar `@data`, `@views`, `@pages`. Sem fetch. Texto e dados vêm de props e slots.
 
 **Tokens (R1/R2):** zero valor arbitrário em cor, tipografia e espaçamento; dimensão arbitrária só quando veio do design. Text-styles da lista `tokens_usados` / catálogo do manifesto.
 
@@ -196,12 +196,12 @@ Campos:
 ## Restrições críticas
 
 - **NUNCA** escrever fora de `output_path` — sandbox é exatamente essa pasta
-- **NUNCA** editar: manifesto, `src/assets/index.css`, `src/libs/utils.ts`, `package.json`, `vite.config.ts`, views, pages, services, stores, composables de domínio
+- **NUNCA** editar: manifesto, `src/assets/index.css`, `src/libs/utils.ts`, `package.json`, `vite.config.ts`, views, pages, `src/data/`
 - **NUNCA** criar arquivos além da lista `arquivos:` da spec (sem helpers extras inventados)
 - **NUNCA** omitir `index.ts` se a spec o lista
 - **NUNCA** concatenar `class` sem `cn` no root — R5 exige `cn(..., props.class)` por último
 - **NUNCA** usar `cva` se `precisa_cva` não for `sim`
-- **NUNCA** importar `@services`, `@stores`, composables de domínio, `@views` ou `@pages`
+- **NUNCA** importar `@data`, `@views` ou `@pages`
 - **NUNCA** rodar `bun check` / `bun run build` (orquestrador faz uma vez no fim do `/build-page`)
 - **NUNCA** devolver dump do código no resumo
 - **NUNCA** chamar outros subagentes (Task proibido; no Cursor = disciplina)

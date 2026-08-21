@@ -18,6 +18,7 @@
       "@composables/*": ["./src/composables/*"],
       "@config/*": ["./src/config/*"],
       "@constants/*": ["./src/constants/*"],
+      "@data/*": ["./src/data/*"],
       "@layouts/*": ["./src/layouts/*"],
       "@libs/*": ["./src/libs/*"],
       "@pages/*": ["./src/pages/*"],

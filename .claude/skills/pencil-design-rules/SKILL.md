@@ -105,16 +105,17 @@ I(parent, {type: "frame", stroke: {fill: "#dedad3", thickness: 1}, ...})
 ### Correto
 
 ```javascript
-I(parent, {type: "frame", fill: "$--white", ...})
-I(parent, {type: "text", fill: "$--dark-olive", content: "Titulo", ...})
+I(parent, {type: "frame", fill: "$--card", ...})
+I(parent, {type: "text", fill: "$--foreground", content: "Titulo", ...})
 I(parent, {type: "frame", stroke: {fill: "$--border", thickness: 1}, ...})
 ```
 
 ### Antes de comecar qualquer design
 
 1. Rodar `get_variables` para listar variaveis disponiveis
-2. Se uma cor necessaria NAO existe, **criar uma nova variavel** antes de usar
-3. Para cores com opacidade, criar variavel derivada (ex: `$--white-30`, `$--green-accent-10`)
+2. O catalogo do projeto e a paleta shadcn (ver `src/assets/index.css`): `$--background`, `$--foreground`, `$--card`, `$--card-foreground`, `$--popover`, `$--popover-foreground`, `$--primary`, `$--primary-foreground`, `$--secondary`, `$--secondary-foreground`, `$--muted`, `$--muted-foreground`, `$--accent`, `$--accent-foreground`, `$--destructive`, `$--border`, `$--input`, `$--ring`, `$--chart-1` a `$--chart-5`, `$--sidebar*`. Preferir sempre um desses antes de propor cor nova
+3. Se uma cor necessaria NAO existe nesse catalogo, **criar uma nova variavel** antes de usar — ela entra depois em `src/assets/index.css` nos tres lugares (`:root`, `.dark`, `@theme inline` — R1)
+4. Para opacidade, usar canal alpha na propria cor (ex: `oklch(1 0 0 / 10%)`, como o projeto ja faz em `--border` no `.dark`) — nao criar variavel derivada tipo `$--white-30`
 
 ---
 
@@ -122,56 +123,45 @@ I(parent, {type: "frame", stroke: {fill: "$--border", thickness: 1}, ...})
 
 **Nivel: OBRIGATORIO**
 
-Todo texto no design DEVE seguir o sistema tipografico do projeto. Isso garante que ao converter para codigo, cada texto mapeie para uma unica classe Tailwind (`text-{categoria}-{numero}`) sem valores arbitrarios.
+Todo texto no design DEVE mapear para um dos text-styles do catalogo do projeto (`text-{nome}`, definidos em `src/assets/index.css` + `TEXT_STYLES` em `src/libs/utils.ts` — R2). Nao e uma escala numerada por tamanho: cada nome e um proposito fixo, e o valor (size/weight/line-height) e exato — nao aproximar "no olho".
 
-### Categorias tipograficas
+### Catalogo do projeto
 
-| Categoria | Uso | fontSize range | lineHeight range |
-|-----------|-----|----------------|------------------|
-| **Display** | Numeros grandes, destaque visual, hero statements | 56–120px | 1.0–1.1 (100%–110%) |
-| **Headline** | Titulos de secao, h1–h3 | 32–64px | 1.0–1.2 (100%–120%) |
-| **Title** | Subtitulos, h4–h6, card titles | 20–32px | 1.1–1.3 (110%–130%) |
-| **Paragraph** | Texto corrido, descricoes, body | 14–20px | 1.4–1.7 (140%–170%) |
-| **Caps** | Labels, badges, tags, navegacao | 10–14px | 1.0–1.3 (100%–130%) |
+| Nome | fontSize | fontWeight | lineHeight | Uso |
+|------|----------|------------|------------|-----|
+| **title** | 1.25rem (20px) | 300 | 1.4 | titulo de tela |
+| **heading** | 0.875rem (14px) | 400 | 1.4 | titulo de secao ou card |
+| **heading-caps** | 0.875rem (14px) | 500 | 1.4 | titulo em caixa alta (uppercase) |
+| **label** | 0.75rem (12px) | 400 | 1.42 | rotulo de campo, legenda de dado |
+| **paragraph** | 0.875rem (14px) | 400 | 1.4 | texto corrido |
+| **paragraph-light** | 0.875rem (14px) | 300 | 1.4 | texto corrido secundario |
+| **caption** | 0.875rem (14px) | 400 | normal | apoio |
+| **caption-sm** | 0.75rem (12px) | 300 | 1.5 | apoio compacto |
+| **button** | 1rem (16px) | 600 | 1 | acao |
+| **button-sm** | 0.875rem (14px) | 600 | 1 | acao compacta |
 
 ### Nomenclatura
 
-Formato: `{Categoria}/{Numero}` — do maior (1) ao menor (N):
+Nomear o node de texto com o nome direto do estilo — sem numero, sem categoria de tamanho:
 
 ```
-Display/1    → maior display (ex: 120px)
-Display/2    → segundo display (ex: 80px)
-Headline/1   → maior headline (ex: 64px)
-Headline/2   → (ex: 48px)
-Headline/3   → (ex: 40px)
-Title/1      → maior titulo (ex: 32px)
-Title/2      → (ex: 24px)
-Title/3      → (ex: 20px)
-Paragraph/1  → maior paragrafo (ex: 20px)
-Paragraph/2  → (ex: 18px)
-Paragraph/3  → (ex: 16px)
-Paragraph/4  → (ex: 14px)
-Caps/1       → maior caps (ex: 14px)
-Caps/2       → (ex: 12px)
-Caps/3       → (ex: 10px)
+title
+heading
+heading-caps
+label
+paragraph
+paragraph-light
+caption
+caption-sm
+button
+button-sm
 ```
 
-### Line-height — valores permitidos
+Antes de usar um estilo, rodar `get_variables`/`get_guidelines` e conferir se o projeto ja tem um equivalente — dois nomes para o mesmo texto custam mais que um nome bem escolhido. O catalogo **nao e um limite**: se nenhum estilo existente cobre o que o design pede, criar um novo e valido (R2) — mas o node ja nasce nomeado com o proposito (ex: `metric`, `paragraph-lg`), nao com um numero generico.
 
-Line-height DEVE ser um dos seguintes valores (steps de 10%):
+### Line-height — nao existe step fixo
 
-| Valor | Ratio | Quando usar |
-|-------|-------|-------------|
-| **1.0** | 100% | Display grande, numeros, texto single-line apertado |
-| **1.1** | 110% | Headlines grandes, titulos impactantes |
-| **1.2** | 120% | Headlines medios, titulos de secao |
-| **1.3** | 130% | Titulos menores, subtitulos, caps |
-| **1.4** | 140% | Paragrafos curtos, descricoes de card |
-| **1.5** | 150% | Texto corrido padrao |
-| **1.6** | 160% | Texto corrido com mais respiro |
-| **1.7** | 170% | Texto longo, blocos de leitura extensos |
-
-**NUNCA** usar valores intermediarios como `1.15`, `1.25`, `1.35`, `1.45`, `1.65`.
+O catalogo real usa `1`, `1.4`, `1.42`, `1.5` e `normal` — **nao** e um sistema de steps de 10%. Ao reusar um estilo existente, copiar o line-height exato da tabela acima. Ao criar um estilo novo, escolher o line-height que fizer sentido pro tamanho/peso do texto (geralmente mais folgado em textos corridos, mais apertado em numeros/labels curtos) — sem arredondar de cabeca.
 
 ### Propriedades obrigatorias em cada text style
 
@@ -180,89 +170,82 @@ Todo texto DEVE definir **todas** estas propriedades:
 ```javascript
 I(container, {
   type: "text",
+  name: "heading",
   content: "Titulo da Secao",
-  fontFamily: "$--font-heading",   // OBRIGATORIO — variavel de fonte
-  fontWeight: "600",               // OBRIGATORIO — peso da fonte
-  fontSize: 48,                    // OBRIGATORIO — tamanho
-  lineHeight: 1.1,                 // OBRIGATORIO — um dos valores permitidos
-  letterSpacing: 0,                // OBRIGATORIO (pode ser 0) — espacamento entre letras
-  fill: "$--dark-olive",           // OBRIGATORIO — cor via variavel
+  fontFamily: "$--font-sans",      // OBRIGATORIO — variavel de fonte
+  fontWeight: "400",               // OBRIGATORIO — peso do estilo (ver catalogo)
+  fontSize: 14,                    // OBRIGATORIO — tamanho do estilo (ver catalogo)
+  lineHeight: 1.4,                 // OBRIGATORIO — line-height exato do estilo
+  fill: "$--foreground",           // OBRIGATORIO — cor via variavel
   textGrowth: "fixed-width",      // recomendado para texto em flexbox
   width: "fill_container"          // recomendado para texto em flexbox
 })
 ```
 
+`letterSpacing` e opcional (default `0`) — nenhum text-style do catalogo usa tracking. So definir um valor diferente de `0` se o design pedir explicitamente e nao houver estilo do catalogo que atenda.
+
 ### Errado
 
 ```javascript
 // ERRADO: sem lineHeight definido (usa default do browser — inconsistente)
-I(container, {type: "text", content: "Titulo", fontSize: 48, fill: "$--dark-olive"})
+I(container, {type: "text", content: "Titulo", fontSize: 14, fill: "$--foreground"})
 
-// ERRADO: lineHeight fora do sistema
-I(container, {type: "text", content: "Titulo", fontSize: 48, lineHeight: 1.15, fill: "$--dark-olive"})
+// ERRADO: nome generico, nao mapeia pra nenhum text-style
+I(container, {type: "text", name: "Text 1", fontSize: 14, lineHeight: 1.4, fill: "$--foreground"})
 
 // ERRADO: sem fontFamily (herda qualquer coisa)
-I(container, {type: "text", content: "Titulo", fontSize: 48, lineHeight: 1.1, fill: "$--dark-olive"})
+I(container, {type: "text", content: "Titulo", fontSize: 14, lineHeight: 1.4, fill: "$--foreground"})
 
-// ERRADO: fontSize nao bate com a categoria
-I(container, {type: "text", name: "Display/1", fontSize: 16, ...})  // Display com 16px?
+// ERRADO: valores nao batem com nenhum estilo do catalogo nem justificam um novo
+I(container, {type: "text", name: "heading", fontSize: 22, lineHeight: 1.15, ...})
 ```
 
 ### Correto
 
 ```javascript
-// Display — numero destaque
-I(container, {type: "text", name: "Display/1",
-  content: "R$ 50bi+", fontFamily: "$--font-heading", fontWeight: "300",
-  fontSize: 80, lineHeight: 1.0, letterSpacing: -1, fill: "$--dark-olive"})
+// title — titulo de tela
+I(container, {type: "text", name: "title",
+  content: "Saldo disponivel", fontFamily: "$--font-sans", fontWeight: "300",
+  fontSize: 20, lineHeight: 1.4, fill: "$--foreground"})
 
-// Headline — titulo de secao
-I(container, {type: "text", name: "Headline/2",
-  content: "Nossas Transacoes", fontFamily: "$--font-heading", fontWeight: "600",
-  fontSize: 48, lineHeight: 1.1, letterSpacing: 0, fill: "$--dark-olive",
+// heading — titulo de secao/card
+I(container, {type: "text", name: "heading",
+  content: "Extrato", fontFamily: "$--font-sans", fontWeight: "400",
+  fontSize: 14, lineHeight: 1.4, fill: "$--foreground",
   textGrowth: "fixed-width", width: "fill_container"})
 
-// Paragraph — texto corrido
-I(container, {type: "text", name: "Paragraph/2",
-  content: "A Arsenal e uma boutique...", fontFamily: "$--font-body", fontWeight: "400",
-  fontSize: 18, lineHeight: 1.6, letterSpacing: 0, fill: "$--dark-olive-70",
+// paragraph — texto corrido
+I(container, {type: "text", name: "paragraph",
+  content: "Ultimas 30 transacoes da conta.", fontFamily: "$--font-sans", fontWeight: "400",
+  fontSize: 14, lineHeight: 1.4, fill: "$--muted-foreground",
   textGrowth: "fixed-width", width: "fill_container"})
 
-// Caps — label de navegacao
-I(container, {type: "text", name: "Caps/2",
-  content: "O QUE FAZEMOS", fontFamily: "$--font-body", fontWeight: "500",
-  fontSize: 12, lineHeight: 1.0, letterSpacing: 2, fill: "$--white-65"})
+// label — rotulo de campo
+I(container, {type: "text", name: "label",
+  content: "Valor", fontFamily: "$--font-sans", fontWeight: "400",
+  fontSize: 12, lineHeight: 1.42, fill: "$--muted-foreground"})
 ```
 
 ### Fontes — usar variaveis
 
-Definir variaveis para as familias tipograficas do projeto:
+O projeto tem uma unica familia tipografica:
 
 ```
-$--font-heading  → fonte de titulos (ex: Garamond, Playfair Display)
-$--font-body     → fonte de corpo (ex: Montserrat, Inter)
-$--font-mono     → fonte mono se necessario (ex: JetBrains Mono)
+$--font-sans     → familia do projeto (JetBrains Mono Variable)
+$--font-heading  → alias de $--font-sans (mesmo valor, nome semantico)
 ```
 
 **NUNCA** hardcodar o nome da fonte direto no texto:
 
 ```javascript
 // ERRADO
-{fontFamily: "Montserrat", ...}
+{fontFamily: "JetBrains Mono", ...}
 
 // CORRETO
-{fontFamily: "$--font-body", ...}
+{fontFamily: "$--font-sans", ...}
 ```
 
-### Referencia rapida — lineHeight por categoria
-
-```
-Display   → 1.0 ou 1.1
-Headline  → 1.0, 1.1 ou 1.2
-Title     → 1.1, 1.2 ou 1.3
-Paragraph → 1.4, 1.5, 1.6 ou 1.7
-Caps      → 1.0, 1.1, 1.2 ou 1.3
-```
+Se o design pedir uma segunda familia (ex: fonte de destaque para titulos grandes), criar a variavel antes de usar e registrar em `src/assets/index.css` (R1) — nao inventar mais de uma familia sem essa etapa.
 
 ---
 
@@ -333,13 +316,13 @@ Pagina (frame, layout: "vertical", width: 1920)
 
 ### Spacing consistente (mas nao rigido)
 
-Definir um sistema de spacing e usa-lo como base. Variacoes sao aceitas quando ha intencao:
+O projeto nao usa variaveis de spacing — Tailwind ja tem uma escala fixa em multiplos de 4px (4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96...). Usar valores dessa escala em padding/gap garante que a conversao gere `p-6`, `gap-3` etc. sem valor arbitrario (R1). Variacoes sao aceitas quando ha intencao, desde que continuem na escala:
 
 ```javascript
-// Base: usar variaveis de spacing
-section=I(page, {type: "frame", padding: ["$--section-padding-y", "$--section-padding-x"], ...})
+// Base: valores na escala de 4px
+section=I(page, {type: "frame", padding: [96, 64], ...})
 
-// Hero com mais respiro — decisao criativa valida
+// Hero com mais respiro — decisao criativa valida, ainda na escala
 hero=I(page, {type: "frame", padding: [160, 64, 120, 64], ...})
 
 // Secao de stats mais compacta — tambem valido
@@ -386,8 +369,8 @@ statCard=I(document, {
   type: "frame", name: "Component/Card/Stat", reusable: true,
   layout: "vertical", padding: 64, gap: 8, width: "fill_container",
   children: [
-    {id: "value", type: "text", content: "00", fontSize: 48, fill: "$--dark-olive"},
-    {id: "label", type: "text", content: "Label", fontSize: 14, fill: "$--dark-olive-70"}
+    {id: "value", type: "text", name: "title", content: "00", fontSize: 20, lineHeight: 1.4, fill: "$--foreground"},
+    {id: "label", type: "text", name: "label", content: "Label", fontSize: 12, lineHeight: 1.42, fill: "$--muted-foreground"}
   ]
 })
 
@@ -460,10 +443,10 @@ Texto sem `fill` e **invisivel**. Sempre definir cor:
 
 ```javascript
 // ERRADO: texto invisivel
-I(container, {type: "text", content: "Titulo", fontSize: 48})
+I(container, {type: "text", name: "title", content: "Titulo", fontSize: 20})
 
 // CORRETO
-I(container, {type: "text", content: "Titulo", fontSize: 48, fill: "$--dark-olive"})
+I(container, {type: "text", name: "title", content: "Titulo", fontSize: 20, lineHeight: 1.4, fill: "$--foreground"})
 ```
 
 ### Preferir: sizing via layout
@@ -472,11 +455,11 @@ Deixar o auto-layout controlar o tamanho do texto quando possivel:
 
 ```javascript
 // Texto que preenche o pai (headings, paragrafos)
-I(container, {type: "text", textGrowth: "fixed-width", width: "fill_container",
-  fill: "$--dark-olive", content: "Titulo", fontSize: 48})
+I(container, {type: "text", name: "heading", textGrowth: "fixed-width", width: "fill_container",
+  fill: "$--foreground", content: "Titulo", fontSize: 14, lineHeight: 1.4})
 
 // Texto com tamanho proprio (labels, botoes)
-I(button, {type: "text", content: "CONTATO", fontSize: 12, fill: "$--white"})
+I(button, {type: "text", name: "button", content: "CONTATO", fontSize: 16, lineHeight: 1, fill: "$--primary-foreground"})
 ```
 
 ### Largura fixa em texto — quando e valido
@@ -485,8 +468,8 @@ Limitar largura do texto para **legibilidade** e uma decisao de design valida:
 
 ```javascript
 // Paragrafo com largura maxima para manter 60-75 caracteres por linha
-I(section, {type: "text", textGrowth: "fixed-width", width: 640,
-  content: "Texto longo...", fontSize: 18, fill: "$--dark-olive", lineHeight: 1.7})
+I(section, {type: "text", name: "paragraph", textGrowth: "fixed-width", width: 640,
+  content: "Texto longo...", fontSize: 14, fill: "$--muted-foreground", lineHeight: 1.4})
 ```
 
 ---
@@ -582,7 +565,7 @@ Apos terminar, verificar com `batch_get`:
 |---|-------|-------|
 | 1 | Preferir auto-layout (absoluto OK quando intencional) | PREFERIR |
 | 2 | Cores sempre via variaveis `$--` | OBRIGATORIO |
-| 3 | Tipografia padronizada (categorias, lineHeight 100%–170% em steps de 10%) | OBRIGATORIO |
+| 3 | Tipografia via catalogo do projeto (title, heading, label, paragraph...) — sem escala numerada | OBRIGATORIO |
 | 4 | Sizing dinamico por padrao, fixo quando intencional | PREFERIR |
 | 5 | Spacing consistente (variacoes intencionais OK) | PREFERIR |
 | 6 | Componentes reutilizaveis para 3+ repeticoes | OBRIGATORIO |

@@ -30,11 +30,9 @@ node_id: "100:201"
 output_path: src/views/{page}/Balance.vue
 componentes_specs:        # subset das specs do manifesto que esta seção reusa
   - BalanceCard
-fonte_dados: literal | composable:{nome} | estado-local
+fonte_dados: literal | data:{nome} | estado-local
 dados_contrato:           # null se literal / estado-local puro
-  composable: src/composables/use-wallet.ts   # ou null
-  service: src/services/wallet.service.ts     # dependência interna; a view NÃO importa
-  store: src/stores/wallet.ts                 # dependência interna; a view NÃO importa
+  data: src/data/wallet.ts   # ou null
 referencia_visual:
   tipo: figma | pencil
   screenshot_path: docs/figma/{page}-balance.webp
@@ -63,11 +61,11 @@ Sandbox: **somente** `output_path` (um arquivo `.vue`).
    - `## Componentes compartilhados — specs` para CADA nome em `componentes_specs` — **spec = API**; não improvise props
    - `## Componentes do kit reusados` / `## Componentes do projeto reusados`
    - `## Estruturas inline-only` — **match mecânico:** só entries com `inline_na_secao` **igual** (string exata) ao seu `secao_nome`. Essas ficam inline (NÃO importar de `src/components/`)
-   - `## Plano de dados` — só o composable / domínio ligado a esta seção (se `fonte_dados` for `composable:*`)
+   - `## Plano de dados` — só o arquivo de dados ligado a esta seção (se `fonte_dados` for `data:*`)
    - `## Inventário de seções` — **só** a row da sua seção
 3. **Vault — condicional, depois da referência visual.** Diff de layout puro → pular. Gatilhos:
    - Ícone → `icons` / `tokens`
-   - Dados de domínio → seguir R8 (composable)
+   - Dados de domínio → seguir R8 (`src/data/`)
    - Layout/container estranho → `responsive`
    - Carrossel → ler `.claude/commands/swiper.md` (Embla)
    - Animação → `.claude/commands/gsap.md` + vault `gsap` se existir
@@ -90,7 +88,7 @@ Sandbox: **somente** `output_path` (um arquivo `.vue`).
    - Retorno > 8k tokens → metadata + chunks por sub-frame.
 4. **Mapear fonte de dados** (R8):
    - `literal` — copy fixa do design no template (texto dos nodes / manifesto; não parafrasear)
-   - `composable:{nome}` — view importa **somente** o factory do composable (`dados_contrato.composable`); chama actions/state expostos. **Nunca** importar `@services` ou `@stores`
+   - `data:{nome}` — view importa direto as constantes de `dados_contrato.data` (via `@data`). **Nunca** fetch/axios na view
    - `estado-local` — `ref` / `reactive` na própria view (UI pura desta seção)
 
 **Política de asset faltante (na ordem):**
@@ -100,7 +98,7 @@ Sandbox: **somente** `output_path` (um arquivo `.vue`).
 | Imagem ausente em `src/assets/images/{page}/` | Placeholder comentado `<!-- TODO: {descricao} -->` no template; entry em `assets_faltantes`; continua; status `parcial_visual` |
 | Ícone esperado ausente | **bloqueio** (R10 — não inventar ícone) |
 | Shared em `componentes_specs` sem pasta/arquivos | **bloqueio** (Batch 0 incompleto) |
-| Composable em `dados_contrato` inexistente | **bloqueio** (Passo 1 do `/build-page` incompleto) |
+| Arquivo de dados em `dados_contrato` inexistente | **bloqueio** (Passo 1 do `/build-page` incompleto) |
 | Input inválido / node_id quebrado | **bloqueio** |
 
 ### Passo 3 — Geração do SFC Vue
@@ -108,27 +106,20 @@ Sandbox: **somente** `output_path` (um arquivo `.vue`).
 Gerar **apenas** `output_path` (`<script setup lang="ts">` + `<template>`), alinhado ao RULES:
 
 - **R1 / R2** — zero arbitrário em cor/tipografia/espaçamento; text-styles do catálogo; dimensão arbitrária só se veio do design
-- **R3** — imports por alias (`@components`, `@assets`, `@composables`, `@libs`, `@views` só se irmão — preferir não)
+- **R3** — imports por alias (`@components`, `@assets`, `@data`, `@libs`, `@views` só se irmão — preferir não)
 - **R7** — esta view é seção da página; semântica de landmark adequada (`section`, headings)
-- **R8** — dados via composable; sem http na view
+- **R8** — dados via constantes de `src/data/`; sem http na view
 - **R10** — ícones via componentes `@components/icons/...` com `currentColor`; path do manifesto
 - **R11** — imagens por import `@assets/images/...`; `alt` em português; box no CSS (não só na img)
 - **R12** — desktop-first com `max-*`
 - **R13** — tag correta, um `<h1>` só na página (se esta seção não for o título da rota, use `h2`+); `RouterLink` em navegação interna
 
-**Padrão com composable:**
+**Padrão com dado estático:**
 
 ```vue
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { BalanceCard, BalanceCardLabel, BalanceCardValue } from '@components/wallet/balance-card'
-import { useWallet } from '@composables/use-wallet'
-
-const { balance, loading, fetchBalance } = useWallet()
-
-onMounted(() => {
-  void fetchBalance()
-})
+import { balance } from '@data/wallet'
 </script>
 
 <template>
@@ -136,7 +127,7 @@ onMounted(() => {
     <BalanceCard>
       <BalanceCardLabel>Disponível</BalanceCardLabel>
       <BalanceCardValue>
-        {{ loading ? '…' : balance?.total }}
+        {{ balance.total }}
       </BalanceCardValue>
     </BalanceCard>
   </section>
@@ -175,8 +166,8 @@ componentes_reusados:
   - '@components/wallet/balance-card'
   - '@components/ui/card'
 componentes_evolucao_pedida: []
-fonte_dados_efetiva: literal | composable:wallet | estado-local
-composable_usado: src/composables/use-wallet.ts   # ou null
+fonte_dados_efetiva: literal | data:wallet | estado-local
+dados_usados: src/data/wallet.ts   # ou null
 assets_faltantes: []
 desvios_do_manifesto: []
 duvidas: []
@@ -188,7 +179,7 @@ notas:
 Campos:
 - **status:** `ok` | `parcial_visual` (imagem TODO ou screenshot PDF) | `bloqueio`
 - **componentes_evolucao_pedida:** `[{ componente, prop_faltante, justificativa }]` — máx. 1 ciclo
-- **fonte_dados_efetiva / composable_usado:** o que a view de fato consome
+- **fonte_dados_efetiva / dados_usados:** o que a view de fato consome
 - **assets_faltantes:** `[{ path_esperado, descricao }]`
 - **desvios_do_manifesto / duvidas / bloqueios / notas:** como no component-builder (notas ≤ 3 linhas)
 
@@ -197,8 +188,8 @@ Campos:
 ## Restrições críticas
 
 - **NUNCA** escrever fora de `output_path`
-- **NUNCA** editar: manifesto, `src/assets/index.css`, `src/libs/utils.ts`, `package.json`, pages, outros views, services, stores, composables (só **consumir** composable existente)
-- **NUNCA** importar `@services` ou `@stores` na view
+- **NUNCA** editar: manifesto, `src/assets/index.css`, `src/libs/utils.ts`, `package.json`, pages, outros views, `src/data/` (só **consumir** arquivo de dados existente)
+- **NUNCA** importar dado fora de `src/data/` na view — sem fetch/axios
 - **NUNCA** criar arquivos em `src/components/` ou `src/components/icons/` (ícone faltante = bloqueio)
 - **NUNCA** inventar ícone ou SVG
 - **NUNCA** improvisar prop em shared — usar `componentes_evolucao_pedida`
@@ -211,7 +202,7 @@ Campos:
 ## Princípios
 
 - **Contexto mínimo, retorno mínimo.**
-- **Falha alto, falha cedo.** Sem improvisar asset/token/componente/composable.
+- **Falha alto, falha cedo.** Sem improvisar asset/token/componente/dado.
 - **Determinismo > criatividade.** Manifesto + RULES + screenshot.
 - **Isolamento total.** Sem ler outras seções; sem tocar arquivos compartilhados; sem subagentes.
 

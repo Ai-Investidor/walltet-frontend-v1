@@ -301,69 +301,44 @@ Capturar o screenshot do node do componente e renomear para `{page}-component-{k
 
 ### Passo 8 — Plano de dados
 
-A UI consome domínio via **composable** (R8). Serviço e store ficam atrás do composable. Este passo decide o contrato antes da Fase 2 implementar.
-
-Hierarquia:
-
-```
-page / view  →  composable  →  store e/ou service
-```
+A UI consome conteúdo dinâmico via **constantes estáticas** em `src/data/` (R8). Este projeto ainda não tem service/store/composable de domínio — fica para uma skill separada, não ativa nesta fase. Este passo decide o contrato antes da Fase 2 implementar.
 
 1. Para cada seção, classificar o conteúdo em:
    - **`literal`** — texto fixo do design: título de seção, rótulo de campo, microcopy. Vai direto no template
-   - **`api`** — dado do backend. Precisa de serviço (+ composable; store se compartilhado)
+   - **`dado-estatico`** — conteúdo de card, tabela, gráfico, lista. Precisa de arquivo em `src/data/<dominio>.ts`
    - **`estado`** — deriva de interação do usuário (filtro, paginação, seleção)
 
 2. **Reuso por domínio (obrigatório antes de propor arquivo novo):**
-   - `Glob src/services/`, `src/stores/`, `src/composables/`
+   - `Glob src/data/`
    - Cruzar com `docs/build-manifest-*.md` anteriores
-   - Mesmo domínio / mesmos dados → **reusar** o path existente e listar só o que falta (`metodos_novos`, `expõe_novos`); `acao: estender`
+   - Mesmo domínio / mesmos dados → **reusar** o path existente e listar só o que falta (`exports_novos`); `acao: estender`
    - Domínio novo → `acao: criar`
 
-3. Para o conteúdo `api`, agrupar por domínio e propor o trilho completo:
+3. Para o conteúdo `dado-estatico`, agrupar por domínio e propor o arquivo completo:
 
    ```yaml
-   servicos_propostos:
-     - arquivo: src/services/wallet.service.ts
-       factory: useWalletService
+   dados_propostos:
+     - arquivo: src/data/wallet.ts
        acao: criar | estender
-       consumido_por: [Balance, Statement]   # via composable, não direto
-       metodos:                              # se criar: conjunto completo
-         - getBalance(): Saldo
-         - listTransactions(page): Transaction[]
-       metodos_novos: []                     # se estender: só o que falta
+       consumido_por: [Balance, Statement]
+       exports:                              # se criar: conjunto completo
+         - balance: Balance
+         - transactions: Transaction[]
+       exports_novos: []                     # se estender: só o que falta
        tipos:
-         - Saldo { total: number, blocked: number }
+         - Balance { total: number, blocked: number }
          - Transaction { id: string, description: string, amount: number, data: string }
-
-   estado_proposto:
-     - store: src/stores/wallet.ts
-       acao: criar | estender
-       expõe: [balance, loading, fetchBalance]
-       expõe_novos: []
-       consumido_por: [Balance]              # via composable
      - local: src/views/{page}/Statement.vue
        motivo: open/closed de sheet só nesta seção
-
-   composables_propostos:
-     - arquivo: src/composables/use-wallet.ts
-       factory: useWallet
-       acao: criar | estender
-       usa: [store:wallet, service:wallet]   # um, outro ou ambos
-       expõe: [balance, loading, fetchBalance, listTransactions]
-       expõe_novos: []
-       consumido_por: [Balance, Statement]
    ```
 
 4. Decidir onde o dado mora:
-   - **store Pinia** quando compartilhado entre seções ou páginas
-   - **só service** (via composable) quando ação pontual sem estado compartilhado
-   - **estado local** (`ref` na view) quando é UI pura da seção, sem domínio — sem forçar composable vazio
+   - **`src/data/<dominio>.ts`** quando é conteúdo de card/tabela/gráfico/lista, compartilhado ou não entre seções
+   - **estado local** (`ref` na view) quando é UI pura da seção, sem domínio
 
-5. Marcar no inventário a fonte de dados de cada seção: `literal`, `composable:{nome}` ou `estado-local`.
-   Page e view **não** apontam para `store:` / `service:` — só para o composable.
+5. Marcar no inventário a fonte de dados de cada seção: `literal`, `data:{nome}` ou `estado-local`.
 
-Serviço, store e composable são escritos na Fase 2, não aqui. O que sai deste passo é o contrato: quem chama o quê, com qual tipo, e se cria ou estende.
+O arquivo de `src/data/` é escrito na Fase 2, não aqui. O que sai deste passo é o contrato: qual constante, com qual tipo, e se cria ou estende.
 
 **Texto literal vem do design, não do screenshot.** Os campos de texto do `get_design_context` (Figma) ou do `batch_get` (Pencil) são a fonte de verdade. Ler texto de imagem é erro recorrente.
 
@@ -461,26 +436,18 @@ Criar `docs/build-manifest-{page}.md` neste esquema. A Fase 2 depende dele.
 
 ## Plano de dados
 
-### Serviços propostos
-- src/services/wallet.service.ts (useWalletService) — acao: criar → Saldo, Extrato
-
-### Estado proposto
-- src/stores/wallet.ts — acao: criar → Saldo
-- local em Statement (sheet open/closed)
-
-### Composables propostos
-- src/composables/use-wallet.ts (useWallet) — acao: criar
-  - usa: [store:wallet, service:wallet]
-  - expõe: [balance, loading, fetchBalance, listTransactions]
+### Dados propostos
+- src/data/wallet.ts — acao: criar → exports: balance, transactions
   - consumido_por: [Balance, Statement]
+- local em Statement (sheet open/closed)
 
 ## Inventário de seções
 
 | # | Nome | node-id | Arquivo | Reusa | Dados | Paralelizável | Screenshot | Formato |
 |---|------|---------|---------|-------|-------|---------------|------------|---------|
 | 1 | Topbar | 100:200 | src/views/{page}/Topbar.vue | page-header | literal | não (serial) | docs/figma/{page}-topbar.webp | webp |
-| 2 | Balance | 100:201 | src/views/{page}/Balance.vue | BalanceCard, ui/card | composable:wallet | sim | docs/figma/{page}-balance.webp | webp |
-| 3 | Statement | 100:202 | src/views/{page}/Statement.vue | ui/table | composable:wallet | sim | docs/figma/{page}-statement.webp | webp |
+| 2 | Balance | 100:201 | src/views/{page}/Balance.vue | BalanceCard, ui/card | data:wallet | sim | docs/figma/{page}-balance.webp | webp |
+| 3 | Statement | 100:202 | src/views/{page}/Statement.vue | ui/table | data:wallet | sim | docs/figma/{page}-statement.webp | webp |
 
 > Pencil: seção com `height > 1000px` aponta para `.pdf` e `Formato: pdf`.
 
@@ -533,8 +500,8 @@ Validar todos os itens antes do resumo final. Qualquer falha aborta com diagnós
 - [ ] Cada spec tem props, data_slot, exemplo_uso e spec_confidence ∈ {alta, media, baixa}
 - [ ] Todo componente com confidence baixa tem entrada em "Componentes — checkpoint humano"
 - [ ] Antes de propor componente novo, o kit ui/ foi consultado (66 componentes)
-- [ ] Cada seção tem fonte de dados declarada no inventário (`literal` | `composable:{nome}` | `estado-local`)
-- [ ] Toda seção com conteúdo `api` aponta para um composable proposto; reuso por domínio foi checado (Glob + manifests anteriores)
+- [ ] Cada seção tem fonte de dados declarada no inventário (`literal` | `data:{nome}` | `estado-local`)
+- [ ] Toda seção com dado estático aponta para uma entrada em `src/data/` proposta; reuso por domínio foi checado (Glob + manifests anteriores)
 - [ ] Stubs criados e rota registrada
 ```
 
@@ -552,7 +519,7 @@ Todos ✅ → resumo final e sugestão de `/build-page {page}`. Qualquer ❌ →
 ✓ Screenshots: N+1 (overview + N seções)
 ✓ Inventário: N seções (M paralelizáveis)
 ✓ Componentes: X reusados do kit, Y do projeto, Z specs novas
-✓ Plano de dados: N serviços, M stores, K composables (criar|estender)
+✓ Plano de dados: N arquivos em src/data/ (criar|estender)
 ✓ Manifesto: docs/build-manifest-{page}.md
 ✓ Stubs: src/pages/{Page}.vue, src/views/{page}/, rota registrada
 ✓ Auditoria: todos os gates passaram
@@ -561,7 +528,7 @@ Todos ✅ → resumo final e sugestão de `/build-page {page}`. Qualquer ❌ →
 
   1. Revisar docs/build-manifest-{page}.md (~10 min)
      - specs de componente: props, compound, variants
-     - plano de dados: serviços, stores e composables (criar vs estender)
+     - plano de dados: arquivos em `src/data/` (criar vs estender)
   2. /build-page {page}
 
 Ajustes no inventário, nas specs ou no plano de dados devem ser feitos no manifesto antes de seguir — a Fase 2 lê o arquivo como fonte de verdade.

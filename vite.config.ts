@@ -18,6 +18,7 @@ export default defineConfig({
       '@composables': fileURLToPath(new URL('./src/composables', import.meta.url)),
       '@config': fileURLToPath(new URL('./src/config', import.meta.url)),
       '@constants': fileURLToPath(new URL('./src/constants', import.meta.url)),
+      '@data': fileURLToPath(new URL('./src/data', import.meta.url)),
       '@layouts': fileURLToPath(new URL('./src/layouts', import.meta.url)),
       '@libs': fileURLToPath(new URL('./src/libs', import.meta.url)),
       '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
