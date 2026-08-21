@@ -23,6 +23,7 @@ const forwardedProps = useForwardProps(delegatedProps)
       props.class,
     )"
     v-bind="forwardedProps"
+    v-ripple
   >
     <slot>
       <PhCaretLeft class="cn-rtl-flip size-4" />

@@ -38,6 +38,7 @@ const forwardedProps = useForwardProps(delegatedProps)
       props.class,
     )"
     v-bind="forwardedProps"
+    v-ripple
   >
     <slot />
   </RangeCalendarCellTrigger>

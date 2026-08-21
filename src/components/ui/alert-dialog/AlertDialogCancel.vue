@@ -33,6 +33,7 @@ const delegatedProps = reactiveOmit(props, 'class', 'variant', 'size')
       buttonVariants({ variant, size }),
       props.class,
     )"
+    v-ripple
   >
     <slot />
   </AlertDialogCancel>

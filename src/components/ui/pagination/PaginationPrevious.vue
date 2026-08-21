@@ -29,6 +29,7 @@ const forwarded = useForwardProps(delegatedProps)
     data-slot="pagination-previous"
     :class="cn(buttonVariants({ variant: 'ghost', size }), 'pl-1.5!', props.class)"
     v-bind="forwarded"
+    v-ripple
   >
     <slot>
       <PhCaretLeft data-icon="inline-start" class="cn-rtl-flip" />

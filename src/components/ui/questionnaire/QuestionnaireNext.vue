@@ -75,6 +75,7 @@ function handleClick(event: MouseEvent) {
       'col-start-3 row-start-1 min-h-11 justify-self-end sm:min-h-0',
       props.class,
     )"
+    v-ripple
     @click="handleClick"
   >
     <slot>Next</slot>

@@ -29,6 +29,7 @@ const delegatedProps = reactiveOmit(props, 'class', 'variant', 'size')
     data-slot="alert-dialog-action"
     v-bind="delegatedProps"
     :class="cn('', buttonVariants({ variant, size }), props.class)"
+    v-ripple
   >
     <slot />
   </AlertDialogAction>

@@ -32,6 +32,7 @@ const props = withDefaults(
       '',
       props.class,
     )"
+    v-ripple
   >
     <slot />
   </a>

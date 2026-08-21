@@ -33,6 +33,7 @@ const delegatedProps = reactiveOmit(props, 'class', 'size', 'isActive')
         size,
       }),
       props.class)"
+    v-ripple
   >
     <slot />
   </PaginationListItem>
