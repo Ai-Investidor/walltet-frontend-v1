@@ -75,11 +75,11 @@ const pageTitle = computed(() => route.meta.title ?? '')
                   v-if="item.available"
                   as-child
                   :is-active="isActive(item.to)"
-                  class="h-auto py-2.5"
+                  class="relative h-auto py-2.5"
                 >
                   <RouterLink :to="item.to" class="flex items-center gap-2.5">
                     <span
-                      class="h-6 w-0.5 shrink-0 rounded-full"
+                      class="absolute inset-y-1.5 left-0 w-0.5 rounded-full"
                       :class="isActive(item.to) ? 'bg-sidebar-primary' : 'bg-transparent'"
                     />
                     <component :is="ICONS[item.icon]" class="size-4.5" aria-hidden="true" />
@@ -90,9 +90,9 @@ const pageTitle = computed(() => route.meta.title ?? '')
                   v-else
                   disabled
                   aria-disabled="true"
-                  class="h-auto cursor-not-allowed py-2.5 opacity-50"
+                  class="relative h-auto cursor-not-allowed py-2.5 opacity-50"
                 >
-                  <span class="h-6 w-0.5 shrink-0 rounded-full bg-transparent" />
+                  <span class="absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-transparent" />
                   <component :is="ICONS[item.icon]" class="size-4.5" aria-hidden="true" />
                   <span class="text-nav-item">{{ item.label }}</span>
                 </SidebarMenuButton>
