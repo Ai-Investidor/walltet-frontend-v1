@@ -165,51 +165,51 @@
 }
 
 @utility text-label {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.42;
 }
 
 @utility text-paragraph {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 400;
   line-height: 1.4;
 }
 
 @utility text-paragraph-light {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 300;
   line-height: 1.4;
 }
 
 @utility text-caption {
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 400;
   line-height: normal;
 }
 
 @utility text-caption-sm {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 300;
   line-height: 1.5;
 }
 
 @utility text-button {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 600;
   line-height: 1;
 }
 
 @utility text-button-sm {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   line-height: 1;
 }
 
 @utility text-eyebrow {
   font-family: var(--font-heading);
-  font-size: 0.62rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   line-height: 1.4;
   letter-spacing: 0.05em;
@@ -217,14 +217,14 @@
 }
 
 @utility text-nav-item {
-  font-size: 0.88rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.4;
 }
 
 @utility text-metric {
   font-family: var(--font-heading);
-  font-size: 2.4rem;
+  font-size: 2.5rem;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -255,7 +255,7 @@
 
 @utility text-topbar-meta {
   font-family: var(--font-heading);
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   font-weight: 700;
   line-height: 1.3;
 }
