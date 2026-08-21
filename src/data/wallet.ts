@@ -36,6 +36,11 @@ export interface Report {
   sizeLabel: string
 }
 
+export interface RevisionNote {
+  title: string
+  body: string
+}
+
 export const kpis: Kpi[] = [
   {
     label: 'Rentabilidade do mês',
@@ -74,16 +79,16 @@ export const assets: Asset[] = [
     code: 'TD',
     name: 'Tesouro IPCA+ 2035',
     className: 'Renda Fixa',
-    trend: 'flat',
-    trendLabel: 'Manter',
+    trend: 'up',
+    trendLabel: 'Aumentou',
     weightPercent: 30,
   },
   {
     code: 'VL',
     name: 'VALE3',
     className: 'Ações BR · Mineração',
-    trend: 'flat',
-    trendLabel: 'Manter',
+    trend: 'down',
+    trendLabel: 'Reduziu',
     weightPercent: 20,
   },
   {
@@ -120,4 +125,9 @@ export const lastReport: Report = {
   title: 'Relatório de Performance — Agosto/2026',
   generatedAt: '01/09/2026',
   sizeLabel: '471 KB',
+}
+
+export const revisionNote: RevisionNote = {
+  title: 'Justificativa da revisão de agosto',
+  body: 'A entrada de MXRF11 substitui a posição em PETR4, encerrada após a mudança de política de distribuição. O peso em Tesouro IPCA+ 2035 subiu de 25% para 30% para sustentar a parcela indexada à inflação, e VALE3 caiu de 25% para 20% por concentração setorial. A carteira segue dentro da faixa de risco do perfil moderado.',
 }

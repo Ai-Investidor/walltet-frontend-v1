@@ -11,6 +11,12 @@ const routes = [
         component: () => import('@pages/Painel.vue'),
         meta: { title: 'Painel' },
       },
+      {
+        path: 'carteira',
+        name: 'carteira',
+        component: () => import('@pages/Carteira.vue'),
+        meta: { title: 'Minha carteira' },
+      },
     ],
   },
 ]

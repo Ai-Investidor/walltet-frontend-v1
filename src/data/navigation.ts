@@ -20,7 +20,7 @@ export const navigationGroups: NavigationGroup[] = [
     label: 'Principal',
     items: [
       { label: 'Painel', icon: 'PhSquaresFour', to: '/', available: true },
-      { label: 'Minha carteira', icon: 'PhChartPie', to: '/carteira', available: false },
+      { label: 'Minha carteira', icon: 'PhChartPie', to: '/carteira', available: true },
     ],
   },
   {
