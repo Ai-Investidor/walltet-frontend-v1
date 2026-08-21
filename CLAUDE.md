@@ -2,7 +2,7 @@
 
 ## Sobre o projeto
 
-`wallet-app-v1` é um template para iniciar SaaS em SPA. Stack: Vue 3 (`<script setup>` + TypeScript strict), Vite + bun, Tailwind CSS v4 (configurado em `src/assets/index.css`), shadcn-vue sobre primitivas reka-ui, Pinia + vue-router, Biome (lint + formatter).
+`wallet-app-v1` é um projeto para carteiras de investimentos digitais. Stack: Vue 3 (`<script setup>` + TypeScript strict), Vite + bun, Tailwind CSS v4 (configurado em `src/assets/index.css`), shadcn-vue sobre primitivas reka-ui, Pinia + vue-router, Biome (lint + formatter).
 
 Fluxo de composição: `routers → layouts → pages → views (seções) → components/<dominio> → components/ui`.
 
