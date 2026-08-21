@@ -12,7 +12,6 @@ categories:
   - icons          # SVG, icon-extract, anti-Lucide
   - responsive     # breakpoints, viewport, max-*
   - semantica      # HTML, links, headings, a11y
-  - directus       # CMS, coleções, assetUrl, visual editing
   - gsap           # animações, ScrollTrigger, cleanup
   - navbar         # navbar, menu mobile, fixed positioning
   - components     # extração, DRY, props
@@ -44,10 +43,8 @@ tags:
   - components
   - refactor
   - dry
-  # cms
-  - cms
+  # assets
   - images
-  - visual-editing
   # animation
   - animation
   - scroll-trigger

@@ -10,23 +10,23 @@ sources: []
 supersedes: []
 superseded_by: []
 rules_ref: []
-origin: Navbar / MobileMenu
+origin: Topbar
 ---
 
 # Navbar precisa ser fixed top-0
 
-**Erro:** Navbar com posição estática — rola junto com a página.
+**Erro:** Topbar com posição estática — rola junto com a página.
 
-```jsx
-// ❌
-<nav className="w-full h-20">
+```vue
+<!-- ❌ -->
+<nav class="h-20 w-full">
 ```
 
 **Correção:** `fixed top-0 left-0 w-full z-50` + spacer/padding-top no conteúdo abaixo.
 
-```jsx
-// ✅
-<nav className="fixed top-0 left-0 w-full h-20 z-50">
+```vue
+<!-- ✅ -->
+<nav class="fixed top-0 left-0 z-50 h-20 w-full">
 ```
 
 **Por quê:** o design exige navbar persistente; sem `fixed` ela some no scroll. Lembrar do offset no conteúdo seguinte.

@@ -5,12 +5,12 @@ category: tokens
 tags: [svg, css]
 recurrence: alta
 scope: generic
-related: ["[[svg-currentcolor]]", "[[static-assets-import-jsx]]"]
+related: ["[[svg-currentcolor]]", "[[static-assets-import]]"]
 sources: []
 supersedes: []
 superseded_by: []
-rules_ref: []
-origin: assets em src/assets/images/{page}/*.svg; logos via *.svg?react
+rules_ref: ["RULES.md#R10"]
+origin: ícones extraídos do Figma para src/components/icons/{Nome}.vue
 ---
 
 # SVG export Figma — preserveAspectRatio não pode ser none
@@ -29,12 +29,16 @@ origin: assets em src/assets/images/{page}/*.svg; logos via *.svg?react
 <svg viewBox="0 0 173 40" preserveAspectRatio="xMidYMid meet" overflow="visible" ...>
 ```
 
-Em componentes React inline, declarar no `<svg>`:
+Em componentes Vue de ícone (`src/components/icons/`), declarar no `<svg>` raiz:
 
-```jsx
-<svg viewBox="..." preserveAspectRatio="xMidYMid meet" ...>
+```vue
+<template>
+  <svg viewBox="..." preserveAspectRatio="xMidYMid meet" fill="currentColor" ...>
+    <path d="..." />
+  </svg>
+</template>
 ```
 
 **Por quê:** `none` desliga o aspect ratio do SVG; `xMidYMid meet` é o comportamento padrão do SVG quando `none` não está definido — encaixa o `viewBox` inteiro sem deformar. Combina com `object-contain` em `<img>` quando as dimensões do box não batem com o `viewBox`.
 
-**Escopo no repo:** ajuste aplicado nos `.svg` em `src/assets/images/{page}/` usados em `<img>` ou via `vite-plugin-svgr` (`?react`).
+**Escopo no repo:** ajuste aplicado nos ícones extraídos pra `src/components/icons/` (R10) e nas imagens SVG em `src/assets/images/{page}/` usadas via `<img>`.

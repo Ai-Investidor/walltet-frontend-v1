@@ -8,30 +8,37 @@ scope: generic
 related:
   - "[[gradients-utility-class]]"
   - "[[figma-svg-preserve-aspect-ratio]]"
-  - "[[static-assets-import-jsx]]"
+  - "[[static-assets-import]]"
 sources: []
 supersedes: []
 superseded_by: []
-rules_ref: ["RULES.md#R1"]
-origin: Quem Somos / SectionDifferentials
+rules_ref: ["RULES.md#R1", "RULES.md#R10"]
+origin: src/components/icons/
 ---
 
 # SVGs inline devem usar currentColor
 
-**Erro:** `stroke="#adbe42"` / `fill="#ffffff"` hardcoded em SVGs inline.
+**Erro:** `stroke="#3b82f6"` / `fill="#ffffff"` hardcoded em SVGs inline.
 
-```jsx
-// ❌
-<path stroke="#adbe42" d="M..." />
+```vue
+<!-- ❌ -->
+<path stroke="#3b82f6" d="M..." />
 ```
 
 **Correção:** trocar por `currentColor`, controlar cor via classe `text-*` no pai.
 
-```jsx
-// ✅
-<div className="text-green-light">
-  <path stroke="currentColor" d="M..." />
+```vue
+<!-- ✅ src/components/icons/IconArrowRight.vue -->
+<template>
+  <svg fill="currentColor" ...><path d="M..." /></svg>
+</template>
+```
+
+```vue
+<!-- uso -->
+<div class="text-primary">
+  <IconArrowRight class="size-4" />
 </div>
 ```
 
-**Por quê:** R1 proíbe hex em cores, mas não menciona SVGs explicitamente. `currentColor` herda do `text-*` do pai e respeita os tokens.
+**Por quê:** R1 proíbe hex em cores, mas não menciona SVGs explicitamente. `currentColor` herda do `text-*` do pai e respeita os tokens (R10 — ícone fora do catálogo Phosphor vira SVG em `src/components/icons/` com `fill="currentColor"`).

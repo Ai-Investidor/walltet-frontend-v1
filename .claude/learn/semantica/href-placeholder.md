@@ -9,24 +9,24 @@ related: []
 sources: []
 supersedes: []
 superseded_by: []
-rules_ref: []
-origin: Quem Somos / botão "Código de Ética"
+rules_ref: ["RULES.md#R13"]
+origin: Wallet / botão "Exportar extrato"
 ---
 
 # href="#" proibido — usar /TODO
 
 **Erro:** links/botões com `href="#"` placeholder que vão pra produção.
 
-```jsx
-// ❌
+```vue
+<!-- ❌ -->
 <a href="#">Baixar PDF</a>
 ```
 
-**Correção:** usar `href="/TODO"` com comentário — gera 404 óbvio e é buscável.
+**Correção:** usar `href="/TODO"` com comentário — gera 404 óbvio e é buscável. Navegação interna real usa `RouterLink` (R13), não `<a>`.
 
-```jsx
-// ✅
-<a href="/TODO">{/* TODO: URL real do PDF */}Baixar PDF</a>
+```vue
+<!-- ✅ -->
+<a href="/TODO"><!-- TODO: URL real do PDF -->Baixar PDF</a>
 ```
 
 **Por quê:** `#` faz scroll-to-top silencioso e passa despercebido em review. `/TODO` quebra explicitamente em runtime e é fácil de grepar.

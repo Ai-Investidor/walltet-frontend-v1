@@ -10,24 +10,24 @@ sources: []
 supersedes: []
 superseded_by: []
 rules_ref: ["RULES.md#R1"]
-origin: Quem Somos / SectionTimeline
+origin: Wallet / Balance — fundo em gradiente do card
 ---
 
 # Gradientes em classe utilitária, nunca inline
 
-**Erro:** `style={{ background: 'radial-gradient(...)' }}` com rgba hardcoded no JSX.
+**Erro:** `:style="{ background: 'radial-gradient(...)' }"` com cor hardcoded no template.
 
-```jsx
-// ❌
-<div style={{ background: 'radial-gradient(ellipse, rgba(173,190,66,0.3), transparent)' }} />
+```vue
+<!-- ❌ -->
+<div :style="{ background: 'radial-gradient(ellipse, oklch(0.5 0.134 242.749 / 0.3), transparent)' }" />
 ```
 
-**Correção:** criar classe `.bg-{nome}-gradient` em `tailwind.css` usando `var(--token)`.
+**Correção:** criar utilitário `@utility bg-{nome}-gradient` em `src/assets/index.css` usando `var(--token)` (mesmo padrão dos text-styles, R1/R2).
 
 ```css
-/* ✅ tailwind.css */
-.bg-timeline-gradient {
-  background: radial-gradient(ellipse at center, rgb(var(--green-light) / 0.3), transparent);
+/* ✅ src/assets/index.css */
+@utility bg-balance-gradient {
+  background: radial-gradient(ellipse at center, oklch(from var(--primary) l c h / 30%), transparent);
 }
 ```
 

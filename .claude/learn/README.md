@@ -58,14 +58,13 @@ Token cost cresce **sublinear** com número de notas.
 
 ## Como o agente escolhe categorias (gatilhos)
 
-1. **Por skill** — cada skill (`figma`, `pencil`, `directus`, `gsap`) declara as categorias que puxa.
+1. **Por skill** — cada skill (`figma`, `pencil`, `gsap`) declara as categorias que puxa.
 2. **Por diff** — `code-reviewer` infere categoria pelo path/diff:
-   - `src/lib/cms.js`, `src/lib/directus/**` → `directus`
-   - `src/components/Navbar/**`, `MobileMenu*` → `navbar`
-   - `tailwind.css`, `tailwind.config.js`, novas classes → `tokens`
-   - SVG inline (`<path>`, `<svg>`) → `icons`, `tokens`
+   - `src/components/**/navbar*`, `src/views/**/Topbar.vue` → `navbar`
+   - `src/assets/index.css`, novas classes/text-styles → `tokens`
+   - SVG inline (`<path>`, `<svg>`), `src/components/icons/**` → `icons`, `tokens`
    - GSAP / `useAnimations` → `gsap`
-   - `<a href=`, headings → `semantica`
+   - `<a href=`, headings, `RouterLink` → `semantica`
 
 ## Operações
 

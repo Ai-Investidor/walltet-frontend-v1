@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-10T18:03:21.476Z",
-  "total": 11,
+  "generated_at": "2026-08-21T13:09:34.966Z",
+  "total": 9,
   "categories": {
     "components": [
       {
@@ -13,30 +13,6 @@
           "dry"
         ],
         "recurrence": "media",
-        "scope": "generic"
-      }
-    ],
-    "directus": [
-      {
-        "slug": "directus-image-and-visual-editing",
-        "path": "directus/directus-image-and-visual-editing.md",
-        "title": "Directus — imagem com relação, assetUrl e data-directus",
-        "tags": [
-          "cms",
-          "images",
-          "visual-editing"
-        ],
-        "recurrence": "alta",
-        "scope": "generic"
-      },
-      {
-        "slug": "group-tabs-special-group-flag",
-        "path": "directus/group-tabs-special-group-flag.md",
-        "title": "group-tabs exige special \"group\" nos alias de aba",
-        "tags": [
-          "cms"
-        ],
-        "recurrence": "alta",
         "scope": "generic"
       }
     ],
@@ -118,9 +94,9 @@
         "scope": "generic"
       },
       {
-        "slug": "static-assets-import-jsx",
-        "path": "tokens/static-assets-import-jsx.md",
-        "title": "Imagens estáticas no JSX — raster (imagetools URL ou .src), SVG (?url / ?react)",
+        "slug": "static-assets-import",
+        "path": "tokens/static-assets-import.md",
+        "title": "Imagens estáticas — import por alias, sem transformador no build",
         "tags": [
           "images",
           "svg"
@@ -145,10 +121,6 @@
     "accessibility": [
       "mobile-menu-separate-buttons"
     ],
-    "cms": [
-      "directus-image-and-visual-editing",
-      "group-tabs-special-group-flag"
-    ],
     "colors": [
       "svg-currentcolor"
     ],
@@ -166,8 +138,7 @@
       "gradients-utility-class"
     ],
     "images": [
-      "directus-image-and-visual-editing",
-      "static-assets-import-jsx"
+      "static-assets-import"
     ],
     "layout": [
       "container-intermediate-viewports",
@@ -197,15 +168,12 @@
     ],
     "svg": [
       "figma-svg-preserve-aspect-ratio",
-      "static-assets-import-jsx",
+      "static-assets-import",
       "svg-currentcolor"
     ],
     "tailwind": [
       "container-intermediate-viewports",
       "gradients-utility-class"
-    ],
-    "visual-editing": [
-      "directus-image-and-visual-editing"
     ]
   }
 }
