@@ -116,6 +116,68 @@
     --sidebar-ring: oklch(0.56 0.021 213.5);
 }
 
+@utility text-title {
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 1.4;
+}
+
+@utility text-heading {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+@utility text-heading-caps {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+@utility text-label {
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.42;
+}
+
+@utility text-paragraph {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+@utility text-paragraph-light {
+    font-size: 0.875rem;
+    font-weight: 300;
+    line-height: 1.4;
+}
+
+@utility text-caption {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: normal;
+}
+
+@utility text-caption-sm {
+    font-size: 0.75rem;
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+@utility text-button {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+@utility text-button-sm {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

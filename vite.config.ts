@@ -22,7 +22,7 @@ export default defineConfig({
       '@libs': fileURLToPath(new URL('./src/libs', import.meta.url)),
       '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
       '@routers': fileURLToPath(new URL('./src/routers', import.meta.url)),
-      '@screens': fileURLToPath(new URL('./src/screens', import.meta.url)),
+      '@views': fileURLToPath(new URL('./src/views', import.meta.url)),
       '@services': fileURLToPath(new URL('./src/services', import.meta.url)),
       '@stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
       '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
