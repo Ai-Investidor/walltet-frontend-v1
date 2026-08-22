@@ -41,6 +41,21 @@ export interface RevisionNote {
   body: string
 }
 
+export interface MovementDetail {
+  code: string
+  name: string
+  detail: string
+  direction: 'in' | 'out' | 'increase' | 'decrease' | 'hold'
+  label: string
+  value: string
+}
+
+export interface MovementGroup {
+  kind: 'in' | 'out' | 'reweight' | 'hold'
+  title: string
+  items: MovementDetail[]
+}
+
 export const kpis: Kpi[] = [
   {
     label: 'Rentabilidade do mês',
@@ -131,3 +146,70 @@ export const revisionNote: RevisionNote = {
   title: 'Justificativa da revisão de agosto',
   body: 'A entrada de MXRF11 substitui a posição em PETR4, encerrada após a mudança de política de distribuição. O peso em Tesouro IPCA+ 2035 subiu de 25% para 30% para sustentar a parcela indexada à inflação, e VALE3 caiu de 25% para 20% por concentração setorial. A carteira segue dentro da faixa de risco do perfil moderado.',
 }
+
+export const movementGroups: MovementGroup[] = [
+  {
+    kind: 'in',
+    title: 'Entradas',
+    items: [
+      {
+        code: 'MX',
+        name: 'MXRF11',
+        detail: 'FII · Papel',
+        direction: 'in',
+        label: 'ENTROU',
+        value: '20,00 %',
+      },
+    ],
+  },
+  {
+    kind: 'out',
+    title: 'Saídas',
+    items: [
+      {
+        code: 'PT',
+        name: 'PETR4',
+        detail: 'Ações BR · Petróleo',
+        direction: 'out',
+        label: 'SAIU',
+        value: '−15,00 p.p.',
+      },
+    ],
+  },
+  {
+    kind: 'reweight',
+    title: 'Alterações de peso',
+    items: [
+      {
+        code: 'TD',
+        name: 'Tesouro IPCA+ 2035',
+        detail: '25,00 % → 30,00 %',
+        direction: 'increase',
+        label: 'AUMENTOU',
+        value: '+5,00 p.p.',
+      },
+      {
+        code: 'VL',
+        name: 'VALE3',
+        detail: '25,00 % → 20,00 %',
+        direction: 'decrease',
+        label: 'REDUZIU',
+        value: '−5,00 p.p.',
+      },
+    ],
+  },
+  {
+    kind: 'hold',
+    title: 'Mantidos',
+    items: [
+      {
+        code: 'BB',
+        name: 'BBDC4',
+        detail: 'Ações BR · Bancos',
+        direction: 'hold',
+        label: 'MANTER',
+        value: '30,00 %',
+      },
+    ],
+  },
+]

@@ -15,6 +15,7 @@ const TEXT_STYLES = [
   'label',
   'paragraph',
   'paragraph-light',
+  'paragraph-strong',
   'caption',
   'caption-sm',
   'button',

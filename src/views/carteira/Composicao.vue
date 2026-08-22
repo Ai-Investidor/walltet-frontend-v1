@@ -15,6 +15,7 @@ import {
   PhMinus,
   PhShieldCheck,
 } from '@phosphor-icons/vue'
+import Movimentacoes from '@views/carteira/Movimentacoes.vue'
 import type { Component, HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
@@ -67,13 +68,13 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
 </script>
 
 <template>
-  <section :class="cn(props.class)" aria-labelledby="composicao-carteira-titulo">
+  <section :class="cn(props.class)" aria-label="Carteira recomendada">
     <Tabs default-value="composicao" class="gap-6">
       <TabsList :class="TAB_LIST" aria-label="Seções da carteira">
         <TabsTrigger value="composicao" :class="TAB_TRIGGER">
           Composição
         </TabsTrigger>
-        <TabsTrigger value="movimentacoes" disabled :class="TAB_TRIGGER">
+        <TabsTrigger value="movimentacoes" :class="TAB_TRIGGER">
           Movimentações
         </TabsTrigger>
         <TabsTrigger value="performance" disabled :class="TAB_TRIGGER">
@@ -84,7 +85,7 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
       <TabsContent value="composicao" class="flex flex-col gap-9">
         <Card :class="CARD_SURFACE">
           <CardHeader class="flex items-center justify-between gap-3 p-3.5">
-            <h2 id="composicao-carteira-titulo" class="text-card-title">
+            <h2 class="text-card-title">
               Carteira Moderada Estratégica
             </h2>
 
@@ -215,6 +216,10 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
             <PhArrowRight class="size-4" aria-hidden="true" />
           </Button>
         </div>
+      </TabsContent>
+
+      <TabsContent value="movimentacoes">
+        <Movimentacoes />
       </TabsContent>
     </Tabs>
   </section>
