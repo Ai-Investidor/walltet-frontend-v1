@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { LegalNotice } from '@components/shared/legal-notice'
 import { ProfileGauge } from '@components/shared/profile-gauge'
 import { Button } from '@components/ui/button'
-import type { AllocationClass } from '@data/wallet'
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from '@components/ui/sheet'
+import type { AllocationClass, RecommendedWallet } from '@data/wallet'
 import { recommendedWallets } from '@data/wallet'
-import { PhArrowRight } from '@phosphor-icons/vue'
+import { PhArrowRight, PhWarning, PhX } from '@phosphor-icons/vue'
 import { computed, ref } from 'vue'
-import { RouterLink } from 'vue-router'
 
 /** Rótulo do filtro neutro — único literal de filtro; os demais vêm dos dados. */
 const ALL_PROFILES = 'TODOS OS PERFIS'
@@ -34,6 +35,25 @@ function gaugeLabel(profileLabel: string, profileLevel: number) {
 
 function allocationLabel(allocation: AllocationClass[]) {
   return allocation.map((slice) => `${slice.label} ${slice.percent} %`).join(', ')
+}
+
+const percentFormatter = new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
+
+function formatPercent(value: number) {
+  return `${percentFormatter.format(value)} %`
+}
+
+const ownWallet = computed(() => recommendedWallets.find((wallet) => wallet.isOwn))
+
+const drawerOpen = ref(false)
+const selectedWallet = ref<RecommendedWallet | null>(null)
+
+function openComposicao(wallet: RecommendedWallet) {
+  selectedWallet.value = wallet
+  drawerOpen.value = true
 }
 </script>
 
@@ -106,22 +126,12 @@ function allocationLabel(allocation: AllocationClass[]) {
           </p>
 
           <div class="flex justify-end">
-            <Button v-if="wallet.to" as-child variant="outline" size="lg" :class="ACTION_CLASS">
-              <RouterLink :to="wallet.to">
-                Ver composição
-                <PhArrowRight class="size-4" aria-hidden="true" />
-              </RouterLink>
-            </Button>
-
             <Button
-              v-else
               type="button"
               variant="outline"
               size="lg"
-              aria-disabled="true"
-              :title="`Composição de ${wallet.name} ainda não está disponível`"
-              :class="[ACTION_CLASS, 'cursor-not-allowed opacity-50']"
-              @click.prevent
+              :class="ACTION_CLASS"
+              @click="openComposicao(wallet)"
             >
               Ver composição
               <PhArrowRight class="size-4" aria-hidden="true" />
@@ -130,5 +140,115 @@ function allocationLabel(allocation: AllocationClass[]) {
         </div>
       </li>
     </ul>
+
+    <Sheet v-model:open="drawerOpen">
+      <SheetContent
+        v-if="selectedWallet"
+        side="right"
+        :show-close-button="false"
+        class="gap-0 p-0 data-[side=right]:w-175! data-[side=right]:sm:max-w-175!"
+      >
+        <SheetHeader class="flex-row items-start justify-between gap-3.5 border-b border-border p-8">
+          <div class="flex flex-col gap-1">
+            <p class="text-eyebrow text-muted-foreground-faint">
+              Composição de agosto 2026
+            </p>
+            <SheetTitle class="text-card-title text-base">
+              {{ selectedWallet.name }}
+            </SheetTitle>
+          </div>
+
+          <SheetClose as-child>
+            <Button variant="outline" size="icon-lg" class="rounded-sm" aria-label="Fechar composição">
+              <PhX class="size-3.5" aria-hidden="true" />
+            </Button>
+          </SheetClose>
+        </SheetHeader>
+
+        <div class="flex flex-col gap-6 overflow-y-auto p-8">
+          <div
+            v-if="!selectedWallet.isOwn && ownWallet"
+            class="flex gap-2.5 rounded-md border border-border-strong bg-muted p-3.5"
+          >
+            <PhWarning class="size-4 shrink-0 text-warning" aria-hidden="true" />
+            <p class="text-label text-muted-foreground">
+              Esta não é a carteira recomendada para o seu perfil. A recomendação atual é a
+              {{ ownWallet.name }}.
+            </p>
+          </div>
+
+          <div class="flex flex-col gap-2.5">
+            <h3 class="text-eyebrow text-muted-foreground-faint">
+              Alocação por classe
+            </h3>
+
+            <div
+              class="flex h-2.5 overflow-hidden rounded-sm"
+              role="img"
+              :aria-label="allocationLabel(selectedWallet.allocationPreview)"
+            >
+              <span
+                v-for="slice in selectedWallet.allocationPreview"
+                :key="slice.label"
+                class="h-full"
+                :class="ALLOCATION_TONE[slice.tone]"
+                :style="{ width: `${slice.percent}%` }"
+              />
+            </div>
+
+            <ul class="flex flex-wrap gap-x-3.5 gap-y-1">
+              <li
+                v-for="slice in selectedWallet.allocationPreview"
+                :key="slice.label"
+                class="text-label text-muted-foreground"
+              >
+                {{ slice.label }} {{ formatPercent(slice.percent) }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="overflow-hidden rounded-lg border border-border">
+            <p class="text-eyebrow border-b border-border p-3.5 text-muted-foreground-faint">
+              Composição · {{ selectedWallet.composicao.length }} ativos
+            </p>
+
+            <ul>
+              <li
+                v-for="asset in selectedWallet.composicao"
+                :key="asset.code"
+                class="not-last:border-b flex items-center gap-3 border-border p-3.5"
+              >
+                <span
+                  class="text-eyebrow flex h-7.5 w-8.5 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground"
+                  aria-hidden="true"
+                >
+                  {{ asset.code }}
+                </span>
+
+                <div class="min-w-0 flex-1">
+                  <p class="text-paragraph truncate">
+                    {{ asset.name }}
+                  </p>
+                  <p class="text-label truncate text-muted-foreground">
+                    {{ asset.className }}
+                  </p>
+                </div>
+
+                <span class="text-card-title shrink-0 tabular-nums">
+                  {{ formatPercent(asset.weightPercent) }}
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <p class="text-paragraph text-muted-foreground">
+            {{ selectedWallet.description }} A composição é revisada mensalmente pela equipe de
+            análise e publicada no primeiro dia útil do mês.
+          </p>
+
+          <LegalNotice />
+        </div>
+      </SheetContent>
+    </Sheet>
   </section>
 </template>

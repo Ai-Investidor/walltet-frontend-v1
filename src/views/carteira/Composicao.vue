@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { LegalNotice } from '@components/shared/legal-notice'
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader } from '@components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@components/ui/collapsible'
@@ -13,7 +14,6 @@ import {
   PhCaretUp,
   PhDownloadSimple,
   PhMinus,
-  PhShieldCheck,
 } from '@phosphor-icons/vue'
 import type { Component, HTMLAttributes } from 'vue'
 import { defineAsyncComponent } from 'vue'
@@ -191,17 +191,7 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
           </Collapsible>
         </Card>
 
-        <aside class="flex w-3/4 flex-col gap-2 rounded-lg border bg-muted p-3.5 max-lg:w-full">
-          <h2 class="text-eyebrow flex items-center gap-2 text-muted-foreground">
-            <PhShieldCheck class="size-4 shrink-0" aria-hidden="true" />
-            Aviso legal
-          </h2>
-
-          <p class="text-caption-sm text-muted-foreground">
-            Carteira recomendada com base no seu perfil declarado. Não constitui oferta ou garantia
-            de rentabilidade. Rentabilidade passada não garante resultados futuros.
-          </p>
-        </aside>
+        <LegalNotice class="w-3/4 max-lg:w-full" />
 
         <div class="flex flex-wrap items-center gap-4">
           <Button type="button" size="lg" class="text-button-sm h-10 gap-2.5 rounded-sm px-6">

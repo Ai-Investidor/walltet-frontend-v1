@@ -46,6 +46,13 @@ export interface RevisionNote {
   body: string
 }
 
+export interface WalletAsset {
+  code: string
+  name: string
+  className: string
+  weightPercent: number
+}
+
 export interface RecommendedWallet {
   slug: string
   profileLabel: string
@@ -53,9 +60,9 @@ export interface RecommendedWallet {
   name: string
   description: string
   allocationPreview: AllocationClass[]
+  composicao: WalletAsset[]
   meta: string
   isOwn: boolean
-  to?: string
 }
 
 export interface MovementDetail {
@@ -181,10 +188,15 @@ export const recommendedWallets: RecommendedWallet[] = [
     description: 'Preservação de capital com indexação à inflação e liquidez alta.',
     allocationPreview: [
       { label: 'Renda Fixa', percent: 85, tone: 'data-1' },
-      { label: 'FII', percent: 10, tone: 'data-2' },
-      { label: 'Ações BR', percent: 5, tone: 'data-3' },
+      { label: 'Ações BR', percent: 10, tone: 'data-2' },
+      { label: 'FII', percent: 5, tone: 'data-3' },
     ],
-    meta: '5 ativos · Renda Fixa 85 %',
+    composicao: [
+      { code: 'TD', name: 'Tesouro IPCA+ 2035', className: 'Renda Fixa', weightPercent: 85 },
+      { code: 'IT', name: 'ITUB4', className: 'Ações BR · Bancos', weightPercent: 10 },
+      { code: 'MX', name: 'MXRF11', className: 'FII · Papel', weightPercent: 5 },
+    ],
+    meta: '3 ativos · Renda Fixa 85 %',
     isOwn: false,
   },
   {
@@ -198,9 +210,14 @@ export const recommendedWallets: RecommendedWallet[] = [
       { label: 'Ações BR', percent: 50, tone: 'data-2' },
       { label: 'FII', percent: 20, tone: 'data-3' },
     ],
+    composicao: [
+      { code: 'TD', name: 'Tesouro IPCA+ 2035', className: 'Renda Fixa', weightPercent: 30 },
+      { code: 'VL', name: 'VALE3', className: 'Ações BR · Mineração', weightPercent: 20 },
+      { code: 'BB', name: 'BBDC4', className: 'Ações BR · Bancos', weightPercent: 30 },
+      { code: 'MX', name: 'MXRF11', className: 'FII · Papel', weightPercent: 20 },
+    ],
     meta: '4 ativos · sua carteira',
     isOwn: true,
-    to: '/carteira',
   },
   {
     slug: 'arrojado',
@@ -213,7 +230,17 @@ export const recommendedWallets: RecommendedWallet[] = [
       { label: 'Ações BR', percent: 55, tone: 'data-2' },
       { label: 'Multimercado', percent: 25, tone: 'data-3' },
     ],
-    meta: '7 ativos · Ações BR 55 %',
+    composicao: [
+      { code: 'TS', name: 'Tesouro Selic 2029', className: 'Renda Fixa', weightPercent: 20 },
+      { code: 'WG', name: 'WEGE3', className: 'Ações BR · Industrial', weightPercent: 55 },
+      {
+        code: 'MM',
+        name: 'Multimercado Macro FIC FIM',
+        className: 'Multimercado',
+        weightPercent: 25,
+      },
+    ],
+    meta: '3 ativos · Ações BR 55 %',
     isOwn: false,
   },
   {
@@ -227,7 +254,12 @@ export const recommendedWallets: RecommendedWallet[] = [
       { label: 'Renda Variável Global', percent: 45, tone: 'data-2' },
       { label: 'Alternativos', percent: 45, tone: 'data-3' },
     ],
-    meta: '9 ativos · Global 45 %',
+    composicao: [
+      { code: 'TI', name: 'Tesouro IPCA+ 2045', className: 'Renda Fixa', weightPercent: 10 },
+      { code: 'IV', name: 'IVVB11', className: 'Renda Variável Global · ETF', weightPercent: 45 },
+      { code: 'GO', name: 'GOLD11', className: 'Alternativos · Ouro', weightPercent: 45 },
+    ],
+    meta: '3 ativos · Global 45 %',
     isOwn: false,
   },
 ]
