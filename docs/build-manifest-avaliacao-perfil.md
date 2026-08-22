@@ -55,7 +55,7 @@ Nenhuma. Não há `fill` do tipo imagem em nenhum node da árvore.
 - **Grupo de opções (node `l184p`/`JlyYC`/`bfgWY`/`D9mH2`/`uCCqS`) — revertido de `ui/questionnaire` para `<fieldset>`/`<input type="radio">` nativo.** Histórico: o review (M1/M3) apontou que a v1 usava `<li>` inertes e que `@components/ui/questionnaire` existia e cobria o caso — adotamos `Questionnaire`/`QuestionnaireItem`/`QuestionnaireChoices`/`QuestionnaireChoice`. Só que `QuestionnaireChoice` tem indicador (círculo de rádio) e chip de atalho com classes fixas, não expostas via slot/prop — impossível reproduzir o badge quadrado `size-6`/`text-eyebrow` do design com o componente do kit. O usuário pediu fidelidade visual exata ao Pencil (`l184p`) depois de ver o resultado, então a escolha final foi: `<fieldset>` + `<label>` + `<input type="radio" class="sr-only">` por opção (radio-group nativo real, focável, com estado `:checked` de verdade) + `<span aria-hidden>` com o badge quadrado exato do design como indicador visual, e um `@keydown` na fieldset mapeando dígitos 1–4 pra manter o hint do rodapé verdadeiro. Resultado: acessibilidade real (radio nativo) **e** fidelidade pixel ao design — sem depender do slot fixo do `ui/questionnaire`.
 
 ## Componentes do projeto reusados
-Nenhum. `ProfileGauge` (`@components/shared/profile-gauge`) existe mas representa o *resultado* do perfil (medidor de nível), não a UI de pergunta/resposta desta tela — não reusar aqui.
+Nenhum na seção Pergunta. `ProfileGauge` (`@components/shared/profile-gauge`) representa o *resultado* do perfil (medidor de nível), não a UI de pergunta/resposta — mas é exatamente o que a seção **Resultado** (adição posterior, node `mkZ3o`) precisa. Idem `@components/shared/legal-notice` (`LegalNotice`). Ver `## Frame raiz — adição`.
 
 ## Componentes compartilhados — specs
 Nenhuma spec nova. Nenhuma estrutura desta tela atinge 2 usos em seções distintas (ver `## Estruturas inline-only`).
@@ -101,7 +101,31 @@ Nenhuma spec nova. Nenhuma estrutura desta tela atinge 2 usos em seções distin
     ```
   - Progresso da barra (`B6QNt`, 144/720 = 20%) é derivado de `assessmentProgress.currentStep`/`assessmentProgress.totalSteps` na view, não campo próprio. **Fórmula corrigida pós-review:** `((currentStep - 1) / totalSteps) * 100` — a barra representa passos *concluídos*, não o número do passo atual. `2/5 = 40%` não bate com o design (144/720 = 20%); `(2-1)/5 = 20%` bate exato. A section-builder da 1ª rodada usou `currentStep/totalSteps` (40%) e sinalizou a divergência em vez de decidir sozinha — corrigido aqui.
 - local (estado-local, não vai para `src/data/`):
-  - Nenhum. Design não mostra estado de seleção/hover — tela puramente estática, mesmo padrão dos outros builds deste projeto (conteúdo estático até a skill de camada dinâmica existir).
+  - **`isComplete: boolean` em `src/pages/AvaliacaoPerfil.vue`** (adicionado depois, para o node `mkZ3o` — ver `## Frame raiz — adição`). Alterna entre `Pergunta` e `Resultado`. `Pergunta.vue` emite `answered` quando `selectedOptionId` deixa de ser `null` (via `watch`); a página ouve e vira `isComplete = true`. `Resultado.vue` emite `restart`; a página volta `isComplete = false`, o que remonta `Pergunta` (v-if) e zera `selectedOptionId` de graça, sem precisar resetar manualmente.
+  - Nenhum outro estado de seleção/hover além disso — cada seção continua estática internamente.
+
+## Frame raiz — adição (node `mkZ3o`, "Público · Avaliação · Resultado")
+
+Adicionado numa segunda passada, a pedido do usuário: quando a pergunta é respondida, mostrar a tela de resultado do Pencil (`Node ID: mkZ3o`).
+
+- node-id: `mkZ3o`, 1180×860 — mesma convenção de artboard decorativo (borda/sombra/radius não é CSS real). Filhos relevantes: `I8rIW` Barra (idêntica à `byGrV` já implementada — reusa `Topbar.vue` sem alteração) e `QMrN1` Corpo.
+- Screenshot: docs/pencil/avaliacao-perfil-resultado-corpo.webp
+- Nova seção: `src/views/avaliacao-perfil/Resultado.vue`
+- Reuso por domínio: `currentAssessment = profileAssessments[0]` de `@data/cliente` já contém exatamente os dados do design (`date: '2026-08-19'`, `score: 42`, `profileLabel: 'MODERADO'`, `profileLevel: 2`) — **nenhum dado novo criado**, zero duplicação com `src/data/avaliacao.ts`. As duas frases descritivas específicas do resultado ("Pontuação X de 100. A faixa moderada vai de 26 a 50 pontos..." e "Tolera oscilação moderada...") ficaram **literais** no template — são prosa ligada à faixa "moderado" especificamente mostrada no design, não dado estruturado reutilizável (o design nunca mostra outra faixa), então criar uma tabela de faixas/perfis para isso seria inventar dado fora do que foi pedido.
+- Ícones: `PhCheckCircle` (conclusão, verde) e `PhArrowRight` (botão primário) — equivalentes Phosphor do `circle-check`/`arrow-right` (lucide) do Pencil; projeto usa `@phosphor-icons/vue`, não lucide (mesma tradução já usada no resto do app, ex. `Sonner.vue`).
+- Componentes reusados (nenhum novo):
+  - `@components/shared/profile-gauge` (`ProfileGauge`, `level={{currentAssessment.profileLevel}}`, `tone="success"`) → node `G8dvhL`/`alFgV`, 2 de 4 segmentos verdes
+  - `@components/shared/legal-notice` (`LegalNotice`, sem props) → node `Y1nK8U`/`mknb1`; copy do componente já existente bate **exato** com o texto do design, zero alteração
+  - `@components/ui/button` variant `default` (as-child + `RouterLink to="/"`) → "Ir para o painel" (node `M4wgj`/`s4Behq`, ícone à direita habilitado nesta instância)
+  - `@components/ui/button` variant `outline` → "Refazer avaliação" (node `j2UDPZ`/`BKFYq`), com `@click` emitindo `restart`
+- Text-styles (todos reusados, nenhum novo):
+  - Eyebrow "RESULTADO" → `text-eyebrow` (mesma aproximação já usada em "AVALIAÇÃO DE PERFIL" na seção Pergunta)
+  - Título "Seu perfil é moderado" (h1, 28/800/1.1) → `text-page-title`, match exato — dois `<span>` de cor (`text-foreground`/`text-success`) para o trecho colorido
+  - Texto "Avaliação concluída em..." (13.44/400/1.55) e Texto do card de perfil (13.44/400/1.55) → `text-table-row` (13.76/400/1.55 — line-height bate exato, size aproximação de 0.32px)
+  - Parágrafo de pontuação (14.72/400/1.6) → `text-paragraph` (15/400/1.4 — mesma aproximação já usada na seção Pergunta para o texto das opções)
+  - "MODERADO" no card (10.88/800/uppercase) → `text-tag` (11.52/800/uppercase) — **mesmo reuso já documentado em `docs/build-manifest-conta.md`** para o mesmo rótulo "MODERADO"
+- Cores: `bg-muted`/`border-border-strong` no card de perfil (mesmo `$paper-2`/`$line-strong` de sempre), `text-success` (`$green`) no destaque do título/rótulo/ícone. Nenhuma cor nova.
+- Botões: variante `default` do kit já é `bg-primary` = verde do design; classe base do kit é `rounded-none` — `rounded-sm` adicionado via `class` (mesmo padrão já usado em `src/views/carteira/Composicao.vue`) pra bater com `cornerRadius: 3` do design. Tamanho `size="lg"` (h-9/36px) calibrado pela altura ~37px dos nodes `M4wgj`/`j2UDPZ`.
 
 Reuso por domínio checado: `Glob src/data/` mostrou `cliente.ts` (com `ProfileAssessment` — histórico de avaliações já feitas, conceito distinto), `wallet.ts`, `navigation.ts`. Nenhum cobre "pergunta do questionário de perfil" → domínio novo (`avaliacao.ts`).
 
@@ -111,8 +135,9 @@ Reuso por domínio checado: `Glob src/data/` mostrou `cliente.ts` (com `ProfileA
 |---|------|---------|---------|-------|-------|---------------|------------|---------|
 | 1 | Topbar (Barra) | byGrV | src/views/avaliacao-perfil/Topbar.vue | — | literal | sim | docs/pencil/avaliacao-perfil-barra.webp | webp |
 | 2 | Pergunta (Corpo) | aYexJ | src/views/avaliacao-perfil/Pergunta.vue | ui/progress, ui/button | data:avaliacao | sim | docs/pencil/avaliacao-perfil-corpo.webp | webp |
+| 3 | Resultado (Corpo do node `mkZ3o`) | QMrN1 | src/views/avaliacao-perfil/Resultado.vue | profile-gauge, legal-notice, ui/button | data:cliente + literal | sim (adicionada em 2ª passada) | docs/pencil/avaliacao-perfil-resultado-corpo.webp | webp |
 
-Overview completo: docs/pencil/avaliacao-perfil-overview.pdf
+Overview completo: docs/pencil/avaliacao-perfil-overview.pdf (frame `UGoLo`, pergunta). Frame do resultado (`mkZ3o`) não tem overview próprio capturado — só o screenshot do Corpo (`QMrN1`), suficiente pois a Barra é idêntica à do frame da pergunta.
 
 ## Plano de execução (Fase 2)
 1. Batch 0: nenhum componente compartilhado novo — pular
@@ -139,8 +164,9 @@ Overview completo: docs/pencil/avaliacao-perfil-overview.pdf
 ### Seções (Batches 1-N)
 - [x] Topbar
 - [x] Pergunta
+- [x] Resultado (adicionada em 2ª passada, node `mkZ3o`)
 - [x] bun check + bun run build
-- [x] review
+- [x] review (só cobriu Topbar/Pergunta — Resultado ainda não passou por review)
 
 ## Auditoria
 

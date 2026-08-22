@@ -23,6 +23,9 @@ Nenhum componente shared novo foi proposto ou criado nesta página — pulado po
 | Pergunta (v2, pós-review) | ok | — | adicionado `@submit.prevent` no `Questionnaire` (obrigatório — sem isso Enter recarrega a SPA); `QuestionnaireItem` com `aria-labelledby` apontando pro `<h1>` externo | — | — | adotou `@components/ui/questionnaire` pra resolver M1/M3 do review |
 | Pergunta (v3, correção pontual) | ok | — | fórmula da barra de progresso corrigida | — | — | `((currentStep - 1) / totalSteps) * 100` — ver §6 |
 | Pergunta (v4, correção direta do usuário) | ok | — | revertido `ui/questionnaire` → `<fieldset>`/`<input type="radio">` nativo com badge quadrado custom | — | — | usuário apontou (via `Node ID: l184p`) que o indicador circular do kit não batia com o design (badge quadrado numerado, sem "radio"); reescrito à mão mantendo radio-group nativo real + `@keydown` pros atalhos 1–4, mas com controle total do CSS |
+| Pergunta (v5, feature nova) | ok | — | adicionado `watch(selectedOptionId)` que emite `answered` quando uma opção é escolhida | — | — | dispara a transição pro Resultado — torna "a resposta avança sozinha" (hint do rodapé) literalmente verdadeiro |
+| Resultado (nova, node `mkZ3o`) | ok | — | nenhum desvio do que foi levantado do design | — | — | escrita direto pelo orquestrador (fora do fluxo `/build-page`, a pedido do usuário) — não passou por `section-builder` nem por code review |
+| AvaliacaoPerfil.vue (page, atualizada) | ok | — | adicionado `ref isComplete` + `v-if`/`v-else` entre Pergunta/Resultado | — | — | escrita direto pelo orquestrador (é o stub da página, dono do Passo 4) |
 
 ## 4. Code review
 
@@ -64,10 +67,13 @@ Fora do escopo estrito "1 seção = 1 subagente":
 
 **P0 (bloqueia usabilidade real, mas já corrigido nesta rodada):** nenhum restante.
 
+**P1 (técnico, recomendado antes de considerar a tela 100% fechada):**
+- [ ] `Resultado.vue` foi escrito direto pelo orquestrador (fora do fluxo padrão `section-builder` → review), a pedido do usuário, para implementar a transição pós-resposta (node `mkZ3o`). `bun check`/`bun run build` passam, mas **não recebeu o passe de code review** que Topbar/Pergunta receberam — rodar `/code-review` nele antes de considerar a feature fechada.
+
 **P1 (decisão de produto/negócio, não técnica):**
 - [ ] Ligar o botão "Refazer avaliação" do rodapé da sidebar (`src/layouts/AppLayout.vue:129-131`) a `RouterLink to="/avaliacao-perfil"` — hoje é um `<button>` sem `@click`, e a rota nova fica órfã (nada no app aponta pra ela). Decisão do humano: é essa mesma a entrada, ou existe outro fluxo de disparo (ex.: onboarding)?
 - [ ] Destino de "Sair" no Topbar foi assumido como `RouterLink to="/"` — confirmar se é isso mesmo ou se deveria ser um logout real (aguarda camada de auth).
-- [ ] Decidir se "a resposta avança sozinha" (auto-avançar pra próxima pergunta) entra nesta fase ou fica pra quando existir navegação real entre as 5 perguntas — hoje só a pergunta 2 tem conteúdo real; as outras 4 não existem em lugar nenhum do design capturado.
+- ~~Decidir se "a resposta avança sozinha" entra nesta fase~~ — **resolvido**: `Pergunta.vue` agora emite `answered` ao escolher qualquer opção, e a página mostra `Resultado.vue` na hora. Só existe conteúdo real para 1 de 5 perguntas (o design não fornece as outras 4), então o "avanço" aqui é direto pergunta→resultado, não pergunta→próxima pergunta. Ajustar quando as outras 4 perguntas existirem em algum design.
 
 **P2 (técnico, baixo risco, pode esperar):**
 - [ ] `Progress` sem `aria-label`/`aria-valuetext` (MINOR do review, não corrigido nesta rodada).
@@ -98,6 +104,11 @@ Preciso resolver as pendências do build de /avaliacao-perfil:
    identidade quanto de atalho numérico exibido. Se a ordem das opções puder
    mudar no futuro, separar id (string) de número de atalho (derivado da
    posição no array).
+
+5. Rodar /code-review em src/views/avaliacao-perfil/Resultado.vue — essa seção
+   (tela de resultado, node mkZ3o) foi escrita direto por mim fora do fluxo
+   /build-page normal e ainda não passou pelo agente de review que as outras
+   duas seções já passaram.
 
 Contexto: docs/build-manifest-avaliacao-perfil.md e
 docs/build-handoff-avaliacao-perfil.md têm o histórico completo.

@@ -2,14 +2,24 @@
 import { Button } from '@components/ui/button'
 import { Progress } from '@components/ui/progress'
 import { assessmentProgress, assessmentQuestion } from '@data/avaliacao'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const PROMPT_ID = 'avaliacao-perfil-pergunta'
+
+const emit = defineEmits<{ answered: [] }>()
 
 // A barra representa passos concluídos: currentStep=2 significa 1 de 5 concluído (20%).
 const progressValue = ((assessmentProgress.currentStep - 1) / assessmentProgress.totalSteps) * 100
 
 const selectedOptionId = ref<number | null>(null)
+
+// "A resposta avança sozinha" (hint do rodapé): escolher uma opção conclui a
+// única pergunta implementada nesta fase e revela o resultado.
+watch(selectedOptionId, (value) => {
+  if (value !== null) {
+    emit('answered')
+  }
+})
 
 function handleKeydown(event: KeyboardEvent) {
   const digit = Number(event.key)
