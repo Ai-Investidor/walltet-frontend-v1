@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-21T13:09:34.966Z",
-  "total": 9,
+  "generated_at": "2026-08-22T19:11:28.837Z",
+  "total": 10,
   "categories": {
     "components": [
       {
@@ -46,6 +46,18 @@
         "slug": "container-intermediate-viewports",
         "path": "responsive/container-intermediate-viewports.md",
         "title": "Containers em viewports intermediários 1180–1792px",
+        "tags": [
+          "responsive",
+          "layout",
+          "tailwind"
+        ],
+        "recurrence": "media",
+        "scope": "generic"
+      },
+      {
+        "slug": "fixed-width-panel-fullbleed",
+        "path": "responsive/fixed-width-panel-fullbleed.md",
+        "title": "Painel lateral com largura fixa quebra em layout full-bleed",
         "tags": [
           "responsive",
           "layout",
@@ -142,6 +154,7 @@
     ],
     "layout": [
       "container-intermediate-viewports",
+      "fixed-width-panel-fullbleed",
       "navbar-fixed-positioning"
     ],
     "links": [
@@ -161,7 +174,8 @@
       "duplicate-component-extraction"
     ],
     "responsive": [
-      "container-intermediate-viewports"
+      "container-intermediate-viewports",
+      "fixed-width-panel-fullbleed"
     ],
     "semantics": [
       "href-placeholder"
@@ -173,6 +187,7 @@
     ],
     "tailwind": [
       "container-intermediate-viewports",
+      "fixed-width-panel-fullbleed",
       "gradients-utility-class"
     ]
   }

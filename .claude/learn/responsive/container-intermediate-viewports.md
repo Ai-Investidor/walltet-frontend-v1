@@ -5,7 +5,7 @@ category: responsive
 tags: [responsive, layout, tailwind]
 recurrence: media
 scope: generic
-related: []
+related: ["[[fixed-width-panel-fullbleed]]"]
 sources: []
 supersedes: []
 superseded_by: []
