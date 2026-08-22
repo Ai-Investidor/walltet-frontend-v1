@@ -43,6 +43,12 @@ const routes = [
     component: () => import('@pages/AvaliacaoPerfil.vue'),
     meta: { title: 'Avaliação de perfil' },
   },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@pages/Login.vue'),
+    meta: { title: 'Entrar' },
+  },
 ]
 
 export const router = createRouter({

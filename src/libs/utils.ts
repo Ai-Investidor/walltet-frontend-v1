@@ -29,6 +29,8 @@ const TEXT_STYLES = [
   'table-value',
   'chart-label',
   'page-title',
+  'page-title-sm',
+  'section-title',
   'card-title',
   'topbar-title',
   'topbar-meta',

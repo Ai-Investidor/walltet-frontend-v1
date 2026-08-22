@@ -151,6 +151,14 @@
   line-height: 1.4;
 }
 
+@utility text-page-title-sm {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
 @utility text-heading {
   font-size: 0.875rem;
   font-weight: 400;
@@ -276,6 +284,13 @@
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.01em;
+}
+
+@utility text-section-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 @utility text-card-title {
