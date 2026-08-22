@@ -5,7 +5,7 @@ category: responsive
 tags: [responsive, layout, tailwind]
 recurrence: media
 scope: generic
-related: ["[[container-intermediate-viewports]]"]
+related: ["[[container-intermediate-viewports]]", "[[landmark-wrapper-breaks-flex-width]]"]
 sources: ["git:719559c", "git:ef56bc2"]
 supersedes: []
 superseded_by: []

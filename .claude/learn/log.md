@@ -26,3 +26,4 @@ Operações: `ingest` (criar/atualizar nota), `lint` (passagem do `/dream`), `re
 ## [2026-05-20] ingest | group-tabs-special-group-flag — created (directus/) + gate em validate-directus-schema + docs build-cms/build-prep/directus.md
 ## [2026-08-21] reorg | vault adaptado de stack antiga (Astro/JSX/Directus) pra wallet-app-v1 (Vue 3 + shadcn-vue + Tailwind v4); removida categoria directus/ (CMS não usado no projeto) + tags cms/visual-editing; static-assets-import-jsx renomeada pra static-assets-import; exemplos e rules_ref das notas restantes atualizados pra sintaxe Vue e numeração atual de RULES.md
 ## [2026-08-22] ingest | fixed-width-panel-fullbleed — created (responsive/) + bidir ref em container-intermediate-viewports
+## [2026-08-22] ingest | landmark-wrapper-breaks-flex-width — created (layout/) + bidir ref em fixed-width-panel-fullbleed

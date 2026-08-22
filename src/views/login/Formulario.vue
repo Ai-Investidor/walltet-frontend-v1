@@ -60,7 +60,7 @@ function onSubmit() {
               type="email"
               autocomplete="email"
               placeholder="nome@email.com"
-              class="text-table-row md:text-table-row placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
+              class="text-table-row placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
               v-bind="componentField"
             />
           </FormControl>
@@ -78,7 +78,7 @@ function onSubmit() {
               type="password"
               autocomplete="current-password"
               placeholder="Sua senha"
-              class="text-table-row md:text-table-row placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
+              class="text-table-row placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
               v-bind="componentField"
             />
           </FormControl>

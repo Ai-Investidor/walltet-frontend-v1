@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-22T19:11:28.837Z",
-  "total": 10,
+  "generated_at": "2026-08-22T19:46:39.444Z",
+  "total": 11,
   "categories": {
     "components": [
       {
@@ -13,6 +13,20 @@
           "dry"
         ],
         "recurrence": "media",
+        "scope": "generic"
+      }
+    ],
+    "layout": [
+      {
+        "slug": "landmark-wrapper-breaks-flex-width",
+        "path": "layout/landmark-wrapper-breaks-flex-width.md",
+        "title": "Wrapper de landmark adicionado por cima de um flex child quebra sua largura",
+        "tags": [
+          "layout",
+          "tailwind",
+          "accessibility"
+        ],
+        "recurrence": "baixa",
         "scope": "generic"
       }
     ],
@@ -131,6 +145,7 @@
   },
   "tags": {
     "accessibility": [
+      "landmark-wrapper-breaks-flex-width",
       "mobile-menu-separate-buttons"
     ],
     "colors": [
@@ -155,6 +170,7 @@
     "layout": [
       "container-intermediate-viewports",
       "fixed-width-panel-fullbleed",
+      "landmark-wrapper-breaks-flex-width",
       "navbar-fixed-positioning"
     ],
     "links": [
@@ -188,7 +204,8 @@
     "tailwind": [
       "container-intermediate-viewports",
       "fixed-width-panel-fullbleed",
-      "gradients-utility-class"
+      "gradients-utility-class",
+      "landmark-wrapper-breaks-flex-width"
     ]
   }
 }

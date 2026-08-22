@@ -55,6 +55,12 @@ const routes = [
     component: () => import('@pages/CriarConta.vue'),
     meta: { title: 'Criar conta' },
   },
+  {
+    path: '/recuperar-senha',
+    name: 'recuperar-senha',
+    component: () => import('@pages/RecuperarSenha.vue'),
+    meta: { title: 'Recuperar senha' },
+  },
 ]
 
 export const router = createRouter({
