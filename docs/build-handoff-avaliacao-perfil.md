@@ -22,6 +22,7 @@ Nenhum componente shared novo foi proposto ou criado nesta página — pulado po
 | Pergunta (v1) | ok | — | h1 com `max-w-[420px]` (medido do screenshot, não estava no manifesto); Button "Voltar" com `size="sm"` (medido do screenshot) | — | — | rodada substituída pela correção abaixo |
 | Pergunta (v2, pós-review) | ok | — | adicionado `@submit.prevent` no `Questionnaire` (obrigatório — sem isso Enter recarrega a SPA); `QuestionnaireItem` com `aria-labelledby` apontando pro `<h1>` externo | — | — | adotou `@components/ui/questionnaire` pra resolver M1/M3 do review |
 | Pergunta (v3, correção pontual) | ok | — | fórmula da barra de progresso corrigida | — | — | `((currentStep - 1) / totalSteps) * 100` — ver §6 |
+| Pergunta (v4, correção direta do usuário) | ok | — | revertido `ui/questionnaire` → `<fieldset>`/`<input type="radio">` nativo com badge quadrado custom | — | — | usuário apontou (via `Node ID: l184p`) que o indicador circular do kit não batia com o design (badge quadrado numerado, sem "radio"); reescrito à mão mantendo radio-group nativo real + `@keydown` pros atalhos 1–4, mas com controle total do CSS |
 
 ## 4. Code review
 

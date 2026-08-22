@@ -1,24 +1,22 @@
 <script setup lang="ts">
 import { Button } from '@components/ui/button'
 import { Progress } from '@components/ui/progress'
-import {
-  Questionnaire,
-  QuestionnaireChoice,
-  QuestionnaireChoices,
-  QuestionnaireItem,
-} from '@components/ui/questionnaire'
 import { assessmentProgress, assessmentQuestion } from '@data/avaliacao'
+import { ref } from 'vue'
 
-const QUESTION_NAME = 'horizonte-investimento'
 const PROMPT_ID = 'avaliacao-perfil-pergunta'
 
 // A barra representa passos concluídos: currentStep=2 significa 1 de 5 concluído (20%).
 const progressValue = ((assessmentProgress.currentStep - 1) / assessmentProgress.totalSteps) * 100
 
-// Fluxo estático nesta fase: não há próxima pergunta nem envio real, então o
-// submit nativo (Enter sobre a opção marcada) não pode recarregar a página.
-function handleSubmit(event: Event) {
-  event.preventDefault()
+const selectedOptionId = ref<number | null>(null)
+
+function handleKeydown(event: KeyboardEvent) {
+  const digit = Number(event.key)
+
+  if (Number.isInteger(digit) && digit >= 1 && digit <= assessmentQuestion.options.length) {
+    selectedOptionId.value = digit
+  }
 }
 </script>
 
@@ -42,24 +40,29 @@ function handleSubmit(event: Event) {
         {{ assessmentQuestion.prompt }}
       </h1>
 
-      <Questionnaire
-        :default-item="QUESTION_NAME"
-        shortcuts="numbers"
-        @submit="handleSubmit"
-      >
-        <QuestionnaireItem :aria-labelledby="PROMPT_ID" :name="QUESTION_NAME" required>
-          <QuestionnaireChoices class="gap-3">
-            <QuestionnaireChoice
-              v-for="option in assessmentQuestion.options"
-              :key="option.id"
-              :value="String(option.id)"
-              class="bg-card border-border text-paragraph text-foreground items-center gap-3.5 rounded-sm px-4.5 py-4"
-            >
-              {{ option.label }}
-            </QuestionnaireChoice>
-          </QuestionnaireChoices>
-        </QuestionnaireItem>
-      </Questionnaire>
+      <fieldset :aria-labelledby="PROMPT_ID" class="flex flex-col gap-2.5" @keydown="handleKeydown">
+        <label
+          v-for="option in assessmentQuestion.options"
+          :key="option.id"
+          class="bg-card border-border has-focus-visible:border-ring has-focus-visible:ring-ring/50 flex cursor-pointer items-center gap-3.5 rounded-sm border px-4.5 py-4 has-focus-visible:ring-1"
+        >
+          <input
+            v-model="selectedOptionId"
+            type="radio"
+            name="avaliacao-perfil-horizonte"
+            :value="option.id"
+            class="sr-only"
+            :aria-keyshortcuts="String(option.id)"
+          >
+          <span
+            aria-hidden="true"
+            class="border-border-strong text-eyebrow text-muted-foreground flex size-6 shrink-0 items-center justify-center rounded-sm border"
+          >
+            {{ option.id }}
+          </span>
+          <span class="text-paragraph text-foreground">{{ option.label }}</span>
+        </label>
+      </fieldset>
 
       <div class="border-border flex items-center gap-4 border-t pt-3">
         <Button variant="outline" size="sm">
