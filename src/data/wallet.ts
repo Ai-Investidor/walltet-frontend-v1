@@ -56,6 +56,14 @@ export interface MovementGroup {
   items: MovementDetail[]
 }
 
+export interface PerformanceRow {
+  competencia: string
+  carteira: number
+  cdi: number
+  ibovespa: number
+  percentOfCdi: number
+}
+
 export const kpis: Kpi[] = [
   {
     label: 'Rentabilidade do mês',
@@ -146,6 +154,48 @@ export const revisionNote: RevisionNote = {
   title: 'Justificativa da revisão de agosto',
   body: 'A entrada de MXRF11 substitui a posição em PETR4, encerrada após a mudança de política de distribuição. O peso em Tesouro IPCA+ 2035 subiu de 25% para 30% para sustentar a parcela indexada à inflação, e VALE3 caiu de 25% para 20% por concentração setorial. A carteira segue dentro da faixa de risco do perfil moderado.',
 }
+
+export const performanceIndicators: Kpi[] = [
+  {
+    label: 'Mês',
+    value: '+1,85 %',
+    note: 'CDI +0,87 % · Ibov +2,10 %',
+    tone: 'positive',
+  },
+  {
+    label: 'No ano',
+    value: '+8,42 %',
+    note: 'CDI +6,80 %',
+    tone: 'positive',
+  },
+  {
+    label: '% do CDI',
+    value: '212,6 %',
+    note: 'Acumulado de 2026',
+    tone: 'neutral',
+  },
+  {
+    label: 'Meses positivos',
+    value: '11 de 12',
+    note: 'Últimos 12 meses',
+    tone: 'neutral',
+  },
+]
+
+export const performanceHistory: PerformanceRow[] = [
+  { competencia: 'Ago/26', carteira: 1.85, cdi: 0.87, ibovespa: 2.1, percentOfCdi: 212.6 },
+  { competencia: 'Jul/26', carteira: 1.35, cdi: 0.86, ibovespa: 2.2, percentOfCdi: 157.0 },
+  { competencia: 'Jun/26', carteira: -0.1, cdi: 0.84, ibovespa: -1.8, percentOfCdi: -11.9 },
+  { competencia: 'Mai/26', carteira: 1.25, cdi: 0.85, ibovespa: 1.4, percentOfCdi: 147.1 },
+  { competencia: 'Abr/26', carteira: 1.1, cdi: 0.83, ibovespa: 0.9, percentOfCdi: 132.5 },
+  { competencia: 'Mar/26', carteira: 1.4, cdi: 0.86, ibovespa: 2.8, percentOfCdi: 162.8 },
+  { competencia: 'Fev/26', carteira: 0.3, cdi: 0.84, ibovespa: -2.4, percentOfCdi: 35.7 },
+  { competencia: 'Jan/26', carteira: 2.0, cdi: 0.85, ibovespa: 1.6, percentOfCdi: 235.3 },
+  { competencia: 'Dez/25', carteira: 1.42, cdi: 0.84, ibovespa: 3.1, percentOfCdi: 169.0 },
+  { competencia: 'Nov/25', carteira: 0.65, cdi: 0.79, ibovespa: 0.4, percentOfCdi: 82.3 },
+  { competencia: 'Out/25', carteira: 1.1, cdi: 0.82, ibovespa: -1.2, percentOfCdi: 134.1 },
+  { competencia: 'Set/25', carteira: 0.72, cdi: 0.8, ibovespa: 1.9, percentOfCdi: 90.0 },
+]
 
 export const movementGroups: MovementGroup[] = [
   {

@@ -15,13 +15,16 @@ import {
   PhMinus,
   PhShieldCheck,
 } from '@phosphor-icons/vue'
-import Movimentacoes from '@views/carteira/Movimentacoes.vue'
 import type { Component, HTMLAttributes } from 'vue'
+import { defineAsyncComponent } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<{
   class?: HTMLAttributes['class']
 }>()
+
+const Movimentacoes = defineAsyncComponent(() => import('@views/carteira/Movimentacoes.vue'))
+const Performance = defineAsyncComponent(() => import('@views/carteira/Performance.vue'))
 
 /** Card do design: papel com borda de 1px e raio de 8px, sem o ring e o padding vertical do kit. */
 const CARD_SURFACE = 'gap-0 rounded-lg border py-0 ring-0'
@@ -77,7 +80,7 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
         <TabsTrigger value="movimentacoes" :class="TAB_TRIGGER">
           Movimentações
         </TabsTrigger>
-        <TabsTrigger value="performance" disabled :class="TAB_TRIGGER">
+        <TabsTrigger value="performance" :class="TAB_TRIGGER">
           Performance
         </TabsTrigger>
       </TabsList>
@@ -220,6 +223,10 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
 
       <TabsContent value="movimentacoes">
         <Movimentacoes />
+      </TabsContent>
+
+      <TabsContent value="performance">
+        <Performance />
       </TabsContent>
     </Tabs>
   </section>
