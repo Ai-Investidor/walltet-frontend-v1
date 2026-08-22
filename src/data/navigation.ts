@@ -33,6 +33,6 @@ export const navigationGroups: NavigationGroup[] = [
   },
   {
     label: 'Conta',
-    items: [{ label: 'Minha conta', icon: 'PhUser', to: '/conta', available: false }],
+    items: [{ label: 'Minha conta', icon: 'PhUser', to: '/conta', available: true }],
   },
 ]

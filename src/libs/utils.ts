@@ -32,6 +32,8 @@ const TEXT_STYLES = [
   'card-title',
   'topbar-title',
   'topbar-meta',
+  'tag',
+  'tag-sm',
 ]
 
 const twMerge = extendTailwindMerge({

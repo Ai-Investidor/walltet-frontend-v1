@@ -29,6 +29,12 @@ const routes = [
         component: () => import('@pages/Carteiras.vue'),
         meta: { title: 'Carteiras' },
       },
+      {
+        path: 'conta',
+        name: 'conta',
+        component: () => import('@pages/Conta.vue'),
+        meta: { title: 'Minha conta' },
+      },
     ],
   },
 ]
