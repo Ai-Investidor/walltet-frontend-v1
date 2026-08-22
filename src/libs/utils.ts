@@ -20,6 +20,7 @@ const TEXT_STYLES = [
   'caption-sm',
   'button',
   'button-sm',
+  'button-xs',
   'eyebrow',
   'nav-item',
   'metric',

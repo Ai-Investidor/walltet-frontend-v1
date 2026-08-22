@@ -36,6 +36,11 @@ export interface Report {
   sizeLabel: string
 }
 
+export interface ReportArchiveGroup {
+  year: string
+  reports: Report[]
+}
+
 export interface RevisionNote {
   title: string
   body: string
@@ -259,6 +264,49 @@ export const movementGroups: MovementGroup[] = [
         direction: 'hold',
         label: 'MANTER',
         value: '30,00 %',
+      },
+    ],
+  },
+]
+
+export const reportArchive: ReportArchiveGroup[] = [
+  {
+    year: '2026',
+    reports: [
+      {
+        title: 'Relatório de Performance — Agosto/2026',
+        generatedAt: '01/09/2026',
+        sizeLabel: '471 KB',
+      },
+      {
+        title: 'Relatório de Performance — Julho/2026',
+        generatedAt: '01/08/2026',
+        sizeLabel: '463 KB',
+      },
+      {
+        title: 'Relatório de Performance — Junho/2026',
+        generatedAt: '01/07/2026',
+        sizeLabel: '455 KB',
+      },
+      {
+        title: 'Relatório de Performance — Maio/2026',
+        generatedAt: '01/06/2026',
+        sizeLabel: '448 KB',
+      },
+    ],
+  },
+  {
+    year: '2025',
+    reports: [
+      {
+        title: 'Relatório de Performance — Dezembro/2025',
+        generatedAt: '02/01/2026',
+        sizeLabel: '441 KB',
+      },
+      {
+        title: 'Relatório de Performance — Novembro/2025',
+        generatedAt: '01/12/2025',
+        sizeLabel: '437 KB',
       },
     ],
   },

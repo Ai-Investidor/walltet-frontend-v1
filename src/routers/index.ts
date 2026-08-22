@@ -17,6 +17,12 @@ const routes = [
         component: () => import('@pages/Carteira.vue'),
         meta: { title: 'Minha carteira' },
       },
+      {
+        path: 'relatorios',
+        name: 'relatorios',
+        component: () => import('@pages/Relatorios.vue'),
+        meta: { title: 'Relatórios' },
+      },
     ],
   },
 ]

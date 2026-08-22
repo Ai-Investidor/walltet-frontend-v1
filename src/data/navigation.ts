@@ -25,7 +25,7 @@ export const navigationGroups: NavigationGroup[] = [
   },
   {
     label: 'Documentos',
-    items: [{ label: 'Relatórios', icon: 'PhFileText', to: '/relatorios', available: false }],
+    items: [{ label: 'Relatórios', icon: 'PhFileText', to: '/relatorios', available: true }],
   },
   {
     label: 'Descobrir',
