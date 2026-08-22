@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ProfileGauge } from '@components/shared/profile-gauge'
 import { Avatar, AvatarFallback } from '@components/ui/avatar'
 import { Button } from '@components/ui/button'
 import {
@@ -106,14 +107,7 @@ const pageTitle = computed(() => route.meta.title ?? '')
         <div class="flex flex-col gap-2 rounded-md border border-border bg-card p-3.5">
           <span class="text-eyebrow text-muted-foreground-faint">Seu perfil</span>
           <div class="flex items-center gap-2.5">
-            <div class="flex items-center gap-0.5" role="img" aria-label="Perfil de investidor moderado, nível 2 de 4">
-              <span
-                v-for="n in 4"
-                :key="n"
-                class="size-2 rounded-sm border border-border-strong"
-                :class="n <= 2 ? 'bg-success' : 'bg-transparent'"
-              />
-            </div>
+            <ProfileGauge :level="2" tone="success" label="Perfil de investidor moderado, nível 2 de 4" />
             <span class="text-eyebrow text-foreground">Moderado</span>
           </div>
           <button type="button" class="text-label w-fit text-success">

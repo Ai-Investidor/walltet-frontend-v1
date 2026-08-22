@@ -46,6 +46,18 @@ export interface RevisionNote {
   body: string
 }
 
+export interface RecommendedWallet {
+  slug: string
+  profileLabel: string
+  profileLevel: 1 | 2 | 3 | 4
+  name: string
+  description: string
+  allocationPreview: AllocationClass[]
+  meta: string
+  isOwn: boolean
+  to?: string
+}
+
 export interface MovementDetail {
   code: string
   name: string
@@ -159,6 +171,66 @@ export const revisionNote: RevisionNote = {
   title: 'Justificativa da revisão de agosto',
   body: 'A entrada de MXRF11 substitui a posição em PETR4, encerrada após a mudança de política de distribuição. O peso em Tesouro IPCA+ 2035 subiu de 25% para 30% para sustentar a parcela indexada à inflação, e VALE3 caiu de 25% para 20% por concentração setorial. A carteira segue dentro da faixa de risco do perfil moderado.',
 }
+
+export const recommendedWallets: RecommendedWallet[] = [
+  {
+    slug: 'conservador',
+    profileLabel: 'CONSERVADOR',
+    profileLevel: 1,
+    name: 'Carteira Conservadora Patrimonial',
+    description: 'Preservação de capital com indexação à inflação e liquidez alta.',
+    allocationPreview: [
+      { label: 'Renda Fixa', percent: 85, tone: 'data-1' },
+      { label: 'FII', percent: 10, tone: 'data-2' },
+      { label: 'Ações BR', percent: 5, tone: 'data-3' },
+    ],
+    meta: '5 ativos · Renda Fixa 85 %',
+    isOwn: false,
+  },
+  {
+    slug: 'moderado',
+    profileLabel: 'MODERADO',
+    profileLevel: 2,
+    name: 'Carteira Moderada Estratégica',
+    description: 'Núcleo em renda fixa com parcela em ações e fundos imobiliários.',
+    allocationPreview: [
+      { label: 'Renda Fixa', percent: 30, tone: 'data-1' },
+      { label: 'Ações BR', percent: 50, tone: 'data-2' },
+      { label: 'FII', percent: 20, tone: 'data-3' },
+    ],
+    meta: '4 ativos · sua carteira',
+    isOwn: true,
+    to: '/carteira',
+  },
+  {
+    slug: 'arrojado',
+    profileLabel: 'ARROJADO',
+    profileLevel: 3,
+    name: 'Carteira Arrojada Multimercado',
+    description: 'Maior exposição a renda variável e multimercado, oscilação alta.',
+    allocationPreview: [
+      { label: 'Renda Fixa', percent: 20, tone: 'data-1' },
+      { label: 'Ações BR', percent: 55, tone: 'data-2' },
+      { label: 'Multimercado', percent: 25, tone: 'data-3' },
+    ],
+    meta: '7 ativos · Ações BR 55 %',
+    isOwn: false,
+  },
+  {
+    slug: 'sofisticado',
+    profileLabel: 'SOFISTICADO',
+    profileLevel: 4,
+    name: 'Carteira Sofisticada Global',
+    description: 'Renda variável global, câmbio e ativos alternativos.',
+    allocationPreview: [
+      { label: 'Renda Fixa', percent: 10, tone: 'data-1' },
+      { label: 'Renda Variável Global', percent: 45, tone: 'data-2' },
+      { label: 'Alternativos', percent: 45, tone: 'data-3' },
+    ],
+    meta: '9 ativos · Global 45 %',
+    isOwn: false,
+  },
+]
 
 export const performanceIndicators: Kpi[] = [
   {

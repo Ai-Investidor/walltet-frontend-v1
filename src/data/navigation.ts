@@ -29,7 +29,7 @@ export const navigationGroups: NavigationGroup[] = [
   },
   {
     label: 'Descobrir',
-    items: [{ label: 'Carteiras', icon: 'PhStack', to: '/carteiras', available: false }],
+    items: [{ label: 'Carteiras', icon: 'PhStack', to: '/carteiras', available: true }],
   },
   {
     label: 'Conta',
