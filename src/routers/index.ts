@@ -37,6 +37,12 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/avaliacao-perfil',
+    name: 'avaliacao-perfil',
+    component: () => import('@pages/AvaliacaoPerfil.vue'),
+    meta: { title: 'Avaliação de perfil' },
+  },
 ]
 
 export const router = createRouter({
