@@ -49,6 +49,12 @@ const routes = [
     component: () => import('@pages/Login.vue'),
     meta: { title: 'Entrar' },
   },
+  {
+    path: '/criar-conta',
+    name: 'criar-conta',
+    component: () => import('@pages/CriarConta.vue'),
+    meta: { title: 'Criar conta' },
+  },
 ]
 
 export const router = createRouter({

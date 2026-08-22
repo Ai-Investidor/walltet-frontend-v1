@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Formulario from '@views/login/Formulario.vue'
-import PainelProva from '@views/login/PainelProva.vue'
+import Formulario from '@views/criar-conta/Formulario.vue'
+import PainelProva from '@views/criar-conta/PainelProva.vue'
 </script>
 
 <template>

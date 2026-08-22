@@ -8,8 +8,8 @@ const props = defineProps<{
   class?: HTMLAttributes['class']
 }>()
 
-// Prova social da tela pública: a carteira do perfil moderado, igual ao design.
 const wallet = recommendedWallets.find((item) => item.slug === 'moderado')
+
 if (!wallet) {
   throw new Error("src/data/wallet.ts: slug 'moderado' não encontrado em recommendedWallets")
 }
