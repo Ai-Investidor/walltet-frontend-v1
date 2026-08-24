@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@components/ui/card'
+import { AssetRow } from '@components/wallet/asset-row'
 import type { AllocationClass, Asset } from '@data/wallet'
-import { allocation, assets } from '@data/wallet'
+import { allocation, assets, painelAssetStatus } from '@data/wallet'
 import { PhArrowDownRight, PhArrowRight, PhArrowUpRight, PhMinus } from '@phosphor-icons/vue'
 import type { Component, HTMLAttributes } from 'vue'
+import { computed } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<{
@@ -22,7 +24,10 @@ const ALLOCATION_TONE: Record<AllocationClass['tone'], string> = {
 
 // Glifos de status conforme o design: entrada é seta para dentro (↘) e saída
 // é seta para fora (↗) — não seguem a direção literal de alta/baixa.
-const ASSET_STATUS: Record<Asset['trend'], { icon: Component; tone: string }> = {
+const ASSET_STATUS: Record<
+  Asset['trend'],
+  { icon: Component; tone: 'text-success' | 'text-warning' | 'text-muted-foreground' }
+> = {
   up: { icon: PhArrowDownRight, tone: 'text-success' },
   down: { icon: PhArrowUpRight, tone: 'text-warning' },
   flat: { icon: PhMinus, tone: 'text-muted-foreground' },
@@ -36,6 +41,17 @@ const percentFormatter = new Intl.NumberFormat('pt-BR', {
 function formatPercent(value: number) {
   return `${percentFormatter.format(value)} %`
 }
+
+// Status "deste mês" é específico do Painel — junta com `assets` sem alterar
+// o dado compartilhado com /carteira.
+const composicao = computed(() =>
+  assets.map((asset) => {
+    const status = painelAssetStatus.find((item) => item.code === asset.code)
+    const trend = status?.trend ?? asset.trend
+    const trendLabel = status?.trendLabel ?? asset.trendLabel
+    return { ...asset, trend, trendLabel }
+  }),
+)
 </script>
 
 <template>
@@ -76,40 +92,21 @@ function formatPercent(value: number) {
 
       <CardContent class="p-0">
         <h3 class="text-eyebrow border-y border-border px-3.5 py-2.5 text-muted-foreground">
-          Composição · {{ assets.length }} ativos
+          Composição · {{ composicao.length }} ativos
         </h3>
 
         <ul>
-          <li
-            v-for="asset in assets"
+          <AssetRow
+            v-for="asset in composicao"
             :key="asset.code"
-            class="grid grid-cols-[2.125rem_10.25rem_1fr_auto] items-center gap-3.5 border-border px-3.5 py-3 not-last:border-b max-lg:grid-cols-[2.125rem_1fr_auto_auto]"
-          >
-            <span
-              class="text-eyebrow flex h-7.5 w-8.5 items-center justify-center rounded-md border border-border text-muted-foreground"
-              aria-hidden="true"
-            >
-              {{ asset.code }}
-            </span>
-
-            <div class="min-w-0">
-              <p class="text-paragraph truncate">
-                {{ asset.name }}
-              </p>
-              <p class="text-label truncate text-muted-foreground">
-                {{ asset.className }}
-              </p>
-            </div>
-
-            <p class="flex items-center gap-1.5" :class="ASSET_STATUS[asset.trend].tone">
-              <component :is="ASSET_STATUS[asset.trend].icon" class="size-3.5 shrink-0" aria-hidden="true" />
-              <span class="text-eyebrow">{{ asset.trendLabel }}</span>
-            </p>
-
-            <span class="text-card-title text-right tabular-nums">
-              {{ formatPercent(asset.weightPercent) }}
-            </span>
-          </li>
+            :code="asset.code"
+            :name="asset.name"
+            :detail="asset.className"
+            :icon="ASSET_STATUS[asset.trend].icon"
+            :tone="ASSET_STATUS[asset.trend].tone"
+            :label="asset.trendLabel"
+            :value="formatPercent(asset.weightPercent)"
+          />
         </ul>
       </CardContent>
 

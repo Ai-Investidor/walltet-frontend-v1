@@ -25,6 +25,7 @@ const TEXT_STYLES = [
   'nav-item',
   'metric',
   'metric-sm',
+  'metric-md',
   'table-row',
   'table-value',
   'chart-label',

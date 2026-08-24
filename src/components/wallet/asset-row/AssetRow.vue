@@ -11,7 +11,12 @@ interface Props {
   /** Ícone Phosphor já resolvido pelo caller (ex.: `PhArrowDownRight`). */
   icon: Component
   /** Classe utilitária de cor aplicada ao ícone e ao rótulo. */
-  tone: 'text-success' | 'text-warning' | 'text-foreground' | 'text-muted-foreground-faint'
+  tone:
+    | 'text-success'
+    | 'text-warning'
+    | 'text-foreground'
+    | 'text-muted-foreground'
+    | 'text-muted-foreground-faint'
   /** Rótulo de status em caixa alta (ex.: "ENTROU"). */
   label: string
   /** Valor já formatado, alinhado à direita (ex.: "20,00 %"). */

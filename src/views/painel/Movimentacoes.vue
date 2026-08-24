@@ -31,7 +31,7 @@ const DIRECTIONS: Record<Movement['direction'], { icon: Component; tone: string 
 </script>
 
 <template>
-  <section :class="cn('flex flex-col gap-8', props.class)">
+  <section :class="cn('flex flex-col gap-6', props.class)">
     <Card :class="CARD_SURFACE">
       <CardHeader class="flex items-center justify-between gap-3 px-4 py-3.5">
         <h2 class="text-card-title">

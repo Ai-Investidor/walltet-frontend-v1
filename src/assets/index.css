@@ -258,6 +258,14 @@
   letter-spacing: -0.02em;
 }
 
+@utility text-metric-md {
+  font-family: var(--font-heading);
+  font-size: 2.125rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
 @utility text-table-row {
   font-size: 0.86rem;
   font-weight: 400;

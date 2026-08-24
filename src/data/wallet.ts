@@ -30,6 +30,24 @@ export interface Movement {
   label: string
 }
 
+export interface WealthSummary {
+  value: string
+  changePercent: string
+  changeLabel: string
+}
+
+export interface AssetStatusOverride {
+  code: string
+  trend: Asset['trend']
+  trendLabel: string
+}
+
+export interface WealthEvolutionPoint {
+  month: string
+  heightPercent: number
+  isCurrent: boolean
+}
+
 export interface Report {
   title: string
   generatedAt: string
@@ -113,6 +131,50 @@ export const kpis: Kpi[] = [
     note: 'Revisada em 01/08/2026',
     tone: 'neutral',
   },
+  {
+    label: 'Aporte do mês',
+    value: 'R$ 3.500,00',
+    note: 'Débito automático · dia 05',
+    tone: 'neutral',
+  },
+  {
+    label: 'Dividendos no ano',
+    value: 'R$ 4.812,90',
+    note: '+18 % vs. 2025',
+    tone: 'positive',
+  },
+]
+
+export const totalWealth: WealthSummary = {
+  value: 'R$ 487.320,18',
+  changePercent: '+8,42 %',
+  changeLabel: 'no ano · desde jan/2026',
+}
+
+// Status "deste mês" só para o Painel — não altera `assets`, que é compartilhado
+// com /carteira e narra a janela de tempo de `revisionNote`.
+export const painelAssetStatus: AssetStatusOverride[] = [
+  { code: 'TD', trend: 'flat', trendLabel: 'Manter' },
+  { code: 'VL', trend: 'flat', trendLabel: 'Manter' },
+  { code: 'BB', trend: 'flat', trendLabel: 'Manter' },
+  { code: 'MX', trend: 'up', trendLabel: 'Entrou' },
+]
+
+// Alturas relativas das 12 barras (proporção visual extraída do design, não
+// valores em R$ reais).
+export const wealthEvolution: WealthEvolutionPoint[] = [
+  { month: 'S', heightPercent: 15.8, isCurrent: false },
+  { month: 'O', heightPercent: 21.7, isCurrent: false },
+  { month: 'N', heightPercent: 27.2, isCurrent: false },
+  { month: 'D', heightPercent: 32.6, isCurrent: false },
+  { month: 'J', heightPercent: 68.5, isCurrent: false },
+  { month: 'F', heightPercent: 73.4, isCurrent: false },
+  { month: 'M', heightPercent: 70.1, isCurrent: false },
+  { month: 'A', heightPercent: 79.3, isCurrent: false },
+  { month: 'M', heightPercent: 84.8, isCurrent: false },
+  { month: 'J', heightPercent: 89.1, isCurrent: false },
+  { month: 'J', heightPercent: 93.5, isCurrent: false },
+  { month: 'A', heightPercent: 97.8, isCurrent: true },
 ]
 
 export const allocation: AllocationClass[] = [

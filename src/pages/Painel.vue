@@ -1,15 +1,20 @@
 <script setup lang="ts">
+import Cabecalho from '@views/painel/Cabecalho.vue'
 import Carteira from '@views/painel/Carteira.vue'
+import EvolucaoPatrimonial from '@views/painel/EvolucaoPatrimonial.vue'
+import Indicadores from '@views/painel/Indicadores.vue'
 import Movimentacoes from '@views/painel/Movimentacoes.vue'
-import Overview from '@views/painel/Overview.vue'
 </script>
 
 <template>
-  <div class="flex flex-col gap-8 p-8">
-    <Overview />
-    <div class="flex gap-6 max-lg:flex-col">
-      <Carteira class="w-123.5 max-lg:w-full" />
-      <Movimentacoes class="w-91.5 max-lg:w-full" />
+  <div class="flex flex-col gap-7 px-10 py-8">
+    <Cabecalho />
+    <Indicadores />
+
+    <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_22.5rem] gap-6 max-2xl:grid-cols-2 max-lg:grid-cols-1">
+      <Carteira />
+      <EvolucaoPatrimonial />
+      <Movimentacoes class="max-2xl:col-span-2 max-lg:col-span-1" />
     </div>
   </div>
 </template>

@@ -61,6 +61,28 @@ const routes = [
     component: () => import('@pages/RecuperarSenha.vue'),
     meta: { title: 'Recuperar senha' },
   },
+  // {
+  //   path: '/recuperar-senha/link-enviado',
+  //   name: 'link-enviado',
+  //   component: () => import('@pages/LinkEnviado.vue'),
+  //   meta: { title: 'Link enviado' },
+  // },
+  {
+    path: '/403',
+    name: 'acesso-restrito',
+    component: () => import('@pages/AcessoRestrito.vue'),
+    meta: { title: 'Acesso restrito' },
+  },
+  {
+    path: '/404',
+    name: 'nao-encontrada',
+    component: () => import('@pages/NaoEncontrada.vue'),
+    meta: { title: 'Página não encontrada' },
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { name: 'nao-encontrada' },
+  },
 ]
 
 export const router = createRouter({
