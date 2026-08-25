@@ -5,7 +5,7 @@ import { Card } from '@components/ui/card'
 import { Input } from '@components/ui/input'
 import type { SuitabilityRange } from '@data/admin'
 import { suitabilityRanges } from '@data/admin'
-import { PhCheckCircle, PhWarning } from '@phosphor-icons/vue'
+import { PhCheckCircle, PhPencilSimple, PhWarning } from '@phosphor-icons/vue'
 import { computed, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
@@ -24,20 +24,26 @@ const TONE_FILL: Record<SuitabilityRange['tone'], string> = {
   'data-4': 'bg-data-4',
 }
 
-// Cópia local editável, na ordem crescente de pontuação.
-const ranges = ref<SuitabilityRange[]>(
-  [...suitabilityRanges].sort((a, b) => a.min - b.min).map((range) => ({ ...range })),
-)
+function snapshot(source: SuitabilityRange[]) {
+  return [...source].sort((a, b) => a.min - b.min).map((range) => ({ ...range }))
+}
 
-const confirmOpen = ref(false)
+/** Última versão confirmada — base do descarte e da comparação de alteração. */
+const saved = ref<SuitabilityRange[]>(snapshot(suitabilityRanges))
+const ranges = ref<SuitabilityRange[]>(snapshot(suitabilityRanges))
+
+// As faixas só abrem para digitação depois do "Editar".
+const isEditing = ref(false)
+
+const confirmSaveOpen = ref(false)
+const confirmDiscardOpen = ref(false)
 
 const scaleSize = computed(() => SCALE_MAX - SCALE_MIN + 1)
 
 const isDirty = computed(() =>
-  ranges.value.some((range, index) => {
-    const original = [...suitabilityRanges].sort((a, b) => a.min - b.min)[index]
-    return range.min !== original.min || range.max !== original.max
-  }),
+  ranges.value.some(
+    (range, index) => range.min !== saved.value[index].min || range.max !== saved.value[index].max,
+  ),
 )
 
 /** As faixas são válidas quando cobrem a escala inteira sem lacuna nem sobreposição. */
@@ -78,11 +84,27 @@ function barWidth(range: SuitabilityRange) {
   return `${(size / scaleSize.value) * 100}%`
 }
 
-function reset() {
-  ranges.value = [...suitabilityRanges].sort((a, b) => a.min - b.min).map((range) => ({ ...range }))
+function startEdit() {
+  isEditing.value = true
+}
+
+function requestCancel() {
+  if (isDirty.value) {
+    confirmDiscardOpen.value = true
+    return
+  }
+
+  isEditing.value = false
+}
+
+function discard() {
+  ranges.value = snapshot(saved.value)
+  isEditing.value = false
 }
 
 function save() {
+  saved.value = snapshot(ranges.value)
+  isEditing.value = false
   toast.success('Parâmetros de suitability salvos')
 }
 </script>
@@ -104,39 +126,45 @@ function save() {
         />
       </div>
 
-      <div class="bg-border grid grid-cols-4 gap-px overflow-hidden rounded-md border">
+      <dl class="bg-border grid grid-cols-4 gap-px overflow-hidden rounded-md border">
         <div v-for="range in ranges" :key="range.label" class="bg-card flex flex-col gap-2 p-4">
-          <p :id="`faixa-${range.tone}`" class="text-eyebrow text-muted-foreground-faint">
+          <dt class="text-eyebrow text-muted-foreground-faint">
             {{ range.label }}
-          </p>
+          </dt>
 
-          <div class="flex items-center gap-2">
-            <Input
-              v-model.number="range.min"
-              type="number"
-              :min="SCALE_MIN"
-              :max="SCALE_MAX"
-              inputmode="numeric"
-              :class="BOUND_FIELD"
-              :aria-label="`Pontuação mínima do perfil ${range.label}`"
-            />
+          <dd v-if="!isEditing" class="text-subtitle-strong tabular-nums">
+            {{ range.min }} a {{ range.max }} pontos
+          </dd>
 
-            <span class="text-label text-muted-foreground-faint">a</span>
+          <dd v-else class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+              <Input
+                v-model.number="range.min"
+                type="number"
+                :min="SCALE_MIN"
+                :max="SCALE_MAX"
+                inputmode="numeric"
+                :class="BOUND_FIELD"
+                :aria-label="`Pontuação mínima do perfil ${range.label}`"
+              />
 
-            <Input
-              v-model.number="range.max"
-              type="number"
-              :min="SCALE_MIN"
-              :max="SCALE_MAX"
-              inputmode="numeric"
-              :class="BOUND_FIELD"
-              :aria-label="`Pontuação máxima do perfil ${range.label}`"
-            />
-          </div>
+              <span class="text-label text-muted-foreground-faint">a</span>
 
-          <p class="text-label text-muted-foreground-faint">pontos</p>
+              <Input
+                v-model.number="range.max"
+                type="number"
+                :min="SCALE_MIN"
+                :max="SCALE_MAX"
+                inputmode="numeric"
+                :class="BOUND_FIELD"
+                :aria-label="`Pontuação máxima do perfil ${range.label}`"
+              />
+            </div>
+
+            <span class="text-label text-muted-foreground-faint">pontos</span>
+          </dd>
         </div>
-      </div>
+      </dl>
 
       <p
         class="text-label flex items-center gap-2.5 rounded-md border px-3.75 py-3.25"
@@ -162,34 +190,58 @@ function save() {
 
       <div class="flex gap-3">
         <Button
-          type="button"
-          size="lg"
-          class="text-button-sm rounded-sm px-4"
-          :disabled="!isValid || !isDirty"
-          @click="confirmOpen = true"
-        >
-          Salvar parâmetros
-        </Button>
-
-        <Button
-          v-if="isDirty"
+          v-if="!isEditing"
           type="button"
           variant="outline"
           size="lg"
-          class="text-button-sm rounded-sm border-foreground px-4"
-          @click="reset"
+          class="text-button-sm gap-2.5 rounded-sm border-foreground px-4"
+          @click="startEdit"
         >
-          Descartar alterações
+          <PhPencilSimple class="size-4" aria-hidden="true" />
+          Editar faixas
         </Button>
+
+        <template v-else>
+          <Button
+            type="button"
+            size="lg"
+            class="text-button-sm rounded-sm px-4"
+            :disabled="!isValid || !isDirty"
+            @click="confirmSaveOpen = true"
+          >
+            Salvar parâmetros
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            class="text-button-sm rounded-sm border-foreground px-4"
+            @click="requestCancel"
+          >
+            Cancelar
+          </Button>
+        </template>
       </div>
     </div>
   </Card>
 
   <ConfirmDialog
-    v-model:open="confirmOpen"
+    v-model:open="confirmSaveOpen"
     title="Salvar os parâmetros de suitability?"
     description="As novas faixas valem apenas para avaliações futuras. Os perfis já atribuídos aos investidores não são recalculados."
     confirm-label="Salvar parâmetros"
+    cancel-label="Voltar à edição"
     @confirm="save"
+  />
+
+  <ConfirmDialog
+    v-model:open="confirmDiscardOpen"
+    title="Descartar as alterações?"
+    description="As faixas voltam aos valores salvos."
+    confirm-label="Descartar"
+    cancel-label="Continuar editando"
+    tone="destructive"
+    @confirm="discard"
   />
 </template>

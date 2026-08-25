@@ -49,7 +49,9 @@ const TONE_ACTION: Record<ConfirmTone, string> = {
       data-slot="confirm-dialog"
       :class="cn('gap-0 rounded-lg p-0 sm:max-w-115', props.class)"
     >
-      <AlertDialogHeader class="gap-3 p-5">
+      <!-- O header do kit é um grid com place-items-start: sem o stretch, o slot
+           encolhe para o conteúdo e desalinha da descrição. -->
+      <AlertDialogHeader class="gap-3 p-5 [&>*]:w-full">
         <AlertDialogTitle class="text-subtitle">
           {{ props.title }}
         </AlertDialogTitle>
