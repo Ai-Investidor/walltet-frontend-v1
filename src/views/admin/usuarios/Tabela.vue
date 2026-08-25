@@ -23,10 +23,28 @@ import {
   TableRow,
 } from '@components/ui/table'
 import type { AdminUser } from '@data/admin'
-import { adminUsers } from '@data/admin'
-import { PhMagnifyingGlass, PhProhibit, PhX } from '@phosphor-icons/vue'
+import {
+  PhArrowCounterClockwise,
+  PhMagnifyingGlass,
+  PhPencilSimple,
+  PhProhibit,
+  PhTrash,
+  PhX,
+} from '@phosphor-icons/vue'
 import { computed, ref } from 'vue'
-import { toast } from 'vue-sonner'
+
+interface Props {
+  users: AdminUser[]
+}
+
+const props = defineProps<Props>()
+
+const emit = defineEmits<{
+  editar: [user: AdminUser]
+  inativar: [user: AdminUser]
+  reativar: [user: AdminUser]
+  excluir: [user: AdminUser]
+}>()
 
 /** Card do design: papel com borda de 1px e raio de 8px, sem o ring e o padding vertical do kit. */
 const CARD_SURFACE = 'gap-0 rounded-lg border py-0 ring-0'
@@ -34,6 +52,7 @@ const CARD_SURFACE = 'gap-0 rounded-lg border py-0 ring-0'
 const HEAD_CELL = 'text-eyebrow text-muted-foreground-faint h-auto px-4.5 py-2.5'
 const BODY_CELL = 'px-4.5 py-3'
 const DATA_TILE = 'bg-card flex flex-col gap-1 p-3.5'
+const DRAWER_ACTION = 'text-button-xs gap-2 rounded-sm border-foreground px-3.5'
 
 const COLUMNS = [
   { label: 'Usuário', width: '' },
@@ -44,28 +63,53 @@ const COLUMNS = [
 ]
 
 const search = ref('')
-const selectedUser = ref<AdminUser | null>(null)
+
+// Guarda o id, não o objeto: depois de uma edição a lista traz um novo objeto e
+// o drawer precisa refletir o dado atual.
+const selectedId = ref<string | null>(null)
+
+const selectedUser = computed(
+  () => props.users.find((user) => user.id === selectedId.value) ?? null,
+)
 
 const visibleUsers = computed(() => {
   const term = search.value.trim().toLocaleLowerCase('pt-BR')
 
   if (!term) {
-    return adminUsers
+    return props.users
   }
 
-  return adminUsers.filter(
+  return props.users.filter(
     (user) =>
       user.name.toLocaleLowerCase('pt-BR').includes(term) ||
       user.email.toLocaleLowerCase('pt-BR').includes(term),
   )
 })
 
-function gaugeLabel(user: AdminUser) {
-  return `Perfil ${user.profileLabel?.toLocaleLowerCase('pt-BR')}, nível ${user.profileLevel} de 4`
+// Toda ação fecha o detalhe antes de seguir: o overlay do drawer fica por cima
+// do diálogo de confirmação e bloqueia o clique. O nome do usuário aparece na
+// própria confirmação, então o contexto não se perde.
+function request(action: 'editar' | 'inativar' | 'reativar' | 'excluir', user: AdminUser) {
+  selectedId.value = null
+
+  // `emit` é sobrecarregado por evento, então não aceita a união direto.
+  switch (action) {
+    case 'editar':
+      emit('editar', user)
+      break
+    case 'inativar':
+      emit('inativar', user)
+      break
+    case 'reativar':
+      emit('reativar', user)
+      break
+    default:
+      emit('excluir', user)
+  }
 }
 
-function openUser(user: AdminUser) {
-  selectedUser.value = user
+function gaugeLabel(user: AdminUser) {
+  return `Perfil ${user.profileLabel?.toLocaleLowerCase('pt-BR')}, nível ${user.profileLevel} de 4`
 }
 </script>
 
@@ -112,7 +156,7 @@ function openUser(user: AdminUser) {
 
           <TableRow v-for="user in visibleUsers" :key="user.id">
             <TableCell :class="BODY_CELL">
-              <button type="button" class="block text-left" @click="openUser(user)">
+              <button type="button" class="block text-left" @click="selectedId = user.id">
                 <span class="text-paragraph-strong block hover:text-success">{{ user.name }}</span>
                 <span class="text-label block text-muted-foreground-faint">{{ user.email }}</span>
               </button>
@@ -144,7 +188,7 @@ function openUser(user: AdminUser) {
       </Table>
     </Card>
 
-    <Sheet :open="Boolean(selectedUser)" @update:open="selectedUser = null">
+    <Sheet :open="Boolean(selectedUser)" @update:open="selectedId = null">
       <SheetContent
         v-if="selectedUser"
         side="right"
@@ -234,26 +278,51 @@ function openUser(user: AdminUser) {
             </ol>
           </div>
 
-          <div class="flex gap-3 border-t border-border-strong pt-3.5">
+          <div class="flex flex-wrap gap-3 border-t border-border-strong pt-3.5">
             <Button
               type="button"
               variant="outline"
               size="lg"
-              class="text-button-sm rounded-sm border-foreground px-4"
-              @click="toast.info('A edição de papel e status entra na próxima etapa.')"
+              :class="DRAWER_ACTION"
+              @click="request('editar', selectedUser)"
             >
-              Editar papel e status
+              <PhPencilSimple aria-hidden="true" />
+              Editar cadastro
+            </Button>
+
+            <Button
+              v-if="selectedUser.active"
+              type="button"
+              variant="outline"
+              size="lg"
+              :class="[DRAWER_ACTION, 'border-warning text-warning hover:bg-warning/10 hover:text-warning']"
+              @click="request('inativar', selectedUser)"
+            >
+              <PhProhibit aria-hidden="true" />
+              Inativar usuário
+            </Button>
+
+            <Button
+              v-else
+              type="button"
+              variant="outline"
+              size="lg"
+              :class="[DRAWER_ACTION, 'border-success text-success hover:bg-success/10 hover:text-success']"
+              @click="request('reativar', selectedUser)"
+            >
+              <PhArrowCounterClockwise aria-hidden="true" />
+              Reativar usuário
             </Button>
 
             <Button
               type="button"
               variant="outline"
               size="lg"
-              class="text-button-sm gap-2 rounded-sm border-warning px-4 text-warning hover:bg-warning/10 hover:text-warning"
-              @click="toast.warning('Inativação exige confirmação')"
+              :class="[DRAWER_ACTION, 'border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive']"
+              @click="request('excluir', selectedUser)"
             >
-              <PhProhibit class="size-3.5" aria-hidden="true" />
-              Inativar usuário
+              <PhTrash aria-hidden="true" />
+              Excluir usuário
             </Button>
           </div>
         </div>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { assetClasses, catalogAssets } from '@data/admin'
+import type { CatalogAsset } from '@data/admin'
+import { assetClasses } from '@data/admin'
 import { formatPercent } from '@utils/format'
 import { computed } from 'vue'
 
 interface Props {
+  assets: CatalogAsset[]
   activeClass: string
 }
 
@@ -12,7 +14,7 @@ const props = defineProps<Props>()
 const selected = computed(() => assetClasses.find((item) => item.label === props.activeClass))
 
 const assetCount = computed(
-  () => catalogAssets.filter((asset) => asset.className === props.activeClass).length,
+  () => props.assets.filter((asset) => asset.className === props.activeClass).length,
 )
 </script>
 

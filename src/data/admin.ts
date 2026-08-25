@@ -273,7 +273,12 @@ export interface CatalogAsset {
   className: string
   walletCount: number
   active: boolean
+  /** Justificativa registrada na inativação; vazia enquanto o ativo estiver ativo. */
+  deactivationReason?: string
 }
+
+/** Rótulos das classes, na ordem do catálogo — alimenta os seletores de formulário. */
+export const assetClassLabels = ['Renda Fixa', 'Ações BR', 'FII']
 
 export const assetClasses: AssetClass[] = [
   {
@@ -371,6 +376,8 @@ export interface AdminUser {
   since: string
   history: SuitabilityEntry[]
 }
+
+export const userRoles: AdminUser['role'][] = ['Cliente', 'Analista']
 
 export const adminUsers: AdminUser[] = [
   {

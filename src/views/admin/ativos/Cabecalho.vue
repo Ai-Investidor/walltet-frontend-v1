@@ -2,7 +2,10 @@
 import { PageHeader } from '@components/shared/page-header'
 import { Button } from '@components/ui/button'
 import { PhPlus } from '@phosphor-icons/vue'
-import { toast } from 'vue-sonner'
+
+const emit = defineEmits<{
+  novo: []
+}>()
 </script>
 
 <template>
@@ -16,7 +19,7 @@ import { toast } from 'vue-sonner'
         type="button"
         size="lg"
         class="text-button-sm gap-2.5 rounded-sm px-4"
-        @click="toast.info('O cadastro de ativos entra na próxima etapa.')"
+        @click="emit('novo')"
       >
         <PhPlus class="size-4" aria-hidden="true" />
         Novo ativo

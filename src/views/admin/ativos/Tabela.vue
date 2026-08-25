@@ -14,17 +14,23 @@ import {
   TableRow,
 } from '@components/ui/table'
 import { ALL_CLASSES } from '@constants/asset-class'
-import { catalogAssets } from '@data/admin'
-import { PhPencilSimple, PhProhibit } from '@phosphor-icons/vue'
+import type { CatalogAsset } from '@data/admin'
+import { PhArrowCounterClockwise, PhPencilSimple, PhProhibit } from '@phosphor-icons/vue'
 import { computed } from 'vue'
-import { toast } from 'vue-sonner'
 
 interface Props {
+  assets: CatalogAsset[]
   /** Classe selecionada nos filtros, ou `ALL_CLASSES` para o catálogo inteiro. */
   activeClass: string
 }
 
 const props = defineProps<Props>()
+
+const emit = defineEmits<{
+  editar: [asset: CatalogAsset]
+  inativar: [asset: CatalogAsset]
+  reativar: [asset: CatalogAsset]
+}>()
 
 /** Card do design: papel com borda de 1px e raio de 8px, sem o ring e o padding vertical do kit. */
 const CARD_SURFACE = 'gap-0 rounded-lg border py-0 ring-0'
@@ -43,8 +49,8 @@ const COLUMNS = [
 
 const visibleAssets = computed(() =>
   props.activeClass === ALL_CLASSES
-    ? catalogAssets
-    : catalogAssets.filter((asset) => asset.className === props.activeClass),
+    ? props.assets
+    : props.assets.filter((asset) => asset.className === props.activeClass),
 )
 </script>
 
@@ -96,7 +102,10 @@ const visibleAssets = computed(() =>
           </TableCell>
 
           <TableCell :class="BODY_CELL">
-            <StatusBadge :tone="asset.active ? 'success' : 'muted'">
+            <StatusBadge
+              :tone="asset.active ? 'success' : 'muted'"
+              :title="asset.active ? undefined : asset.deactivationReason"
+            >
               {{ asset.active ? 'Ativo' : 'Inativo' }}
             </StatusBadge>
           </TableCell>
@@ -109,20 +118,33 @@ const visibleAssets = computed(() =>
                 size="icon-sm"
                 :class="ICON_ACTION"
                 :aria-label="`Editar ${asset.ticker}`"
-                @click="toast.info(`Edição de ${asset.ticker} entra na próxima etapa.`)"
+                @click="emit('editar', asset)"
               >
                 <PhPencilSimple class="size-3.5" aria-hidden="true" />
               </Button>
 
               <Button
+                v-if="asset.active"
                 type="button"
                 variant="outline"
                 size="icon-sm"
                 :class="ICON_ACTION"
                 :aria-label="`Inativar ${asset.ticker}`"
-                @click="toast.warning('Inativação exige confirmação')"
+                @click="emit('inativar', asset)"
               >
                 <PhProhibit class="size-3.5" aria-hidden="true" />
+              </Button>
+
+              <Button
+                v-else
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                :class="ICON_ACTION"
+                :aria-label="`Reativar ${asset.ticker}`"
+                @click="emit('reativar', asset)"
+              >
+                <PhArrowCounterClockwise class="size-3.5" aria-hidden="true" />
               </Button>
             </span>
           </TableCell>
