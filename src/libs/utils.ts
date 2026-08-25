@@ -32,6 +32,10 @@ const TEXT_STYLES = [
   'card-title',
   'topbar-title',
   'topbar-meta',
+  'subtitle',
+  'subtitle-strong',
+  'meta',
+  'chip',
   'tag',
   'tag-sm',
 ]

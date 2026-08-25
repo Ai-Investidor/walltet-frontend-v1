@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AssetChip } from '@components/shared/asset-chip'
 import type { Component, HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
@@ -27,12 +28,7 @@ const props = defineProps<Props>()
     data-slot="asset-row"
     :class="cn('border-border flex items-center gap-3.5 px-3.5 py-2.5 not-first:border-t', props.class)"
   >
-    <span
-      class="text-eyebrow flex h-7.5 w-8.5 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground"
-      aria-hidden="true"
-    >
-      {{ props.code }}
-    </span>
+    <AssetChip :code="props.code" />
 
     <div class="min-w-0 flex-1">
       <p class="text-paragraph-strong truncate">
