@@ -33,7 +33,7 @@ const pageTitle = computed(() => resolveRouteTitle(route))
     <SidebarInset>
       <AppTopbar :title="pageTitle" initials="AS" />
 
-      <main class="flex-1 overflow-y-auto">
+      <main class="min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
         <RouterView />
       </main>
     </SidebarInset>
