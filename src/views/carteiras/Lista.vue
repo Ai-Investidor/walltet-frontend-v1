@@ -10,6 +10,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@components/ui/sheet'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@components/ui/tooltip'
 import type { AllocationClass, RecommendedWallet } from '@data/wallet'
 import { recommendedWallets } from '@data/wallet'
 import { PhArrowRight, PhWarning, PhX } from '@phosphor-icons/vue'
@@ -40,10 +41,6 @@ function gaugeLabel(profileLabel: string, profileLevel: number) {
   return `Perfil ${profileLabel.toLocaleLowerCase('pt-BR')}, nível ${profileLevel} de 4`
 }
 
-function allocationLabel(allocation: AllocationClass[]) {
-  return allocation.map((slice) => `${slice.label} ${slice.percent} %`).join(', ')
-}
-
 const percentFormatter = new Intl.NumberFormat('pt-BR', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
@@ -54,6 +51,12 @@ function formatPercent(value: number) {
 }
 
 const ownWallet = computed(() => recommendedWallets.find((wallet) => wallet.isOwn))
+
+const selectedAllocation = ref<string | null>(null)
+
+function highlightAllocation(label: string | null) {
+  selectedAllocation.value = label
+}
 
 const drawerOpen = ref(false)
 const selectedWallet = ref<RecommendedWallet | null>(null)
@@ -84,69 +87,74 @@ function openComposicao(wallet: RecommendedWallet) {
       </button>
     </div>
 
-    <ul class="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
-      <li
-        v-for="wallet in visibleWallets"
-        :key="wallet.slug"
-        data-slot="wallet-card"
-        class="bg-card flex flex-col gap-4 rounded-lg border border-border p-5"
-      >
-        <div class="flex items-center justify-between gap-3">
-          <ProfileGauge
-            :level="wallet.profileLevel"
-            :tone="wallet.isOwn ? 'success' : 'neutral'"
-            :label="gaugeLabel(wallet.profileLabel, wallet.profileLevel)"
-          />
-
-          <p class="text-eyebrow" :class="wallet.isOwn ? 'text-success' : 'text-muted-foreground'">
-            {{ wallet.profileLabel }}
-          </p>
-        </div>
-
-        <div class="flex flex-col gap-1.5">
-          <h2 class="text-card-title">
-            {{ wallet.name }}
-          </h2>
-
-          <p class="text-label text-muted-foreground">
-            {{ wallet.description }}
-          </p>
-        </div>
-
-        <div
-          class="flex h-2.5 overflow-hidden rounded-sm"
-          role="img"
-          :aria-label="allocationLabel(wallet.allocationPreview)"
+    <TooltipProvider>
+      <ul class="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
+        <li
+          v-for="wallet in visibleWallets"
+          :key="wallet.slug"
+          data-slot="wallet-card"
+          class="bg-card flex flex-col gap-4 rounded-lg border border-border p-5"
         >
-          <span
-            v-for="slice in wallet.allocationPreview"
-            :key="slice.label"
-            class="h-full"
-            :class="ALLOCATION_TONE[slice.tone]"
-            :style="{ width: `${slice.percent}%` }"
-          />
-        </div>
+          <div class="flex items-center justify-between gap-3">
+            <ProfileGauge
+              :level="wallet.profileLevel"
+              :tone="wallet.isOwn ? 'success' : 'neutral'"
+              :label="gaugeLabel(wallet.profileLabel, wallet.profileLevel)"
+            />
 
-        <div class="flex flex-col gap-4 border-t border-border pt-4">
-          <p class="text-label text-muted-foreground">
-            {{ wallet.meta }}
-          </p>
-
-          <div class="flex justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              :class="ACTION_CLASS"
-              @click="openComposicao(wallet)"
-            >
-              Ver composição
-              <PhArrowRight class="size-4" aria-hidden="true" />
-            </Button>
+            <p class="text-eyebrow" :class="wallet.isOwn ? 'text-success' : 'text-muted-foreground'">
+              {{ wallet.profileLabel }}
+            </p>
           </div>
-        </div>
-      </li>
-    </ul>
+
+          <div class="flex flex-col gap-1.5">
+            <h2 class="text-card-title">
+              {{ wallet.name }}
+            </h2>
+
+            <p class="text-label text-muted-foreground">
+              {{ wallet.description }}
+            </p>
+          </div>
+
+          <div class="flex h-2.5 overflow-hidden rounded-sm">
+            <Tooltip v-for="slice in wallet.allocationPreview" :key="slice.label">
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="h-full transition-colors hover:bg-success focus-visible:bg-success"
+                  :class="ALLOCATION_TONE[slice.tone]"
+                  :style="{ width: `${slice.percent}%` }"
+                  :aria-label="`${slice.label} ${formatPercent(slice.percent)}`"
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ slice.label }} {{ formatPercent(slice.percent) }}
+              </TooltipContent>
+            </Tooltip>
+          </div>
+
+          <div class="flex flex-col gap-4 border-t border-border pt-4">
+            <p class="text-label text-muted-foreground">
+              {{ wallet.meta }}
+            </p>
+
+            <div class="flex justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                :class="ACTION_CLASS"
+                @click="openComposicao(wallet)"
+              >
+                Ver composição
+                <PhArrowRight class="size-4" aria-hidden="true" />
+              </Button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </TooltipProvider>
 
     <Sheet v-model:open="drawerOpen">
       <SheetContent
@@ -189,17 +197,19 @@ function openComposicao(wallet: RecommendedWallet) {
               Alocação por classe
             </h3>
 
-            <div
-              class="flex h-2.5 overflow-hidden rounded-sm"
-              role="img"
-              :aria-label="allocationLabel(selectedWallet.allocationPreview)"
-            >
-              <span
+            <div class="flex h-2.5 overflow-hidden rounded-sm">
+              <button
                 v-for="slice in selectedWallet.allocationPreview"
                 :key="slice.label"
-                class="h-full"
-                :class="ALLOCATION_TONE[slice.tone]"
+                type="button"
+                class="h-full transition-colors"
+                :class="selectedAllocation === slice.label ? 'bg-success' : ALLOCATION_TONE[slice.tone]"
                 :style="{ width: `${slice.percent}%` }"
+                :aria-label="`${slice.label} ${formatPercent(slice.percent)}`"
+                @mouseenter="highlightAllocation(slice.label)"
+                @mouseleave="highlightAllocation(null)"
+                @focus="highlightAllocation(slice.label)"
+                @blur="highlightAllocation(null)"
               />
             </div>
 
@@ -207,7 +217,8 @@ function openComposicao(wallet: RecommendedWallet) {
               <li
                 v-for="slice in selectedWallet.allocationPreview"
                 :key="slice.label"
-                class="text-label text-muted-foreground"
+                class="text-label"
+                :class="selectedAllocation === slice.label ? 'text-success' : 'text-muted-foreground'"
               >
                 {{ slice.label }} {{ formatPercent(slice.percent) }}
               </li>
