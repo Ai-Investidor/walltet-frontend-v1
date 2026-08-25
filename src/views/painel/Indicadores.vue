@@ -5,7 +5,7 @@ import { kpis } from '@data/wallet'
 
 <template>
   <ul
-    class="bg-border grid grid-cols-6 gap-px overflow-hidden rounded-lg border max-2xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1"
+    class="bg-border flex gap-px overflow-x-auto rounded-lg border max-sm:grid max-sm:grid-cols-1 max-sm:overflow-visible"
   >
     <KpiCard
       v-for="kpi in kpis"
@@ -14,6 +14,7 @@ import { kpis } from '@data/wallet'
       :value="kpi.value"
       :note="kpi.note"
       :tone="kpi.tone"
+      class="min-w-55 flex-1 shrink-0"
     />
   </ul>
 </template>

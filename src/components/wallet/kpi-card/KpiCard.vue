@@ -31,7 +31,9 @@ const VALUE_TONE = {
   neutral: 'text-foreground',
 } as const
 
-const valueClass = computed(() => cn(VALUE_SIZE[props.size], VALUE_TONE[props.tone]))
+const valueClass = computed(() =>
+  cn(VALUE_SIZE[props.size], VALUE_TONE[props.tone], 'whitespace-nowrap'),
+)
 </script>
 
 <template>
