@@ -1,7 +1,15 @@
 // DADOS ESTÁTICOS — trocar por camada dinâmica (service/store/composable) quando a skill existir.
 // Assinaturas e tipos são o contrato; não alterar sem atualizar o manifesto.
 
-export type NavigationIcon = 'PhSquaresFour' | 'PhChartPie' | 'PhFileText' | 'PhStack' | 'PhUser'
+export type NavigationIcon =
+  | 'PhSquaresFour'
+  | 'PhChartPie'
+  | 'PhFileText'
+  | 'PhStack'
+  | 'PhUser'
+  | 'PhChartBar'
+  | 'PhUsers'
+  | 'PhSlidersHorizontal'
 
 export interface NavigationItem {
   label: string
@@ -34,5 +42,28 @@ export const navigationGroups: NavigationGroup[] = [
   {
     label: 'Conta',
     items: [{ label: 'Minha conta', icon: 'PhUser', to: '/conta', available: true }],
+  },
+]
+
+export const adminNavigationGroups: NavigationGroup[] = [
+  {
+    label: 'Gestão',
+    items: [
+      { label: 'Painel', icon: 'PhSquaresFour', to: '/admin', available: true },
+      { label: 'Carteiras', icon: 'PhStack', to: '/admin/carteiras', available: true },
+      { label: 'Ativos', icon: 'PhChartBar', to: '/admin/ativos', available: true },
+      { label: 'Usuários', icon: 'PhUsers', to: '/admin/usuarios', available: true },
+    ],
+  },
+  {
+    label: 'Sistema',
+    items: [
+      {
+        label: 'Configurações',
+        icon: 'PhSlidersHorizontal',
+        to: '/admin/configuracoes',
+        available: true,
+      },
+    ],
   },
 ]

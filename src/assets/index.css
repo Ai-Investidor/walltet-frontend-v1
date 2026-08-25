@@ -210,20 +210,23 @@
 }
 
 @utility text-button {
+  font-family: var(--font-heading);
   font-size: 1.0625rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
 }
 
 @utility text-button-sm {
+  font-family: var(--font-heading);
   font-size: 0.9375rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
 }
 
 @utility text-button-xs {
+  font-family: var(--font-heading);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -319,6 +322,34 @@
 @utility text-topbar-meta {
   font-family: var(--font-heading);
   font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+@utility text-subtitle {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+@utility text-subtitle-strong {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+@utility text-meta {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+@utility text-chip {
+  font-family: var(--font-heading);
+  font-size: 0.74rem;
   font-weight: 700;
   line-height: 1.3;
 }
