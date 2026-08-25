@@ -6,7 +6,7 @@ import type { AllocationClass, Asset } from '@data/wallet'
 import { allocation, assets, painelAssetStatus } from '@data/wallet'
 import { PhArrowDownRight, PhArrowRight, PhArrowUpRight, PhMinus } from '@phosphor-icons/vue'
 import type { Component, HTMLAttributes } from 'vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<{
@@ -42,6 +42,12 @@ function formatPercent(value: number) {
   return `${percentFormatter.format(value)} %`
 }
 
+const selectedAllocation = ref<string | null>(null)
+
+function highlightAllocation(label: string | null) {
+  selectedAllocation.value = label
+}
+
 // Status "deste mês" é específico do Painel — junta com `assets` sem alterar
 // o dado compartilhado com /carteira.
 const composicao = computed(() =>
@@ -73,18 +79,29 @@ const composicao = computed(() =>
           Alocação por classe
         </h3>
 
-        <div class="flex h-2.5 overflow-hidden rounded-sm" aria-hidden="true">
-          <span
+        <div class="flex h-2.5 overflow-hidden rounded-sm">
+          <button
             v-for="item in allocation"
             :key="item.label"
-            class="h-full"
-            :class="ALLOCATION_TONE[item.tone]"
+            type="button"
+            class="h-full transition-colors"
+            :class="selectedAllocation === item.label ? 'bg-success' : ALLOCATION_TONE[item.tone]"
             :style="{ width: `${item.percent}%` }"
+            :aria-label="`${item.label} ${formatPercent(item.percent)}`"
+            @mouseenter="highlightAllocation(item.label)"
+            @mouseleave="highlightAllocation(null)"
+            @focus="highlightAllocation(item.label)"
+            @blur="highlightAllocation(null)"
           />
         </div>
 
         <ul class="flex flex-wrap gap-x-4 gap-y-1">
-          <li v-for="item in allocation" :key="item.label" class="text-label text-muted-foreground">
+          <li
+            v-for="item in allocation"
+            :key="item.label"
+            class="text-label"
+            :class="selectedAllocation === item.label ? 'text-success' : 'text-muted-foreground'"
+          >
             {{ item.label }} {{ formatPercent(item.percent) }}
           </li>
         </ul>

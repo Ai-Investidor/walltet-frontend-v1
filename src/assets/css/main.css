@@ -1,0 +1,4 @@
+html {
+    --font-base: 100%;
+    font-size: var(--font-base);
+}

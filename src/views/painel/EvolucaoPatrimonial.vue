@@ -10,8 +10,10 @@ const props = defineProps<{
   class?: HTMLAttributes['class']
 }>()
 
-/** Card do design: papel com borda de 1px e raio de 8px, sem o ring e o padding vertical do kit. */
-const CARD_SURFACE = 'gap-0 rounded-lg border py-0 ring-0'
+/** Card do design: papel com borda de 1px e raio de 8px, sem o ring e o padding vertical do kit.
+ *  `self-start` evita que o grid da página estique o card até a altura do vizinho (Carteira) — a
+ *  altura fica só a do gráfico. */
+const CARD_SURFACE = 'gap-0 self-start rounded-lg border py-0 ring-0'
 </script>
 
 <template>

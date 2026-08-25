@@ -2,7 +2,14 @@
 import { LegalNotice } from '@components/shared/legal-notice'
 import { ProfileGauge } from '@components/shared/profile-gauge'
 import { Button } from '@components/ui/button'
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from '@components/ui/sheet'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@components/ui/sheet'
 import type { AllocationClass, RecommendedWallet } from '@data/wallet'
 import { recommendedWallets } from '@data/wallet'
 import { PhArrowRight, PhWarning, PhX } from '@phosphor-icons/vue'
@@ -248,6 +255,13 @@ function openComposicao(wallet: RecommendedWallet) {
 
           <LegalNotice />
         </div>
+
+        <SheetFooter class="flex-row justify-end border-t border-border p-8">
+          <Button type="button" size="lg" class="rounded-sm">
+            Usar carteira
+            <PhArrowRight class="size-4" aria-hidden="true" />
+          </Button>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   </section>

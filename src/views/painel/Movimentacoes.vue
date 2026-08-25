@@ -37,7 +37,7 @@ const DIRECTIONS: Record<Movement['direction'], { icon: Component; tone: string 
         <h2 class="text-card-title">
           Movimentações do mês
         </h2>
-        <PhArrowsLeftRight class="text-muted-foreground size-4.5" aria-hidden="true" />
+        <PhArrowsLeftRight class="text-muted-foreground size-4.5 cursor-pointer" aria-hidden="true" />
       </CardHeader>
 
       <CardContent class="px-0">
@@ -91,7 +91,7 @@ const DIRECTIONS: Record<Movement['direction'], { icon: Component; tone: string 
           </div>
         </div>
 
-        <Button size="lg" class="text-button h-11 gap-2.5 rounded-md px-5">
+        <Button size="lg" class="h-11 gap-2.5 rounded-md px-5">
           <PhDownloadSimple class="size-5" weight="bold" aria-hidden="true" />
           Baixar PDF
         </Button>
