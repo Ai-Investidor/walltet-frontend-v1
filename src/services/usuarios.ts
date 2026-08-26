@@ -1,4 +1,4 @@
-import { http } from './http'
+import { http } from '@boot/http'
 import type {
   PaginatedResult,
   PerfilUsuario,

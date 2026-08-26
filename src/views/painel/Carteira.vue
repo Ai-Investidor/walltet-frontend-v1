@@ -111,7 +111,7 @@ function highlightAllocation(label: string | null) {
         <Button
           variant="outline"
           size="lg"
-          class="text-button-sm hover:border-border-strong h-10 gap-2.5 rounded-sm px-6"
+          class="text-button-sm hover:border-border-strong h-10 justify-center gap-2.5 rounded-sm px-6 max-sm:w-full"
           @click="emit('verCompleta')"
         >
           Ver carteira completa

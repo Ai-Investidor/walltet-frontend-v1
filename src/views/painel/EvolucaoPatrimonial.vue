@@ -33,23 +33,29 @@ const CARD_SURFACE = 'gap-0 self-start rounded-lg border py-0 ring-0'
         </Badge>
       </CardHeader>
       <CardContent class="flex flex-col gap-1.5 px-6 pb-6">
+        <p class="sr-only">
+          Evolução patrimonial nos últimos 12 meses, com alta de 28,2 % no período, maior valor em agosto de 2026.
+        </p>
+
         <div class="flex h-46 items-end gap-1.5" aria-hidden="true">
           <div
             v-for="(point, index) in wealthEvolution"
             :key="index"
             class="w-full rounded-t-sm"
-            :class="point.isCurrent ? 'bg-success' : 'bg-muted'"
+            :class="[point.isCurrent ? 'bg-success' : 'bg-muted', index < 6 && 'max-sm:hidden']"
             :style="{ height: `${point.heightPercent}%` }"
           />
         </div>
+
         <ul class="flex" aria-hidden="true">
           <li
             v-for="(point, index) in wealthEvolution"
             :key="index"
             class="text-chart-label w-full text-center"
-            :class="point.isCurrent ? 'text-success' : 'text-muted-foreground-faint'"
+            :class="[point.isCurrent ? 'text-success' : 'text-muted-foreground-faint', index < 6 && 'max-sm:hidden']"
           >
-            {{ point.month }}
+            <span class="max-sm:hidden">{{ point.month }}</span>
+            <span class="hidden max-sm:inline">{{ point.monthMobile }}</span>
           </li>
         </ul>
       </CardContent>

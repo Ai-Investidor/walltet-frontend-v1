@@ -91,30 +91,32 @@ function reiniciar() {
 </script>
 
 <template>
-  <Topbar />
-  <main class="flex-1">
-    <p v-if="carregandoPerguntas" class="text-paragraph text-muted-foreground px-6 py-10">
-      Carregando avaliação de perfil…
-    </p>
+  <div class="flex min-h-screen flex-col">
+    <Topbar />
+    <main class="flex flex-1 flex-col">
+      <p v-if="carregandoPerguntas" class="text-paragraph text-muted-foreground px-6 py-10">
+        Carregando avaliação de perfil…
+      </p>
 
-    <p v-else-if="erro && !resultado" role="alert" class="text-paragraph text-destructive px-6 py-10">
-      {{ erro }}
-    </p>
+      <p v-else-if="erro && !resultado" role="alert" class="text-paragraph text-destructive px-6 py-10">
+        {{ erro }}
+      </p>
 
-    <Resultado v-else-if="resultado" :resultado="resultado" @restart="reiniciar" />
+      <Resultado v-else-if="resultado" :resultado="resultado" @restart="reiniciar" />
 
-    <p v-else-if="enviandoResultado" class="text-paragraph text-muted-foreground px-6 py-10">
-      Calculando seu perfil…
-    </p>
+      <p v-else-if="enviandoResultado" class="text-paragraph text-muted-foreground px-6 py-10">
+        Calculando seu perfil…
+      </p>
 
-    <Pergunta
-      v-else-if="perguntaAtual"
-      :key="perguntaAtual.id"
-      :pergunta="perguntaAtual"
-      :current-step="indiceAtual + 1"
-      :total-steps="perguntas.length"
-      @answered="handleAnswered"
-      @voltar="voltar"
-    />
-  </main>
+      <Pergunta
+        v-else-if="perguntaAtual"
+        :key="perguntaAtual.id"
+        :pergunta="perguntaAtual"
+        :current-step="indiceAtual + 1"
+        :total-steps="perguntas.length"
+        @answered="handleAnswered"
+        @voltar="voltar"
+      />
+    </main>
+  </div>
 </template>

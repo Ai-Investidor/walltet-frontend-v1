@@ -45,6 +45,15 @@ onMounted(async () => {
   }
 })
 
+/** Versão curta dos filtros pra caber lado a lado na grade mobile. */
+const FILTER_LABEL_MOBILE: Record<string, string> = {
+  [ALL_PROFILES]: 'TODOS',
+  CONSERVADOR: 'CONS.',
+  MODERADO: 'MOD.',
+  ARROJADO: 'ARROJ.',
+  SOFISTICADO: 'SOF.',
+}
+
 const activeFilter = ref(ALL_PROFILES)
 
 const profileFilters = computed(() => [
@@ -103,7 +112,7 @@ const ACTION_CLASS = 'text-button-sm hover:border-border-strong gap-2.5 rounded-
 </script>
 
 <template>
-  <section class="flex flex-col gap-6" aria-label="Carteiras recomendadas por perfil">
+  <section class="flex flex-col gap-6 max-sm:gap-5" aria-label="Carteiras recomendadas por perfil">
     <p v-if="carregando" class="text-paragraph text-muted-foreground flex items-center gap-2">
       <PhCircleNotch class="size-4 animate-spin" aria-hidden="true" />
       Carregando carteiras…
@@ -114,31 +123,38 @@ const ACTION_CLASS = 'text-button-sm hover:border-border-strong gap-2.5 rounded-
     </p>
 
     <template v-else>
-      <div class="flex flex-wrap gap-2.5" role="group" aria-label="Filtrar carteiras por perfil">
+      <div
+        class="flex flex-wrap gap-2.5 max-sm:gap-1.5"
+        role="group"
+        aria-label="Filtrar carteiras por perfil"
+      >
         <button
           v-for="filter in profileFilters"
           :key="filter"
           type="button"
           :aria-pressed="filter === activeFilter"
           :class="[
-            'text-eyebrow rounded-md border px-4 py-2.5 transition-colors',
+            'text-eyebrow rounded-md border px-4 py-2.5 transition-colors max-sm:rounded-sm max-sm:px-2 max-sm:py-1',
             filter === activeFilter
               ? 'border-foreground bg-foreground text-background'
               : 'bg-card text-muted-foreground hover:border-border-strong',
           ]"
           @click="activeFilter = filter"
         >
-          {{ filter }}
+          <span class="max-sm:hidden">{{ filter }}</span>
+          <span class="hidden max-sm:inline">{{ FILTER_LABEL_MOBILE[filter] ?? filter }}</span>
         </button>
       </div>
 
       <TooltipProvider>
-        <ul class="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
+        <ul
+          class="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1 max-sm:gap-px max-sm:overflow-hidden max-sm:rounded-md max-sm:border max-sm:border-border max-sm:bg-border"
+        >
           <li
             v-for="wallet in visibleWallets"
             :key="wallet.id"
             data-slot="wallet-card"
-            class="bg-card flex flex-col gap-4 rounded-lg border border-border p-5"
+            class="bg-card flex flex-col gap-4 rounded-lg border border-border p-5 max-sm:gap-3 max-sm:rounded-none max-sm:border-0 max-sm:p-4"
           >
             <div class="flex items-center justify-between gap-3">
               <ProfileGauge
@@ -182,17 +198,24 @@ const ACTION_CLASS = 'text-button-sm hover:border-border-strong gap-2.5 rounded-
               Sem versão publicada ainda.
             </p>
 
-            <div class="flex flex-col gap-4 border-t border-border pt-4">
+            <div
+              class="flex flex-col gap-4 border-t border-border pt-4 max-sm:flex-row max-sm:items-center max-sm:justify-between max-sm:gap-3 max-sm:pt-2.5"
+            >
               <p class="text-label text-muted-foreground">
                 {{ metaLabel(wallet) }}
               </p>
 
-              <div class="flex justify-end">
-                <Button type="button" variant="outline" size="lg" :class="ACTION_CLASS" @click="openComposicao(wallet)">
-                  Ver composição
-                  <PhArrowRight class="size-4" aria-hidden="true" />
-                </Button>
-              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                :class="[ACTION_CLASS, 'self-end max-sm:h-7 max-sm:gap-1.5 max-sm:self-auto max-sm:px-3 max-sm:text-button-xs']"
+                @click="openComposicao(wallet)"
+              >
+                <span class="max-sm:hidden">Ver composição</span>
+                <span class="hidden max-sm:inline">Ver</span>
+                <PhArrowRight class="size-4 max-sm:size-3.5" aria-hidden="true" />
+              </Button>
             </div>
           </li>
         </ul>
@@ -203,7 +226,7 @@ const ACTION_CLASS = 'text-button-sm hover:border-border-strong gap-2.5 rounded-
           v-if="selectedWallet"
           side="right"
           :show-close-button="false"
-          class="gap-0 p-0 data-[side=right]:w-175! data-[side=right]:sm:max-w-175!"
+          class="gap-0 p-0 data-[side=right]:w-175! data-[side=right]:sm:max-w-175! max-sm:data-[side=right]:w-full!"
         >
           <SheetHeader class="flex-row items-start justify-between gap-3.5 border-b border-border p-8">
             <div class="flex flex-col gap-1">

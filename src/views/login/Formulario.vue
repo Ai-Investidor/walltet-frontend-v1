@@ -44,7 +44,10 @@ async function onSubmit(values: Record<string, unknown>) {
 </script>
 
 <template>
-  <section aria-labelledby="login-titulo" class="flex w-full flex-col items-center gap-6.5 px-6 py-10 max-sm:px-4">
+  <section
+    aria-labelledby="login-titulo"
+    class="flex w-full flex-col items-center gap-6.5 px-6 py-10 max-sm:px-4 max-sm:py-8"
+  >
     <div class="flex items-center gap-2.5">
       <div class="bg-foreground flex size-6.5 items-center justify-center rounded-sm">
         <span class="text-eyebrow text-background" aria-hidden="true">AI</span>
@@ -79,7 +82,7 @@ async function onSubmit(values: Record<string, unknown>) {
               type="email"
               autocomplete="email"
               placeholder="nome@email.com"
-              class="text-table-row placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
+              class="placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
               v-bind="componentField"
             />
           </FormControl>
@@ -97,7 +100,7 @@ async function onSubmit(values: Record<string, unknown>) {
               type="password"
               autocomplete="current-password"
               placeholder="Sua senha"
-              class="text-table-row placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
+              class="placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
               v-bind="componentField"
             />
           </FormControl>

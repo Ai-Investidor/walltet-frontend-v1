@@ -65,7 +65,7 @@ async function baixar(relatorio: MeuRelatorioResponseDto) {
 </script>
 
 <template>
-  <section :class="cn('flex flex-col gap-8', props.class)" aria-label="Arquivo de relatórios">
+  <section :class="cn('flex flex-col gap-8 max-sm:gap-5', props.class)" aria-label="Arquivo de relatórios">
     <p v-if="carregando" class="text-paragraph text-muted-foreground">
       Carregando relatórios…
     </p>
@@ -111,22 +111,24 @@ async function baixar(relatorio: MeuRelatorioResponseDto) {
               </div>
             </div>
 
-            <p class="text-label text-muted-foreground-faint w-55 shrink-0 max-lg:w-auto">
-              Gerado em {{ formatDataCurta(report.geradoEm) }} · {{ formatBytes(report.tamanhoBytes) }}
-            </p>
+            <div class="flex items-center gap-3.5 max-md:w-full max-md:justify-between max-md:gap-3">
+              <p class="text-label text-muted-foreground-faint w-55 shrink-0 max-lg:w-auto">
+                Gerado em {{ formatDataCurta(report.geradoEm) }} · {{ formatBytes(report.tamanhoBytes) }}
+              </p>
 
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              :disabled="baixandoId === report.id"
-              class="text-button-xs shrink-0 gap-1.5 rounded-sm px-3"
-              :aria-label="`Baixar ${report.titulo}`"
-              @click="baixar(report)"
-            >
-              <PhDownloadSimple aria-hidden="true" />
-              {{ baixandoId === report.id ? 'Baixando…' : 'Baixar' }}
-            </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                :disabled="baixandoId === report.id"
+                class="text-button-xs shrink-0 gap-1.5 rounded-sm px-3"
+                :aria-label="`Baixar ${report.titulo}`"
+                @click="baixar(report)"
+              >
+                <PhDownloadSimple aria-hidden="true" />
+                {{ baixandoId === report.id ? 'Baixando…' : 'Baixar' }}
+              </Button>
+            </div>
           </li>
         </ul>
       </Card>

@@ -26,12 +26,13 @@ import { RouterLink } from 'vue-router'
             <PhArrowRight class="size-4" aria-hidden="true" />
           </RouterLink>
         </Button>
-
+        <!--
         <Button as-child variant="outline" size="lg" class="rounded-sm">
           <RouterLink to="/login">
             Entrar com outra conta
           </RouterLink>
         </Button>
+        -->
       </div>
     </div>
   </section>

@@ -3,8 +3,9 @@ import { LegalNotice } from '@components/shared/legal-notice'
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader } from '@components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@components/ui/tabs'
+import { AssetRow } from '@components/wallet/asset-row'
 import { MOVIMENTACAO_PRESENTATION } from '@constants/movimentacao'
-import { PhDownloadSimple } from '@phosphor-icons/vue'
+import { PhArrowRight, PhDownloadSimple } from '@phosphor-icons/vue'
 import * as carteirasService from '@services/carteiras'
 import * as relatoriosService from '@services/relatorios'
 import type {
@@ -13,6 +14,7 @@ import type {
   MovimentacoesResponseDto,
 } from '@services/types'
 import { agruparPorClasse, TONS_ALOCACAO } from '@utils/alocacao'
+import { formatCompetenciaCurta, formatCompetenciaLonga } from '@utils/competencia'
 import { formatPercent } from '@utils/format'
 import { rotuloMovimentacao, statusParaMovimentacao } from '@utils/movimentacao'
 import type { HTMLAttributes } from 'vue'
@@ -123,6 +125,12 @@ async function baixarUltimoRelatorio() {
             <h2 class="text-card-title">
               {{ carteira.nome }}
             </h2>
+
+            <p v-if="carteira.versaoAtual?.publicada" class="text-eyebrow flex items-center gap-1.5 text-success">
+              <span class="size-1.5 shrink-0 rounded-full bg-success" aria-hidden="true" />
+              <span class="max-sm:hidden">{{ formatCompetenciaLonga(carteira.versaoAtual.mesReferencia) }}</span>
+              <span class="hidden max-sm:inline">{{ formatCompetenciaCurta(carteira.versaoAtual.mesReferencia) }}</span>
+            </p>
           </CardHeader>
 
           <CardContent class="flex flex-col gap-2.5 border-t border-border-strong p-3.5">
@@ -159,7 +167,7 @@ async function baixarUltimoRelatorio() {
           </CardContent>
 
           <CardContent class="p-0">
-            <div :class="COMPOSITION_HEADER">
+            <div :class="COMPOSITION_HEADER" class="max-sm:hidden">
               <h3 class="text-eyebrow col-span-2 text-muted-foreground-faint">
                 Composição · {{ itens.length }} ativos
               </h3>
@@ -167,7 +175,7 @@ async function baixarUltimoRelatorio() {
               <span class="text-eyebrow text-right text-muted-foreground-faint">Peso</span>
             </div>
 
-            <ul>
+            <ul class="max-sm:hidden">
               <li v-for="item in itens" :key="item.id" :class="COMPOSITION_ITEM">
                 <span
                   class="text-eyebrow flex h-7.5 w-8.5 items-center justify-center rounded-md border border-border text-muted-foreground"
@@ -205,12 +213,37 @@ async function baixarUltimoRelatorio() {
               </li>
             </ul>
 
-            <p :class="COMPOSITION_TOTAL">
+            <p :class="COMPOSITION_TOTAL" class="max-sm:hidden">
               <span class="text-eyebrow col-span-3 text-muted-foreground-faint">Total</span>
               <span class="text-card-title text-right tabular-nums">
                 {{ formatPercent(totalWeightPercent) }}
               </span>
             </p>
+
+            <h3 class="text-eyebrow hidden border-y border-border px-3.5 py-2.5 text-muted-foreground-faint max-sm:block">
+              Composição · {{ itens.length }} ativos
+            </h3>
+
+            <ul class="hidden max-sm:block">
+              <AssetRow
+                v-for="item in itens"
+                :key="item.id"
+                :code="item.tickerCodigo.slice(0, 2).toUpperCase()"
+                :name="item.nomeAtivo"
+                :detail="item.classeAtivo ?? '—'"
+                :icon="MOVIMENTACAO_PRESENTATION[statusParaMovimentacao(item.statusMovimentacao)].icon"
+                :tone="MOVIMENTACAO_PRESENTATION[statusParaMovimentacao(item.statusMovimentacao)].tone"
+                :label="rotuloMovimentacao(statusParaMovimentacao(item.statusMovimentacao))"
+                :value="formatPercent(item.pesoPercentual)"
+              />
+            </ul>
+
+            <div class="border-border-strong bg-muted hidden items-center justify-between border-t px-3.5 py-3 max-sm:flex">
+              <span class="text-eyebrow text-muted-foreground-faint">Total</span>
+              <span class="text-card-title tabular-nums">
+                {{ formatPercent(totalWeightPercent) }}
+              </span>
+            </div>
           </CardContent>
         </Card>
 
@@ -229,10 +262,20 @@ async function baixarUltimoRelatorio() {
 
         <LegalNotice class="w-3/4 max-lg:w-full" />
 
-        <div v-if="ultimoRelatorio" class="flex flex-wrap items-center gap-4">
-          <Button type="button" size="lg" :disabled="baixando" class="text-button-sm h-10 gap-2.5 rounded-sm px-6" @click="baixarUltimoRelatorio">
+        <div v-if="ultimoRelatorio" class="flex flex-wrap items-center gap-4 max-sm:flex-col max-sm:items-stretch max-sm:gap-2.5">
+          <Button type="button" size="lg" :disabled="baixando" class="text-button-sm h-10 justify-center gap-2.5 rounded-sm px-6 max-sm:w-full" @click="baixarUltimoRelatorio">
             <PhDownloadSimple class="size-4" aria-hidden="true" />
             {{ baixando ? 'Baixando…' : 'Baixar relatório do mês' }}
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            class="text-button-sm hover:border-border-strong h-10 justify-center gap-2.5 rounded-sm px-6 max-sm:w-full"
+          >
+            Ver movimentações
+            <PhArrowRight class="size-4" aria-hidden="true" />
           </Button>
         </div>
       </TabsContent>

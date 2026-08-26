@@ -1,6 +1,6 @@
 import { API_URL } from '@config/env'
 import axios, { type AxiosError } from 'axios'
-import type { ErrorPayload } from './types'
+import type { ErrorPayload } from '@services/types'
 
 // Fluxo de cookie (INTEGRATION_PROMPT.md §1): `withCredentials` é obrigatório pro cookie HttpOnly
 // `access_token` ir/voltar. O backend já libera CORS com `credentials: true` refletindo a origem.
@@ -20,8 +20,8 @@ http.interceptors.response.use(
     // quando a própria chamada com erro já era a de login. Imports dinâmicos pra não criar
     // dependência circular estática: routers/index.ts importa a store, que importa os serviços,
     // que importam este arquivo — importar `router`/`useAuthStore` no topo daria um ciclo
-    // (services/http.ts → routers/index.ts → stores/auth.ts → services/auth.ts →
-    // services/http.ts) que quebrava o guard de rota no dev server.
+    // (boot/http.ts → routers/index.ts → stores/auth.ts → services/auth.ts →
+    // boot/http.ts) que quebrava o guard de rota no dev server.
     if (code === 'UNAUTHORIZED' && !isLoginCall) {
       const [{ useAuthStore }, { router }] = await Promise.all([
         import('@stores/auth'),

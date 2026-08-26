@@ -1,4 +1,4 @@
-import { http } from './http'
+import { http } from '@boot/http'
 import type { MinhaCarteiraPerformanceResponseDto } from './types'
 
 export async function performance(): Promise<MinhaCarteiraPerformanceResponseDto> {

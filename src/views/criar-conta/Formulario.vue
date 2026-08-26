@@ -20,8 +20,7 @@ import * as z from 'zod'
 const router = useRouter()
 const auth = useAuthStore()
 
-const CAMPO_CLASSES =
-  'text-table-row placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3'
+const CAMPO_CLASSES = 'placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3'
 
 // Regra do backend (INTEGRATION_PROMPT.md §4.1): mín. 8 caracteres, 1 número, 1 caractere
 // especial. O front valida o mesmo antes de enviar, pra não depender só do erro da API.
@@ -64,7 +63,10 @@ async function onSubmit(values: Record<string, unknown>) {
 </script>
 
 <template>
-  <section aria-labelledby="criar-conta-titulo" class="flex w-full flex-col items-center gap-6.5 px-6 py-10 max-sm:px-4">
+  <section
+    aria-labelledby="criar-conta-titulo"
+    class="flex w-full flex-col items-center gap-6.5 px-6 py-10 max-sm:px-4 max-sm:py-8"
+  >
     <div class="flex items-center gap-2.5">
       <div class="bg-foreground flex size-6.5 items-center justify-center rounded-sm">
         <span class="text-eyebrow text-background" aria-hidden="true">AI</span>

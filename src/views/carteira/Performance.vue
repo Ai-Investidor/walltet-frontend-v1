@@ -180,7 +180,7 @@ function formatRatioOuTraco(value: number | null) {
 </script>
 
 <template>
-  <section :class="cn('flex flex-col gap-6', props.class)" aria-label="Performance da carteira">
+  <section :class="cn('flex flex-col gap-6 max-sm:gap-4', props.class)" aria-label="Performance da carteira">
     <p v-if="erro" role="alert" class="text-paragraph text-destructive">
       {{ erro }}
     </p>
@@ -258,7 +258,7 @@ function formatRatioOuTraco(value: number | null) {
       </Card>
 
       <Card :class="CARD_SURFACE">
-        <CardContent class="p-0">
+        <CardContent class="max-sm:hidden p-0">
           <Table>
             <TableCaption class="sr-only">
               Histórico mensal de rentabilidade da carteira comparada ao CDI e ao Ibovespa.
@@ -292,6 +292,45 @@ function formatRatioOuTraco(value: number | null) {
               </TableRow>
             </TableBody>
           </Table>
+        </CardContent>
+
+        <CardContent class="hidden max-sm:block p-0">
+          <h3 class="text-card-title border-b border-border px-3.5 py-2.5">
+            Rentabilidade mensal
+          </h3>
+
+          <ul>
+            <li
+              v-for="row in serie"
+              :key="row.mesReferencia"
+              class="border-border flex flex-col gap-2 px-3.5 py-3 not-last:border-b"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-paragraph-strong">{{ formatCompetenciaCurta(row.mesReferencia) }}</span>
+                <span
+                  class="text-table-value tabular-nums"
+                  :class="row.rentabilidade >= 0 ? 'text-success' : 'text-warning'"
+                >
+                  {{ formatSignedPercent(row.rentabilidade) }}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <p class="text-label flex items-center gap-1 text-muted-foreground">
+                  <span class="text-eyebrow text-muted-foreground-faint">CDI</span>
+                  {{ formatSignedPercent(row.cdi) }}
+                </p>
+                <p class="text-label flex items-center gap-1 text-muted-foreground">
+                  <span class="text-eyebrow text-muted-foreground-faint">Ibov</span>
+                  {{ formatSignedPercent(row.ibov) }}
+                </p>
+                <p class="text-label flex items-center gap-1 text-muted-foreground">
+                  <span class="text-eyebrow text-muted-foreground-faint">% CDI</span>
+                  {{ formatRatioOuTraco(row.percentualCdi) }}
+                </p>
+              </div>
+            </li>
+          </ul>
         </CardContent>
       </Card>
     </template>

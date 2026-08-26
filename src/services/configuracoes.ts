@@ -1,4 +1,4 @@
-import { http } from './http'
+import { http } from '@boot/http'
 import type { ConfiguracaoSuitabilityResponseDto, PerfilInvestidor } from './types'
 
 export async function suitabilityVigente(): Promise<ConfiguracaoSuitabilityResponseDto> {

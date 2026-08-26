@@ -30,7 +30,7 @@ const gaugeLabel = computed(() =>
 </script>
 
 <template>
-  <div class="grid grid-cols-[1.35fr_1fr] items-start gap-6 max-md:grid-cols-1">
+  <div class="grid grid-cols-[1.35fr_1fr] items-start gap-6 max-md:grid-cols-1 max-sm:gap-5">
     <section :class="CARD_CLASS" aria-labelledby="conta-dados-titulo">
       <h2 id="conta-dados-titulo" :class="CARD_HEADER_CLASS">
         Dados
@@ -40,18 +40,20 @@ const gaugeLabel = computed(() =>
         <div
           v-for="field in accountFields"
           :key="field.label"
-          class="flex items-center justify-between gap-4 border-b border-border px-4.5 py-3"
+          class="flex items-center justify-between gap-4 border-b border-border px-4.5 py-3 max-sm:flex-col max-sm:items-start max-sm:gap-1 max-sm:px-3.5 max-sm:py-2.5"
         >
           <dt class="text-eyebrow text-muted-foreground">
-            {{ field.label }}
+            <span v-if="field.labelMobile" class="max-sm:hidden">{{ field.label }}</span>
+            <span v-if="field.labelMobile" class="hidden max-sm:inline">{{ field.labelMobile }}</span>
+            <template v-if="!field.labelMobile">{{ field.label }}</template>
           </dt>
-          <dd class="text-table-row text-right">
+          <dd class="text-table-row text-right max-sm:text-left">
             {{ field.value }}
           </dd>
         </div>
       </dl>
 
-      <p class="text-label px-4.5 py-3 text-muted-foreground">
+      <p class="text-label px-4.5 py-3 text-muted-foreground max-sm:px-3.5 max-sm:py-2.5">
         Para alterar nome ou e-mail, escreva para suporte@aiinvest.com.br.
       </p>
     </section>
@@ -61,7 +63,7 @@ const gaugeLabel = computed(() =>
         Perfil de investidor
       </h2>
 
-      <div v-if="auth.usuario?.perfilInvestidor && nivel" class="flex flex-col items-start gap-4 p-4.5">
+      <div v-if="auth.usuario?.perfilInvestidor && nivel" class="flex flex-col items-start gap-4 p-4.5 max-sm:gap-2.5 max-sm:p-3.5">
         <div class="flex items-center gap-2.5">
           <ProfileGauge :level="nivel" tone="success" :label="gaugeLabel" />
 
@@ -77,7 +79,7 @@ const gaugeLabel = computed(() =>
         </Button>
       </div>
 
-      <div v-else class="flex flex-col items-start gap-4 p-4.5">
+      <div v-else class="flex flex-col items-start gap-4 p-4.5 max-sm:gap-2.5 max-sm:p-3.5">
         <p class="text-table-row text-muted-foreground">
           Você ainda não fez a avaliação de perfil.
         </p>

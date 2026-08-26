@@ -80,7 +80,7 @@ function irParaCarteira() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-7 px-10 py-8">
+  <div class="flex flex-col gap-7 px-10 py-8 max-sm:gap-5 max-sm:px-4 max-sm:py-5">
     <p v-if="carregando" class="text-paragraph text-muted-foreground">
       Carregando painel…
     </p>
@@ -93,7 +93,7 @@ function irParaCarteira() {
       <Cabecalho :dashboard="dashboard" :movimentacoes="movimentacoes" />
       <Indicadores :dashboard="dashboard" :performance="performance" />
 
-      <div class="grid grid-cols-[minmax(0,1fr)_22.5rem] gap-6 max-lg:grid-cols-1">
+      <div class="grid grid-cols-[minmax(0,1fr)_22.5rem] gap-6 max-lg:grid-cols-1 max-sm:gap-5">
         <Carteira :carteira="carteira" @ver-completa="irParaCarteira" />
         <Movimentacoes :movimentacoes="movimentacoes" :ultimo-relatorio="ultimoRelatorio" />
       </div>

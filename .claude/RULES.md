@@ -443,7 +443,7 @@ para conteúdo genuinely estático (marketing/decorativo, sem endpoint correspon
 | texto literal (título, rótulo, microcopy) | direto no template |
 | estado derivado de interação do usuário (filtro, paginação, seleção, open/closed) | `ref`/`reactive` na própria view |
 
-Toda função de `src/services/` usa a instância única `http` de `src/services/http.ts`
+Toda função de `src/services/` usa a instância única `http` de `src/boot/http.ts`
 (`axios.create({ baseURL: API_URL, withCredentials: true })`, com o interceptor de `401
 UNAUTHORIZED` já plugado — ver `src/config/env.ts` para `API_URL`). Nunca instanciar outro client
 axios num componente.
@@ -470,7 +470,7 @@ const { data } = await axios.get('https://api.exemplo.com/v1/wallet/balance')
 
 ```ts
 // src/services/wallet.ts
-import { http } from './http'
+import { http } from '@boot/http'
 import type { BalanceResponseDto } from './types'
 
 export async function balance(): Promise<BalanceResponseDto> {

@@ -3,8 +3,14 @@
 
 export interface Kpi {
   label: string
+  /** Rótulo mais curto exibido só na versão mobile (ex.: "Meses +" em vez de "Meses positivos"). */
+  labelMobile?: string
   value: string
+  /** Valor sem centavos para caber na grade 2 colunas da versão mobile (ex.: "R$ 3.500"). */
+  valueMobile?: string
   note: string
+  /** Nota mais curta exibida só na versão mobile (ex.: "Últimos 12 m" em vez de "Últimos 12 meses"). */
+  noteMobile?: string
   tone: 'positive' | 'neutral'
 }
 
@@ -44,6 +50,8 @@ export interface AssetStatusOverride {
 
 export interface WealthEvolutionPoint {
   month: string
+  /** Abreviação de 3 letras exibida no eixo da versão mobile (ex.: "Mar"). */
+  monthMobile: string
   heightPercent: number
   isCurrent: boolean
 }
@@ -134,12 +142,14 @@ export const kpis: Kpi[] = [
   {
     label: 'Aporte do mês',
     value: 'R$ 3.500,00',
+    valueMobile: 'R$ 3.500',
     note: 'Débito automático · dia 05',
     tone: 'neutral',
   },
   {
     label: 'Dividendos no ano',
     value: 'R$ 4.812,90',
+    valueMobile: 'R$ 4.812',
     note: '+18 % vs. 2025',
     tone: 'positive',
   },
@@ -163,18 +173,18 @@ export const painelAssetStatus: AssetStatusOverride[] = [
 // Alturas relativas das 12 barras (proporção visual extraída do design, não
 // valores em R$ reais).
 export const wealthEvolution: WealthEvolutionPoint[] = [
-  { month: 'S', heightPercent: 15.8, isCurrent: false },
-  { month: 'O', heightPercent: 21.7, isCurrent: false },
-  { month: 'N', heightPercent: 27.2, isCurrent: false },
-  { month: 'D', heightPercent: 32.6, isCurrent: false },
-  { month: 'J', heightPercent: 68.5, isCurrent: false },
-  { month: 'F', heightPercent: 73.4, isCurrent: false },
-  { month: 'M', heightPercent: 70.1, isCurrent: false },
-  { month: 'A', heightPercent: 79.3, isCurrent: false },
-  { month: 'M', heightPercent: 84.8, isCurrent: false },
-  { month: 'J', heightPercent: 89.1, isCurrent: false },
-  { month: 'J', heightPercent: 93.5, isCurrent: false },
-  { month: 'A', heightPercent: 97.8, isCurrent: true },
+  { month: 'S', monthMobile: 'Set', heightPercent: 15.8, isCurrent: false },
+  { month: 'O', monthMobile: 'Out', heightPercent: 21.7, isCurrent: false },
+  { month: 'N', monthMobile: 'Nov', heightPercent: 27.2, isCurrent: false },
+  { month: 'D', monthMobile: 'Dez', heightPercent: 32.6, isCurrent: false },
+  { month: 'J', monthMobile: 'Jan', heightPercent: 68.5, isCurrent: false },
+  { month: 'F', monthMobile: 'Fev', heightPercent: 73.4, isCurrent: false },
+  { month: 'M', monthMobile: 'Mar', heightPercent: 70.1, isCurrent: false },
+  { month: 'A', monthMobile: 'Abr', heightPercent: 79.3, isCurrent: false },
+  { month: 'M', monthMobile: 'Mai', heightPercent: 84.8, isCurrent: false },
+  { month: 'J', monthMobile: 'Jun', heightPercent: 89.1, isCurrent: false },
+  { month: 'J', monthMobile: 'Jul', heightPercent: 93.5, isCurrent: false },
+  { month: 'A', monthMobile: 'Ago', heightPercent: 97.8, isCurrent: true },
 ]
 
 export const allocation: AllocationClass[] = [
@@ -331,6 +341,7 @@ export const performanceIndicators: Kpi[] = [
     label: 'Mês',
     value: '+1,85 %',
     note: 'CDI +0,87 % · Ibov +2,10 %',
+    noteMobile: 'CDI +0,87 %',
     tone: 'positive',
   },
   {
@@ -343,12 +354,15 @@ export const performanceIndicators: Kpi[] = [
     label: '% do CDI',
     value: '212,6 %',
     note: 'Acumulado de 2026',
+    noteMobile: 'Acumulado 2026',
     tone: 'neutral',
   },
   {
     label: 'Meses positivos',
+    labelMobile: 'Meses +',
     value: '11 de 12',
     note: 'Últimos 12 meses',
+    noteMobile: 'Últimos 12 m',
     tone: 'neutral',
   },
 ]
