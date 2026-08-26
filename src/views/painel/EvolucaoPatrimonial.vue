@@ -44,7 +44,7 @@ const CARD_SURFACE = 'gap-0 self-start rounded-lg border py-0 ring-0'
           v-for="(point, index) in wealthEvolution"
           :key="index"
           class="w-full rounded-t-sm"
-          :class="point.isCurrent ? 'bg-success' : 'bg-muted'"
+          :class="[point.isCurrent ? 'bg-success' : 'bg-muted', index < 6 && 'max-sm:hidden']"
           :style="{ height: `${point.heightPercent}%` }"
         />
       </div>
@@ -54,9 +54,10 @@ const CARD_SURFACE = 'gap-0 self-start rounded-lg border py-0 ring-0'
           v-for="(point, index) in wealthEvolution"
           :key="index"
           class="text-chart-label w-full text-center"
-          :class="point.isCurrent ? 'text-success' : 'text-muted-foreground-faint'"
+          :class="[point.isCurrent ? 'text-success' : 'text-muted-foreground-faint', index < 6 && 'max-sm:hidden']"
         >
-          {{ point.month }}
+          <span class="max-sm:hidden">{{ point.month }}</span>
+          <span class="hidden max-sm:inline">{{ point.monthMobile }}</span>
         </li>
       </ul>
     </CardContent>

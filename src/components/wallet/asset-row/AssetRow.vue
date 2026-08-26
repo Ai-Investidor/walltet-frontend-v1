@@ -44,13 +44,15 @@ const props = defineProps<Props>()
       </p>
     </div>
 
-    <p class="flex w-37.5 shrink-0 items-center gap-1.5" :class="props.tone">
-      <component :is="props.icon" class="size-3.5 shrink-0" aria-hidden="true" />
-      <span class="text-eyebrow truncate">{{ props.label }}</span>
-    </p>
+    <div class="flex shrink-0 items-center gap-1.5 max-sm:flex-col-reverse max-sm:items-end max-sm:gap-0.5">
+      <p class="flex w-37.5 shrink-0 items-center gap-1.5 max-sm:w-auto" :class="props.tone">
+        <component :is="props.icon" class="size-3.5 shrink-0" aria-hidden="true" />
+        <span class="text-eyebrow truncate">{{ props.label }}</span>
+      </p>
 
-    <span class="text-card-title w-19 shrink-0 text-right tabular-nums">
-      {{ props.value }}
-    </span>
+      <span class="text-card-title w-19 shrink-0 text-right tabular-nums max-sm:w-auto">
+        {{ props.value }}
+      </span>
+    </div>
   </li>
 </template>

@@ -128,7 +128,7 @@ const composicao = computed(() =>
       </CardContent>
 
       <CardFooter class="justify-end border-border-strong p-3.5">
-        <Button variant="outline" size="lg" class="text-button-sm hover:border-border-strong h-10 gap-2.5 rounded-sm px-6">
+        <Button variant="outline" size="lg" class="text-button-sm hover:border-border-strong h-10 justify-center gap-2.5 rounded-sm px-6 max-sm:w-full">
           Ver carteira completa
           <PhArrowRight class="size-4" aria-hidden="true" />
         </Button>
