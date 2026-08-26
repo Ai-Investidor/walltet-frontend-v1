@@ -13,6 +13,7 @@ const TEXT_STYLES = [
   'heading',
   'heading-caps',
   'label',
+  'label-strong',
   'paragraph',
   'paragraph-light',
   'paragraph-strong',

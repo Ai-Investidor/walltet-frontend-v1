@@ -17,7 +17,7 @@ const pageTitle = computed(() => resolveRouteTitle(route))
   <SidebarProvider :default-open="true">
     <AppSidebar :groups="navigationGroups">
       <template #footer>
-        <div class="flex flex-col gap-2 rounded-md border border-border bg-card p-3.5">
+        <div class="flex flex-col gap-2 rounded-md border border-border bg-card p-3.5 max-md:rounded-lg">
           <span class="text-eyebrow text-muted-foreground-faint">Seu perfil</span>
           <div class="flex items-center gap-2.5">
             <ProfileGauge :level="2" tone="success" label="Perfil de investidor moderado, nível 2 de 4" />

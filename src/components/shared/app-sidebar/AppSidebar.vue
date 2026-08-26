@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from '@components/ui/button'
 import {
   Sidebar,
   SidebarContent,
@@ -9,20 +10,26 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@components/ui/sidebar'
+import { Switch } from '@components/ui/switch'
 import type { NavigationGroup, NavigationIcon } from '@data/navigation'
 import {
+  PhCalendarBlank,
+  PhCaretDown,
   PhChartBar,
   PhChartPie,
   PhFileText,
+  PhMoon,
   PhSlidersHorizontal,
   PhSquaresFour,
   PhStack,
   PhUser,
   PhUsers,
+  PhX,
 } from '@phosphor-icons/vue'
 import type { Component, HTMLAttributes } from 'vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 interface Props {
@@ -61,20 +68,48 @@ const activeTo = computed(() =>
     .filter(covers)
     .reduce((longest, to) => (to.length > longest.length ? to : longest), ''),
 )
+
+const { isMobile, setOpenMobile } = useSidebar()
+const darkModeEnabled = ref(false)
 </script>
 
 <template>
   <Sidebar collapsible="icon" :class="props.class">
-    <SidebarHeader class="gap-2 px-5.5 pt-5.5 pb-4.5">
+    <SidebarHeader
+      class="gap-2 px-5.5 pt-5.5 pb-4.5 max-md:flex-row max-md:items-center max-md:justify-between max-md:gap-0 max-md:border-b max-md:border-border max-md:px-5 max-md:py-4"
+    >
       <div class="flex items-center gap-2.25">
         <div class="flex size-6.5 items-center justify-center rounded-sm bg-foreground">
           <span class="text-eyebrow text-background">AI</span>
         </div>
         <span class="text-card-title">AI Invest</span>
       </div>
+
+      <Button
+        v-if="isMobile"
+        variant="outline"
+        size="icon"
+        class="size-9 rounded-full"
+        aria-label="Fechar menu"
+        @click="setOpenMobile(false)"
+      >
+        <PhX class="size-4.5" aria-hidden="true" />
+      </Button>
     </SidebarHeader>
 
-    <SidebarContent class="gap-1 px-3">
+    <SidebarContent class="gap-1 px-3 max-md:gap-2 max-md:px-4 max-md:pt-4 max-md:pb-2">
+      <Button
+        v-if="isMobile && $slots.footer"
+        variant="outline"
+        class="h-9 w-41.5 justify-between gap-2.5 px-3.5"
+      >
+        <span class="flex items-center gap-2.5">
+          <PhCalendarBlank class="size-4 text-muted-foreground" aria-hidden="true" />
+          <span class="text-meta">Agosto 2026</span>
+        </span>
+        <PhCaretDown class="size-3.25 text-muted-foreground-faint" aria-hidden="true" />
+      </Button>
+
       <nav aria-label="Navegação principal">
         <SidebarGroup v-for="group in props.groups" :key="group.label" class="gap-1.5 px-0 py-1.5">
           <SidebarGroupLabel class="text-eyebrow text-muted-foreground-faint px-3.5">
@@ -113,7 +148,17 @@ const activeTo = computed(() =>
       </nav>
     </SidebarContent>
 
-    <SidebarFooter v-if="$slots.footer" class="px-3 pb-3">
+    <div v-if="isMobile && $slots.footer" class="flex flex-col gap-2 border-t border-border px-4 pt-3.5 pb-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <PhMoon class="size-4 text-muted-foreground" aria-hidden="true" />
+          <span class="text-label-strong">Tema escuro</span>
+        </div>
+        <Switch v-model:checked="darkModeEnabled" aria-label="Alternar tema escuro" />
+      </div>
+    </div>
+
+    <SidebarFooter v-if="$slots.footer" class="px-3 pb-3 max-md:px-4 max-md:pt-0 max-md:pb-3.5">
       <slot name="footer" />
     </SidebarFooter>
   </Sidebar>
