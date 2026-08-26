@@ -1,3 +1,8 @@
+<!--
+  Órfão desde a integração com o backend real — mesmo motivo de Edicao.vue (ver comentário lá):
+  `catalogAssets` é mock; não há GET de catálogo de ativos no backend. Implementação intacta, só
+  desconectada de admin/carteira/Composicao.vue.
+-->
 <script setup lang="ts">
 import { AssetChip } from '@components/shared/asset-chip'
 import { Button } from '@components/ui/button'

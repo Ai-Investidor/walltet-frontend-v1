@@ -6,7 +6,7 @@
 
 Fluxo de composição: `routers → layouts → pages → views (seções) → components/<dominio> → components/ui`.
 
-Conteúdo de página é atualmente estático — constantes tipadas em `src/data/<dominio>.ts`, importadas direto pelas views. Páginas novas nascem via `/build-prep` (extrai design do Figma/Pencil) seguido de `/build-page` (implementa seções e componentes).
+Conteúdo de página vem do backend `carteira-sistema-backend` (NestJS + Prisma + PostgreSQL, projeto separado) via `src/services/<dominio>.ts`, com sessão em `src/stores/auth.ts` (Pinia). `src/data/<dominio>.ts` sobra só para conteúdo genuinely estático sem endpoint (menu de navegação, prova social das telas públicas) — ver `docs/AUDITORIA-INTEGRACAO.md` para o mapeamento completo frontend↔backend e `docs/PROPOSTA-BACKEND-PATRIMONIO.md` para o único gap de dado ainda em aberto. Páginas novas nascem via `/build-prep` (extrai design do Figma/Pencil) seguido de `/build-page` (implementa seções e componentes) e depois plugam no backend seguindo R8.
 
 ## Regra obrigatória
 

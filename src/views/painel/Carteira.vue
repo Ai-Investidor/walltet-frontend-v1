@@ -2,75 +2,55 @@
 import { Button } from '@components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@components/ui/card'
 import { AssetRow } from '@components/wallet/asset-row'
-import type { AllocationClass, Asset } from '@data/wallet'
-import { allocation, assets, painelAssetStatus } from '@data/wallet'
-import { PhArrowDownRight, PhArrowRight, PhArrowUpRight, PhMinus } from '@phosphor-icons/vue'
-import type { Component, HTMLAttributes } from 'vue'
+import { MOVIMENTACAO_PRESENTATION } from '@constants/movimentacao'
+import { PhArrowRight } from '@phosphor-icons/vue'
+import type { CarteiraDetalheDto } from '@services/types'
+import { agruparPorClasse, TONS_ALOCACAO } from '@utils/alocacao'
+import { formatCompetenciaLonga } from '@utils/competencia'
+import { formatPercent } from '@utils/format'
+import { rotuloMovimentacao, statusParaMovimentacao } from '@utils/movimentacao'
+import type { HTMLAttributes } from 'vue'
 import { computed, ref } from 'vue'
 import { cn } from '@/libs/utils'
 
-const props = defineProps<{
+interface Props {
+  carteira: CarteiraDetalheDto | null
   class?: HTMLAttributes['class']
-}>()
+}
 
-/** Card do design: papel com borda de 1px e raio de 8px, sem o ring e o padding vertical do kit. */
+const props = defineProps<Props>()
+
+const emit = defineEmits<{ verCompleta: [] }>()
+
 const CARD_SURFACE = 'gap-0 rounded-lg border py-0 ring-0'
 
-const ALLOCATION_TONE: Record<AllocationClass['tone'], string> = {
-  'data-1': 'bg-data-1',
-  'data-2': 'bg-data-2',
-  'data-3': 'bg-data-3',
-}
+const itens = computed(() => props.carteira?.versaoAtual?.itens ?? [])
 
-// Glifos de status conforme o design: entrada é seta para dentro (↘) e saída
-// é seta para fora (↗) — não seguem a direção literal de alta/baixa.
-const ASSET_STATUS: Record<
-  Asset['trend'],
-  { icon: Component; tone: 'text-success' | 'text-warning' | 'text-muted-foreground' }
-> = {
-  up: { icon: PhArrowDownRight, tone: 'text-success' },
-  down: { icon: PhArrowUpRight, tone: 'text-warning' },
-  flat: { icon: PhMinus, tone: 'text-muted-foreground' },
-}
-
-const percentFormatter = new Intl.NumberFormat('pt-BR', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})
-
-function formatPercent(value: number) {
-  return `${percentFormatter.format(value)} %`
-}
+const allocation = computed(() =>
+  agruparPorClasse(itens.value).map((fatia, index) => ({
+    ...fatia,
+    tone: TONS_ALOCACAO[index % TONS_ALOCACAO.length],
+  })),
+)
 
 const selectedAllocation = ref<string | null>(null)
 
 function highlightAllocation(label: string | null) {
   selectedAllocation.value = label
 }
-
-// Status "deste mês" é específico do Painel — junta com `assets` sem alterar
-// o dado compartilhado com /carteira.
-const composicao = computed(() =>
-  assets.map((asset) => {
-    const status = painelAssetStatus.find((item) => item.code === asset.code)
-    const trend = status?.trend ?? asset.trend
-    const trendLabel = status?.trendLabel ?? asset.trendLabel
-    return { ...asset, trend, trendLabel }
-  }),
-)
 </script>
 
 <template>
   <section :class="cn(props.class)" aria-labelledby="carteira-titulo">
-    <Card :class="CARD_SURFACE">
+    <Card v-if="carteira?.versaoAtual" :class="CARD_SURFACE">
       <CardHeader class="flex items-center justify-between gap-3 p-3.5">
         <h2 id="carteira-titulo" class="text-card-title">
-          Carteira Moderada Estratégica
+          {{ carteira.nome }}
         </h2>
 
-        <p class="text-eyebrow flex items-center gap-1.5 text-success">
+        <p v-if="carteira.versaoAtual.publicada" class="text-eyebrow flex items-center gap-1.5 text-success">
           <span class="size-1.5 shrink-0 rounded-full bg-success" aria-hidden="true" />
-          Agosto 2026
+          {{ formatCompetenciaLonga(carteira.versaoAtual.mesReferencia) }}
         </p>
       </CardHeader>
 
@@ -85,7 +65,7 @@ const composicao = computed(() =>
             :key="item.label"
             type="button"
             class="h-full transition-colors"
-            :class="selectedAllocation === item.label ? 'bg-success' : ALLOCATION_TONE[item.tone]"
+            :class="selectedAllocation === item.label ? 'bg-success' : item.tone"
             :style="{ width: `${item.percent}%` }"
             :aria-label="`${item.label} ${formatPercent(item.percent)}`"
             @mouseenter="highlightAllocation(item.label)"
@@ -109,30 +89,44 @@ const composicao = computed(() =>
 
       <CardContent class="p-0">
         <h3 class="text-eyebrow border-y border-border px-3.5 py-2.5 text-muted-foreground">
-          Composição · {{ composicao.length }} ativos
+          Composição · {{ itens.length }} ativos
         </h3>
 
         <ul>
           <AssetRow
-            v-for="asset in composicao"
-            :key="asset.code"
-            :code="asset.code"
-            :name="asset.name"
-            :detail="asset.className"
-            :icon="ASSET_STATUS[asset.trend].icon"
-            :tone="ASSET_STATUS[asset.trend].tone"
-            :label="asset.trendLabel"
-            :value="formatPercent(asset.weightPercent)"
+            v-for="item in itens"
+            :key="item.id"
+            :code="item.tickerCodigo.slice(0, 2).toUpperCase()"
+            :name="item.nomeAtivo"
+            :detail="item.classeAtivo ?? '—'"
+            :icon="MOVIMENTACAO_PRESENTATION[statusParaMovimentacao(item.statusMovimentacao)].icon"
+            :tone="MOVIMENTACAO_PRESENTATION[statusParaMovimentacao(item.statusMovimentacao)].tone"
+            :label="rotuloMovimentacao(statusParaMovimentacao(item.statusMovimentacao))"
+            :value="formatPercent(item.pesoPercentual)"
           />
         </ul>
       </CardContent>
 
       <CardFooter class="justify-end border-border-strong p-3.5">
-        <Button variant="outline" size="lg" class="text-button-sm hover:border-border-strong h-10 gap-2.5 rounded-sm px-6">
+        <Button
+          variant="outline"
+          size="lg"
+          class="text-button-sm hover:border-border-strong h-10 gap-2.5 rounded-sm px-6"
+          @click="emit('verCompleta')"
+        >
           Ver carteira completa
           <PhArrowRight class="size-4" aria-hidden="true" />
         </Button>
       </CardFooter>
+    </Card>
+
+    <Card v-else :class="CARD_SURFACE">
+      <CardContent class="p-5.5">
+        <p class="text-paragraph text-muted-foreground">
+          Você ainda não tem uma carteira recomendada vinculada. Complete a avaliação de perfil
+          para receber uma.
+        </p>
+      </CardContent>
     </Card>
   </section>
 </template>

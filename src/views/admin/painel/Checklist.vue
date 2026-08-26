@@ -1,44 +1,65 @@
 <script setup lang="ts">
 import { Card } from '@components/ui/card'
-import { closingChecklist } from '@data/admin'
 import { PhArrowRight, PhCheckCircle, PhCircle } from '@phosphor-icons/vue'
+import type { AdminDashboardResponseDto } from '@services/types'
 import type { HTMLAttributes } from 'vue'
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { cn } from '@/libs/utils'
 
-const props = defineProps<{
+interface Props {
+  dashboard: AdminDashboardResponseDto
   class?: HTMLAttributes['class']
-}>()
+}
 
-/** Card do design: papel com borda de 1px e raio de 8px, sem o ring e o padding vertical do kit. */
+const props = defineProps<Props>()
+
 const CARD_SURFACE = 'gap-0 rounded-lg border py-0 ring-0'
 
-/** Toda pendência é resolvida dentro de Carteiras — o destino indica só a aba. */
-const CHECKLIST_TARGET = '/admin/carteiras'
+// `GET /dashboard/admin` só devolve totais da competência (versões publicadas, relatórios
+// gerados), não uma lista de pendências por carteira — o checklist granular do design original
+// exigiria um GET por carteira que a API não tem hoje (docs/AUDITORIA-INTEGRACAO.md, achado 4.10).
+// Este card mostra o que a API sustenta: o resumo do fechamento, com atalho pra tela de carteiras.
+const itens = computed(() => {
+  const f = props.dashboard.fechamentoMesAtual
+
+  return [
+    {
+      title: 'Versões publicadas',
+      done: f.versoesPublicadas,
+      total: props.dashboard.carteirasAtivas,
+    },
+    {
+      title: 'Relatórios gerados',
+      done: f.relatoriosGerados,
+      total: props.dashboard.carteirasAtivas,
+    },
+  ]
+})
 </script>
 
 <template>
   <Card :class="cn(CARD_SURFACE, props.class)">
     <div class="flex items-center justify-between gap-3 border-b border-border px-4.5 py-3.5">
       <h2 id="checklist-fechamento" class="text-card-title">
-        Checklist de fechamento
+        Status do fechamento
       </h2>
 
       <p class="text-label text-muted-foreground-faint">
-        Competência 2026-09
+        Competência {{ dashboard.fechamentoMesAtual.mesReferencia }}
       </p>
     </div>
 
     <ul aria-labelledby="checklist-fechamento">
-      <li v-for="item in closingChecklist" :key="item.title" class="border-border not-last:border-b">
+      <li v-for="item in itens" :key="item.title" class="border-border not-last:border-b">
         <RouterLink
-          :to="CHECKLIST_TARGET"
+          to="/admin/carteiras"
           class="flex items-center gap-3.5 px-4.5 py-3.5 transition-colors hover:bg-muted/50"
         >
           <component
-            :is="item.done === item.total ? PhCheckCircle : PhCircle"
+            :is="item.done >= item.total ? PhCheckCircle : PhCircle"
             class="size-4.5 shrink-0"
-            :class="item.done === item.total ? 'text-success' : 'text-muted-foreground-faint'"
+            :class="item.done >= item.total ? 'text-success' : 'text-muted-foreground-faint'"
             aria-hidden="true"
           />
 
@@ -47,7 +68,7 @@ const CHECKLIST_TARGET = '/admin/carteiras'
               {{ item.title }}
             </p>
             <p class="text-label truncate text-muted-foreground-faint">
-              {{ item.destination }}
+              Carteiras → Composição
             </p>
           </div>
 

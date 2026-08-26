@@ -1,13 +1,22 @@
-import { adminWallets } from '@data/admin'
+import { useAuthStore } from '@stores/auth'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 
 declare module 'vue-router' {
   interface RouteMeta {
     title?: string | ((route: RouteLocationNormalizedLoaded) => string)
+    /** Default `true` — ver guard abaixo. Só as rotas explicitamente listadas ficam públicas. */
+    public?: boolean
+    requiresAdmin?: boolean
+    /** Rota pública que não faz sentido pra quem já está logado (login, criar conta). */
+    redirectIfAuthenticated?: boolean
   }
 }
 
+// /recuperar-senha, /recuperar-senha/link-enviado e /admin/ativos saíram do catálogo de rotas:
+// o backend não tem endpoint pra nenhuma das duas áreas (docs/AUDITORIA-INTEGRACAO.md, achados
+// "Fluxos sem endpoint algum no backend" nº 1 e 2). Os arquivos de página/view continuam no
+// repositório, só não estão mais alcançáveis pela navegação.
 const routes = [
   {
     path: '/',
@@ -48,6 +57,7 @@ const routes = [
   {
     path: '/admin',
     component: () => import('@layouts/AdminLayout.vue'),
+    meta: { requiresAdmin: true },
     children: [
       {
         path: '',
@@ -62,19 +72,10 @@ const routes = [
         meta: { title: 'Carteiras' },
       },
       {
-        path: 'carteiras/:slug',
+        path: 'carteiras/:id',
         name: 'admin-carteira',
         component: () => import('@pages/admin/Carteira.vue'),
-        meta: {
-          title: (route: RouteLocationNormalizedLoaded) =>
-            adminWallets.find((wallet) => wallet.slug === route.params.slug)?.name ?? 'Carteira',
-        },
-      },
-      {
-        path: 'ativos',
-        name: 'admin-ativos',
-        component: () => import('@pages/admin/Ativos.vue'),
-        meta: { title: 'Ativos' },
+        meta: { title: 'Carteira' },
       },
       {
         path: 'usuarios',
@@ -100,37 +101,25 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () => import('@pages/Login.vue'),
-    meta: { title: 'Entrar' },
+    meta: { title: 'Entrar', public: true, redirectIfAuthenticated: true },
   },
   {
     path: '/criar-conta',
     name: 'criar-conta',
     component: () => import('@pages/CriarConta.vue'),
-    meta: { title: 'Criar conta' },
+    meta: { title: 'Criar conta', public: true, redirectIfAuthenticated: true },
   },
-  {
-    path: '/recuperar-senha',
-    name: 'recuperar-senha',
-    component: () => import('@pages/RecuperarSenha.vue'),
-    meta: { title: 'Recuperar senha' },
-  },
-  // {
-  //   path: '/recuperar-senha/link-enviado',
-  //   name: 'link-enviado',
-  //   component: () => import('@pages/LinkEnviado.vue'),
-  //   meta: { title: 'Link enviado' },
-  // },
   {
     path: '/403',
     name: 'acesso-restrito',
     component: () => import('@pages/AcessoRestrito.vue'),
-    meta: { title: 'Acesso restrito' },
+    meta: { title: 'Acesso restrito', public: true },
   },
   {
     path: '/404',
     name: 'nao-encontrada',
     component: () => import('@pages/NaoEncontrada.vue'),
-    meta: { title: 'Página não encontrada' },
+    meta: { title: 'Página não encontrada', public: true },
   },
   {
     path: '/:pathMatch(.*)*',
@@ -141,4 +130,39 @@ const routes = [
 export const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach(async (to) => {
+  const auth = useAuthStore()
+
+  // `GET /auth/me` só precisa ser chamado uma vez por carga da aplicação; navegações seguintes
+  // reaproveitam o estado já resolvido da store.
+  if (!auth.carregado) {
+    await auth.carregarSessao()
+  }
+
+  const isPublic = to.matched.some((record) => record.meta.public)
+
+  if (isPublic) {
+    // Login/criar-conta não fazem sentido pra quem já está logado — manda pro painel.
+    const redirectIfAuthenticated = to.matched.some((record) => record.meta.redirectIfAuthenticated)
+
+    if (redirectIfAuthenticated && auth.isAuthenticated) {
+      return { name: 'painel' }
+    }
+
+    return true
+  }
+
+  if (!auth.isAuthenticated) {
+    return { name: 'login', query: { redirect: to.fullPath } }
+  }
+
+  const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin)
+
+  if (requiresAdmin && !auth.isAdmin) {
+    return { name: 'acesso-restrito' }
+  }
+
+  return true
 })

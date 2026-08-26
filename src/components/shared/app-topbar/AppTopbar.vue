@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { Avatar, AvatarFallback } from '@components/ui/avatar'
 import { Button } from '@components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@components/ui/dropdown-menu'
 import { SidebarTrigger } from '@components/ui/sidebar'
-import { PhCalendarBlank, PhCaretDown, PhMoon } from '@phosphor-icons/vue'
+import { PhCalendarBlank, PhCaretDown, PhMoon, PhSignOut } from '@phosphor-icons/vue'
 import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
@@ -19,6 +25,8 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   competence: 'Agosto 2026',
 })
+
+const emit = defineEmits<{ sair: [] }>()
 </script>
 
 <template>
@@ -41,14 +49,24 @@ const props = withDefaults(defineProps<Props>(), {
         <PhCaretDown class="size-2.75 text-muted-foreground-faint" aria-hidden="true" />
       </Button>
 
-      <button type="button" class="flex items-center gap-1.75" aria-label="Menu do usuário">
-        <Avatar>
-          <AvatarFallback class="text-eyebrow bg-foreground text-background">
-            {{ props.initials }}
-          </AvatarFallback>
-        </Avatar>
-        <PhCaretDown class="size-2.75 text-muted-foreground-faint" aria-hidden="true" />
-      </button>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <button type="button" class="flex items-center gap-1.75" aria-label="Menu do usuário">
+            <Avatar>
+              <AvatarFallback class="text-eyebrow bg-foreground text-background">
+                {{ props.initials }}
+              </AvatarFallback>
+            </Avatar>
+            <PhCaretDown class="size-2.75 text-muted-foreground-faint" aria-hidden="true" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem @select="emit('sair')">
+            <PhSignOut class="size-4" aria-hidden="true" />
+            Sair
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   </header>
 </template>

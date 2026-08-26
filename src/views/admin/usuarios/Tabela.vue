@@ -1,9 +1,16 @@
 <script setup lang="ts">
+import { ConfirmDialog } from '@components/admin/confirm-dialog'
 import { StatusBadge } from '@components/admin/status-badge'
-import { ProfileGauge } from '@components/shared/profile-gauge'
 import { Button } from '@components/ui/button'
 import { Card } from '@components/ui/card'
 import { Input } from '@components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ui/select'
 import {
   Sheet,
   SheetClose,
@@ -22,105 +29,133 @@ import {
   TableHeader,
   TableRow,
 } from '@components/ui/table'
-import type { AdminUser } from '@data/admin'
-import {
-  PhArrowCounterClockwise,
-  PhMagnifyingGlass,
-  PhPencilSimple,
-  PhProhibit,
-  PhTrash,
-  PhX,
-} from '@phosphor-icons/vue'
-import { computed, ref } from 'vue'
+import { PhArrowCounterClockwise, PhMagnifyingGlass, PhProhibit, PhX } from '@phosphor-icons/vue'
+import type {
+  ErrorPayload,
+  PerfilUsuario,
+  ResultadoAvaliacaoDto,
+  UsuarioListagemDto,
+} from '@services/types'
+import * as usuariosService from '@services/usuarios'
+import { formatDataCurta } from '@utils/format'
+import { computed, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 
 interface Props {
-  users: AdminUser[]
+  usuarios: UsuarioListagemDto[]
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  editar: [user: AdminUser]
-  inativar: [user: AdminUser]
-  reativar: [user: AdminUser]
-  excluir: [user: AdminUser]
+  buscar: [termo: string]
+  atualizado: []
 }>()
 
-/** Card do design: papel com borda de 1px e raio de 8px, sem o ring e o padding vertical do kit. */
 const CARD_SURFACE = 'gap-0 rounded-lg border py-0 ring-0'
-
 const HEAD_CELL = 'text-eyebrow text-muted-foreground-faint h-auto px-4.5 py-2.5'
 const BODY_CELL = 'px-4.5 py-3'
-const DATA_TILE = 'bg-card flex flex-col gap-1 p-3.5'
-const DRAWER_ACTION = 'text-button-xs gap-2 rounded-sm border-foreground px-3.5'
+const FIELD = 'text-paragraph h-10.5 w-full rounded-sm px-3'
 
+// A coluna "Perfil" (investidor) saiu: `UsuarioListagemDto` não traz `perfilInvestidor` — só
+// `GET /auth/me` (do próprio usuário) e o resultado da avaliação têm esse dado. Ver
+// docs/AUDITORIA-INTEGRACAO.md.
 const COLUMNS = [
   { label: 'Usuário', width: '' },
-  { label: 'Perfil', width: 'w-[110px]' },
-  { label: 'Papel', width: 'w-[100px]' },
+  { label: 'Papel', width: 'w-[110px]' },
   { label: 'Status', width: 'w-[110px]' },
   { label: 'Desde', width: 'w-[110px]' },
 ]
 
 const search = ref('')
+let debounceHandle: ReturnType<typeof setTimeout> | undefined
 
-// Guarda o id, não o objeto: depois de uma edição a lista traz um novo objeto e
-// o drawer precisa refletir o dado atual.
-const selectedId = ref<string | null>(null)
-
-const selectedUser = computed(
-  () => props.users.find((user) => user.id === selectedId.value) ?? null,
-)
-
-const visibleUsers = computed(() => {
-  const term = search.value.trim().toLocaleLowerCase('pt-BR')
-
-  if (!term) {
-    return props.users
-  }
-
-  return props.users.filter(
-    (user) =>
-      user.name.toLocaleLowerCase('pt-BR').includes(term) ||
-      user.email.toLocaleLowerCase('pt-BR').includes(term),
-  )
+watch(search, (termo) => {
+  clearTimeout(debounceHandle)
+  debounceHandle = setTimeout(() => emit('buscar', termo), 300)
 })
 
-// Toda ação fecha o detalhe antes de seguir: o overlay do drawer fica por cima
-// do diálogo de confirmação e bloqueia o clique. O nome do usuário aparece na
-// própria confirmação, então o contexto não se perde.
-function request(action: 'editar' | 'inativar' | 'reativar' | 'excluir', user: AdminUser) {
-  selectedId.value = null
+const selectedId = ref<string | null>(null)
+const selectedUser = computed(
+  () => props.usuarios.find((user) => user.id === selectedId.value) ?? null,
+)
 
-  // `emit` é sobrecarregado por evento, então não aceita a união direto.
-  switch (action) {
-    case 'editar':
-      emit('editar', user)
-      break
-    case 'inativar':
-      emit('inativar', user)
-      break
-    case 'reativar':
-      emit('reativar', user)
-      break
-    default:
-      emit('excluir', user)
+const historico = ref<ResultadoAvaliacaoDto[] | null>(null)
+const historicoErro = ref(false)
+
+watch(selectedUser, async (user) => {
+  historico.value = null
+  historicoErro.value = false
+
+  if (!user) {
+    return
+  }
+
+  try {
+    historico.value = await usuariosService.historicoSuitability(user.id)
+  } catch {
+    historicoErro.value = true
+  }
+})
+
+const perfilEmEdicao = ref<PerfilUsuario | null>(null)
+watch(selectedUser, (user) => {
+  perfilEmEdicao.value = user?.perfil ?? null
+})
+
+const salvandoPerfil = ref(false)
+const confirmInativarOpen = ref(false)
+
+async function salvarPerfil() {
+  if (
+    !selectedUser.value ||
+    !perfilEmEdicao.value ||
+    perfilEmEdicao.value === selectedUser.value.perfil
+  ) {
+    return
+  }
+
+  salvandoPerfil.value = true
+  try {
+    await usuariosService.atualizar(selectedUser.value.id, { perfil: perfilEmEdicao.value })
+    toast.success('Papel atualizado')
+    emit('atualizado')
+  } catch (err) {
+    const payload = err as ErrorPayload
+    toast.error(payload.error?.message ?? 'Não foi possível atualizar o papel.')
+    perfilEmEdicao.value = selectedUser.value.perfil
+  } finally {
+    salvandoPerfil.value = false
   }
 }
 
-function gaugeLabel(user: AdminUser) {
-  return `Perfil ${user.profileLabel?.toLocaleLowerCase('pt-BR')}, nível ${user.profileLevel} de 4`
+async function alternarStatus() {
+  if (!selectedUser.value) {
+    return
+  }
+
+  const novoStatus = !selectedUser.value.ativo
+
+  try {
+    await usuariosService.atualizar(selectedUser.value.id, { ativo: novoStatus })
+    toast.success(novoStatus ? 'Usuário reativado' : 'Usuário inativado')
+    selectedId.value = null
+    emit('atualizado')
+  } catch (err) {
+    const payload = err as ErrorPayload
+    toast.error(payload.error?.message ?? 'Não foi possível atualizar o status.')
+  }
+}
+
+function pedirInativacao() {
+  confirmInativarOpen.value = true
 }
 </script>
 
 <template>
   <section class="flex flex-col gap-6" aria-label="Usuários cadastrados">
     <div class="relative w-105">
-      <PhMagnifyingGlass
-        class="absolute top-1/2 left-3.25 size-4 -translate-y-1/2 text-muted-foreground-faint"
-        aria-hidden="true"
-      />
-
+      <PhMagnifyingGlass class="absolute top-1/2 left-3.25 size-4 -translate-y-1/2 text-muted-foreground-faint" aria-hidden="true" />
       <Input
         v-model="search"
         type="search"
@@ -133,55 +168,42 @@ function gaugeLabel(user: AdminUser) {
     <Card :class="CARD_SURFACE">
       <Table>
         <TableCaption class="sr-only">
-          Usuários da plataforma, com perfil de investidor, papel e situação do cadastro.
+          Usuários da plataforma, com papel e situação do cadastro.
         </TableCaption>
 
         <TableHeader>
           <TableRow class="hover:bg-transparent">
-            <TableHead
-              v-for="column in COLUMNS"
-              :key="column.label"
-              scope="col"
-              :class="[HEAD_CELL, column.width]"
-            >
+            <TableHead v-for="column in COLUMNS" :key="column.label" scope="col" :class="[HEAD_CELL, column.width]">
               {{ column.label }}
             </TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          <TableEmpty v-if="!visibleUsers.length" :colspan="COLUMNS.length">
-            Nenhum usuário encontrado para "{{ search }}".
+          <TableEmpty v-if="!usuarios.length" :colspan="COLUMNS.length">
+            Nenhum usuário encontrado{{ search ? ` para "${search}"` : '' }}.
           </TableEmpty>
 
-          <TableRow v-for="user in visibleUsers" :key="user.id">
+          <TableRow v-for="user in usuarios" :key="user.id">
             <TableCell :class="BODY_CELL">
               <button type="button" class="block text-left" @click="selectedId = user.id">
-                <span class="text-paragraph-strong block hover:text-success">{{ user.name }}</span>
+                <span class="text-paragraph-strong block hover:text-success">{{ user.nome }}</span>
                 <span class="text-label block text-muted-foreground-faint">{{ user.email }}</span>
               </button>
             </TableCell>
 
-            <TableCell :class="BODY_CELL">
-              <span v-if="user.profileLevel" class="flex items-center gap-2">
-                <ProfileGauge :level="user.profileLevel" :label="gaugeLabel(user)" />
-                <span class="text-tag-sm text-muted-foreground">{{ user.profileLabel }}</span>
-              </span>
-              <span v-else class="text-tag-sm text-muted-foreground">—</span>
-            </TableCell>
-
             <TableCell :class="[BODY_CELL, 'text-label text-muted-foreground']">
-              {{ user.role }}
+              {{ user.perfil === 'admin' ? 'Admin' : 'Cliente' }}
             </TableCell>
 
             <TableCell :class="BODY_CELL">
-              <StatusBadge :tone="user.active ? 'success' : 'warning'">
-                {{ user.active ? 'Ativo' : 'Inativo' }}
+              <StatusBadge :tone="user.ativo ? 'success' : 'warning'">
+                {{ user.ativo ? 'Ativo' : 'Inativo' }}
               </StatusBadge>
             </TableCell>
 
             <TableCell :class="[BODY_CELL, 'text-label text-muted-foreground-faint tabular-nums']">
-              {{ user.since }}
+              {{ formatDataCurta(user.criadoEm) }}
             </TableCell>
           </TableRow>
         </TableBody>
@@ -189,20 +211,12 @@ function gaugeLabel(user: AdminUser) {
     </Card>
 
     <Sheet :open="Boolean(selectedUser)" @update:open="selectedId = null">
-      <SheetContent
-        v-if="selectedUser"
-        side="right"
-        :show-close-button="false"
-        class="gap-0 p-0 data-[side=right]:w-115! data-[side=right]:sm:max-w-115!"
-      >
-        <SheetHeader
-          class="flex-row items-start justify-between gap-3.5 border-b border-border p-5"
-        >
+      <SheetContent v-if="selectedUser" side="right" :show-close-button="false" class="gap-0 p-0 data-[side=right]:w-115! data-[side=right]:sm:max-w-115!">
+        <SheetHeader class="flex-row items-start justify-between gap-3.5 border-b border-border p-5">
           <div class="flex flex-col gap-0.75">
             <SheetTitle class="text-subtitle-strong">
-              {{ selectedUser.name }}
+              {{ selectedUser.nome }}
             </SheetTitle>
-
             <SheetDescription class="text-label text-muted-foreground-faint">
               {{ selectedUser.email }}
             </SheetDescription>
@@ -216,34 +230,38 @@ function gaugeLabel(user: AdminUser) {
         </SheetHeader>
 
         <div class="flex flex-col gap-5 overflow-y-auto p-5">
+          <div class="flex flex-col gap-1.75">
+            <label for="usuario-papel" class="text-eyebrow text-muted-foreground-faint">Papel</label>
+            <div class="flex gap-2">
+              <Select v-model="perfilEmEdicao">
+                <SelectTrigger id="usuario-papel" :class="FIELD">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cliente">Cliente</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                type="button"
+                size="lg"
+                :disabled="salvandoPerfil || perfilEmEdicao === selectedUser.perfil"
+                class="text-button-sm shrink-0 rounded-sm px-4"
+                @click="salvarPerfil"
+              >
+                Salvar
+              </Button>
+            </div>
+          </div>
+
           <dl class="bg-border grid grid-cols-2 gap-px overflow-hidden rounded-md border">
-            <div :class="DATA_TILE">
-              <dt class="text-eyebrow text-muted-foreground-faint">Papel</dt>
-              <dd class="text-paragraph-strong">{{ selectedUser.role }}</dd>
-            </div>
-
-            <div :class="DATA_TILE">
+            <div class="bg-card flex flex-col gap-1 p-3.5">
               <dt class="text-eyebrow text-muted-foreground-faint">Status</dt>
-              <dd class="text-paragraph-strong">{{ selectedUser.active ? 'Ativo' : 'Inativo' }}</dd>
+              <dd class="text-paragraph-strong">{{ selectedUser.ativo ? 'Ativo' : 'Inativo' }}</dd>
             </div>
-
-            <div :class="DATA_TILE">
+            <div class="bg-card flex flex-col gap-1 p-3.5">
               <dt class="text-eyebrow text-muted-foreground-faint">Cadastro</dt>
-              <dd class="text-paragraph-strong tabular-nums">{{ selectedUser.since }}</dd>
-            </div>
-
-            <div :class="DATA_TILE">
-              <dt class="text-eyebrow text-muted-foreground-faint">Perfil</dt>
-              <dd class="flex items-center gap-2">
-                <template v-if="selectedUser.profileLevel">
-                  <ProfileGauge
-                    :level="selectedUser.profileLevel"
-                    :label="gaugeLabel(selectedUser)"
-                  />
-                  <span class="text-tag-sm">{{ selectedUser.profileLabel }}</span>
-                </template>
-                <span v-else class="text-tag-sm text-muted-foreground">—</span>
-              </dd>
+              <dd class="text-paragraph-strong tabular-nums">{{ formatDataCurta(selectedUser.criadoEm) }}</dd>
             </div>
           </dl>
 
@@ -252,26 +270,24 @@ function gaugeLabel(user: AdminUser) {
               Histórico de suitability
             </h3>
 
-            <ol class="flex flex-col" aria-labelledby="historico-suitability">
-              <li
-                v-for="(entry, index) in selectedUser.history"
-                :key="entry.date"
-                class="flex gap-3"
-              >
+            <p v-if="historicoErro" class="text-label text-muted-foreground-faint">
+              Histórico indisponível no momento.
+            </p>
+            <p v-else-if="historico === null" class="text-label text-muted-foreground-faint">
+              Carregando…
+            </p>
+            <p v-else-if="historico.length === 0" class="text-label text-muted-foreground-faint">
+              Nenhuma avaliação registrada.
+            </p>
+            <ol v-else class="flex flex-col" aria-labelledby="historico-suitability">
+              <li v-for="entry in historico" :key="entry.id" class="flex gap-3 pb-3.5">
                 <span class="flex flex-col items-center gap-1 pt-1.25" aria-hidden="true">
                   <span class="size-1.75 shrink-0 rounded-full bg-success" />
-                  <span
-                    v-if="index < selectedUser.history.length - 1"
-                    class="w-px flex-1 bg-border"
-                  />
                 </span>
-
-                <div class="flex flex-col gap-0.5 pb-3.5">
-                  <p class="text-meta tabular-nums">
-                    {{ entry.date }}
-                  </p>
+                <div class="flex flex-col gap-0.5">
+                  <p class="text-meta tabular-nums">{{ formatDataCurta(entry.dataAvaliacao) }}</p>
                   <p class="text-label text-muted-foreground">
-                    {{ entry.description }}
+                    {{ entry.pontuacaoTotal }} pontos · {{ entry.perfilResultante }}
                   </p>
                 </div>
               </li>
@@ -280,23 +296,12 @@ function gaugeLabel(user: AdminUser) {
 
           <div class="flex flex-wrap gap-3 border-t border-border-strong pt-3.5">
             <Button
+              v-if="selectedUser.ativo"
               type="button"
               variant="outline"
               size="lg"
-              :class="DRAWER_ACTION"
-              @click="request('editar', selectedUser)"
-            >
-              <PhPencilSimple aria-hidden="true" />
-              Editar cadastro
-            </Button>
-
-            <Button
-              v-if="selectedUser.active"
-              type="button"
-              variant="outline"
-              size="lg"
-              :class="[DRAWER_ACTION, 'border-warning text-warning hover:bg-warning/10 hover:text-warning']"
-              @click="request('inativar', selectedUser)"
+              class="text-button-xs gap-2 rounded-sm border-warning px-3.5 text-warning hover:bg-warning/10 hover:text-warning"
+              @click="pedirInativacao"
             >
               <PhProhibit aria-hidden="true" />
               Inativar usuário
@@ -307,26 +312,25 @@ function gaugeLabel(user: AdminUser) {
               type="button"
               variant="outline"
               size="lg"
-              :class="[DRAWER_ACTION, 'border-success text-success hover:bg-success/10 hover:text-success']"
-              @click="request('reativar', selectedUser)"
+              class="text-button-xs gap-2 rounded-sm border-success px-3.5 text-success hover:bg-success/10 hover:text-success"
+              @click="alternarStatus"
             >
               <PhArrowCounterClockwise aria-hidden="true" />
               Reativar usuário
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              :class="[DRAWER_ACTION, 'border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive']"
-              @click="request('excluir', selectedUser)"
-            >
-              <PhTrash aria-hidden="true" />
-              Excluir usuário
             </Button>
           </div>
         </div>
       </SheetContent>
     </Sheet>
+
+    <ConfirmDialog
+      v-model:open="confirmInativarOpen"
+      title="Inativar este usuário?"
+      :description="selectedUser ? `${selectedUser.nome} perde o acesso à plataforma. O cadastro é preservado.` : undefined"
+      confirm-label="Inativar usuário"
+      cancel-label="Manter ativo"
+      tone="destructive"
+      @confirm="alternarStatus"
+    />
   </section>
 </template>

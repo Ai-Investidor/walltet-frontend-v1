@@ -1,15 +1,29 @@
 <script setup lang="ts">
-import { walletDetail } from '@data/admin'
 import { PhArrowLeft } from '@phosphor-icons/vue'
+import type { CarteiraDetalheDto } from '@services/types'
+import { formatCompetenciaLonga } from '@utils/competencia'
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
-const meta = computed(() => [
-  `Perfil-alvo: ${walletDetail.profileLabel}`,
-  `${walletDetail.investors} investidores vinculados`,
-  `Vigente: ${walletDetail.currentCompetence}`,
-  `Em edição: ${walletDetail.draftCompetence}`,
-])
+interface Props {
+  carteira: CarteiraDetalheDto
+}
+
+const props = defineProps<Props>()
+
+// "N investidores vinculados" saiu: sem endpoint (docs/AUDITORIA-INTEGRACAO.md, achado 4.1).
+const meta = computed(() => {
+  const itens = [
+    `Perfil-alvo: ${props.carteira.perfilAlvo}`,
+    props.carteira.ativa ? 'Ativa' : 'Inativa',
+  ]
+
+  if (props.carteira.versaoAtual) {
+    itens.push(`Vigente: ${formatCompetenciaLonga(props.carteira.versaoAtual.mesReferencia)}`)
+  }
+
+  return itens
+})
 </script>
 
 <template>
@@ -23,7 +37,7 @@ const meta = computed(() => [
     </RouterLink>
 
     <h1 class="text-page-title text-foreground">
-      {{ walletDetail.name }}
+      {{ carteira.nome }}
     </h1>
 
     <ul class="flex flex-wrap gap-x-4 gap-y-1">
