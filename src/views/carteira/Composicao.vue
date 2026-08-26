@@ -4,6 +4,7 @@ import { Button } from '@components/ui/button'
 import { Card, CardContent, CardHeader } from '@components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@components/ui/collapsible'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@components/ui/tabs'
+import { AssetRow } from '@components/wallet/asset-row'
 import type { AllocationClass, Asset } from '@data/wallet'
 import { allocation, assets, revisionNote } from '@data/wallet'
 import {
@@ -52,7 +53,10 @@ const ALLOCATION_TONE: Record<AllocationClass['tone'], string> = {
 
 // Glifos de status conforme o design: entrada é seta para dentro (↘) e saída
 // é seta para fora (↗) — não seguem a direção literal de alta/baixa.
-const ASSET_STATUS: Record<Asset['trend'], { icon: Component; tone: string }> = {
+const ASSET_STATUS: Record<
+  Asset['trend'],
+  { icon: Component; tone: 'text-success' | 'text-warning' | 'text-muted-foreground' }
+> = {
   up: { icon: PhArrowDownRight, tone: 'text-success' },
   down: { icon: PhArrowUpRight, tone: 'text-warning' },
   flat: { icon: PhMinus, tone: 'text-muted-foreground' },
@@ -100,7 +104,8 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
 
             <p class="text-eyebrow flex items-center gap-1.5 text-success">
               <span class="size-1.5 shrink-0 rounded-full bg-success" aria-hidden="true" />
-              Agosto 2026
+              <span class="max-sm:hidden">Agosto 2026</span>
+              <span class="hidden max-sm:inline">AGO 2026</span>
             </p>
           </CardHeader>
 
@@ -138,7 +143,7 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
           </CardContent>
 
           <CardContent class="p-0">
-            <div :class="COMPOSITION_HEADER">
+            <div :class="COMPOSITION_HEADER" class="max-sm:hidden">
               <h3 class="text-eyebrow col-span-2 text-muted-foreground-faint">
                 Composição · {{ assets.length }} ativos
               </h3>
@@ -146,7 +151,7 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
               <span class="text-eyebrow text-right text-muted-foreground-faint">Peso</span>
             </div>
 
-            <ul>
+            <ul class="max-sm:hidden">
               <li v-for="asset in assets" :key="asset.code" :class="COMPOSITION_ITEM">
                 <span
                   class="text-eyebrow flex h-7.5 w-8.5 items-center justify-center rounded-md border border-border text-muted-foreground"
@@ -175,12 +180,37 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
               </li>
             </ul>
 
-            <p :class="COMPOSITION_TOTAL">
+            <p :class="COMPOSITION_TOTAL" class="max-sm:hidden">
               <span class="text-eyebrow col-span-3 text-muted-foreground-faint">Total</span>
               <span class="text-card-title text-right tabular-nums">
                 {{ formatPercent(totalWeightPercent) }}
               </span>
             </p>
+
+            <h3 class="text-eyebrow hidden border-y border-border px-3.5 py-2.5 text-muted-foreground-faint max-sm:block">
+              Composição · {{ assets.length }} ativos
+            </h3>
+
+            <ul class="hidden max-sm:block">
+              <AssetRow
+                v-for="asset in assets"
+                :key="asset.code"
+                :code="asset.code"
+                :name="asset.name"
+                :detail="asset.className"
+                :icon="ASSET_STATUS[asset.trend].icon"
+                :tone="ASSET_STATUS[asset.trend].tone"
+                :label="asset.trendLabel"
+                :value="formatPercent(asset.weightPercent)"
+              />
+            </ul>
+
+            <div class="border-border-strong bg-muted hidden items-center justify-between border-t px-3.5 py-3 max-sm:flex">
+              <span class="text-eyebrow text-muted-foreground-faint">Total</span>
+              <span class="text-card-title tabular-nums">
+                {{ formatPercent(totalWeightPercent) }}
+              </span>
+            </div>
           </CardContent>
         </Card>
 
@@ -210,8 +240,8 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
 
         <LegalNotice class="w-3/4 max-lg:w-full" />
 
-        <div class="flex flex-wrap items-center gap-4">
-          <Button type="button" size="lg" class="text-button-sm h-10 gap-2.5 rounded-sm px-6">
+        <div class="flex flex-wrap items-center gap-4 max-sm:flex-col max-sm:items-stretch max-sm:gap-2.5">
+          <Button type="button" size="lg" class="text-button-sm h-10 justify-center gap-2.5 rounded-sm px-6 max-sm:w-full">
             <PhDownloadSimple class="size-4" aria-hidden="true" />
             Baixar relatório do mês
           </Button>
@@ -220,7 +250,7 @@ const totalWeightPercent = assets.reduce((total, asset) => total + asset.weightP
             type="button"
             variant="outline"
             size="lg"
-            class="text-button-sm hover:border-border-strong h-10 gap-2.5 rounded-sm px-6"
+            class="text-button-sm hover:border-border-strong h-10 justify-center gap-2.5 rounded-sm px-6 max-sm:w-full"
           >
             Ver movimentações
             <PhArrowRight class="size-4" aria-hidden="true" />
