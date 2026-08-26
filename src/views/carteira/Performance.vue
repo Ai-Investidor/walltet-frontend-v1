@@ -111,17 +111,19 @@ const currentPage = ref(1)
 </script>
 
 <template>
-  <section :class="cn('flex flex-col gap-6', props.class)" aria-label="Performance da carteira">
+  <section :class="cn('flex flex-col gap-6 max-sm:gap-4', props.class)" aria-label="Performance da carteira">
     <ul
-      class="bg-border grid grid-cols-4 gap-px overflow-hidden rounded-md border max-lg:grid-cols-2 max-sm:grid-cols-1"
+      class="bg-border grid grid-cols-4 gap-px overflow-hidden rounded-md border max-lg:grid-cols-2 max-sm:grid-cols-2"
       aria-label="Indicadores de performance"
     >
       <KpiCard
         v-for="kpi in performanceIndicators"
         :key="kpi.label"
         :label="kpi.label"
+        :label-mobile="kpi.labelMobile"
         :value="kpi.value"
         :note="kpi.note"
+        :note-mobile="kpi.noteMobile"
         :tone="kpi.tone"
         size="sm"
       />
@@ -217,7 +219,7 @@ const currentPage = ref(1)
     </Card>
 
     <Card :class="CARD_SURFACE">
-      <CardContent class="p-0">
+      <CardContent class="max-sm:hidden p-0">
         <Table>
           <TableCaption class="sr-only">
             Histórico mensal de rentabilidade da carteira comparada ao CDI e ao Ibovespa.
@@ -262,6 +264,45 @@ const currentPage = ref(1)
         </Table>
       </CardContent>
 
+      <CardContent class="hidden max-sm:block p-0">
+        <h3 class="text-card-title border-b border-border px-3.5 py-2.5">
+          Rentabilidade mensal
+        </h3>
+
+        <ul>
+          <li
+            v-for="row in performanceHistory"
+            :key="row.competencia"
+            class="border-border flex flex-col gap-2 px-3.5 py-3 not-last:border-b"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-paragraph-strong">{{ row.competencia }}</span>
+              <span
+                class="text-table-value tabular-nums"
+                :class="row.carteira >= 0 ? 'text-success' : 'text-warning'"
+              >
+                {{ formatPercent(row.carteira) }}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <p class="text-label flex items-center gap-1 text-muted-foreground">
+                <span class="text-eyebrow text-muted-foreground-faint">CDI</span>
+                {{ formatPercent(row.cdi) }}
+              </p>
+              <p class="text-label flex items-center gap-1 text-muted-foreground">
+                <span class="text-eyebrow text-muted-foreground-faint">Ibov</span>
+                {{ formatPercent(row.ibovespa) }}
+              </p>
+              <p class="text-label flex items-center gap-1 text-muted-foreground">
+                <span class="text-eyebrow text-muted-foreground-faint">% CDI</span>
+                {{ formatRatio(row.percentOfCdi) }}
+              </p>
+            </div>
+          </li>
+        </ul>
+      </CardContent>
+
       <CardContent class="border-t border-border p-3.5">
         <Pagination
           v-model:page="currentPage"
@@ -274,7 +315,7 @@ const currentPage = ref(1)
           <PaginationContent v-slot="{ items }">
             <PaginationPrevious aria-label="Página anterior">
               <PhCaretLeft class="size-4" aria-hidden="true" />
-              <span class="max-sm:hidden">Anterior</span>
+              <span>Anterior</span>
             </PaginationPrevious>
 
             <template
@@ -295,7 +336,7 @@ const currentPage = ref(1)
             </template>
 
             <PaginationNext aria-label="Próxima página">
-              <span class="max-sm:hidden">Próxima</span>
+              <span>Próxima</span>
               <PhCaretRight class="size-4" aria-hidden="true" />
             </PaginationNext>
           </PaginationContent>

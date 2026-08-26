@@ -8,7 +8,12 @@ function raf(time: number): void {
 }
 
 export function bootLenis(): void {
-  lenisInstance = new Lenis()
+  // allowNestedScroll: o layout autenticado (AppLayout) tem um <main> com
+  // scroll próprio (overflow-y-auto) dentro da área fixa da sidebar/topbar.
+  // Sem essa opção o Lenis assume que só a janela rola, intercepta o wheel/touch
+  // e não repassa pro <main> interno — a página trava (nada rola) assim que o
+  // conteúdo interno é mais alto que a viewport.
+  lenisInstance = new Lenis({ allowNestedScroll: true })
   requestAnimationFrame(raf)
 }
 

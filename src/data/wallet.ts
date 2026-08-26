@@ -3,10 +3,14 @@
 
 export interface Kpi {
   label: string
+  /** Rótulo mais curto exibido só na versão mobile (ex.: "Meses +" em vez de "Meses positivos"). */
+  labelMobile?: string
   value: string
   /** Valor sem centavos para caber na grade 2 colunas da versão mobile (ex.: "R$ 3.500"). */
   valueMobile?: string
   note: string
+  /** Nota mais curta exibida só na versão mobile (ex.: "Últimos 12 m" em vez de "Últimos 12 meses"). */
+  noteMobile?: string
   tone: 'positive' | 'neutral'
 }
 
@@ -337,6 +341,7 @@ export const performanceIndicators: Kpi[] = [
     label: 'Mês',
     value: '+1,85 %',
     note: 'CDI +0,87 % · Ibov +2,10 %',
+    noteMobile: 'CDI +0,87 %',
     tone: 'positive',
   },
   {
@@ -349,12 +354,15 @@ export const performanceIndicators: Kpi[] = [
     label: '% do CDI',
     value: '212,6 %',
     note: 'Acumulado de 2026',
+    noteMobile: 'Acumulado 2026',
     tone: 'neutral',
   },
   {
     label: 'Meses positivos',
+    labelMobile: 'Meses +',
     value: '11 de 12',
     note: 'Últimos 12 meses',
+    noteMobile: 'Últimos 12 m',
     tone: 'neutral',
   },
 ]
