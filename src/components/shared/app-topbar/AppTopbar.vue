@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { Avatar, AvatarFallback } from '@components/ui/avatar'
 import { Button } from '@components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ui/select'
 import { SidebarTrigger } from '@components/ui/sidebar'
 import { PhCalendarBlank, PhCaretDown, PhMoon, PhUser } from '@phosphor-icons/vue'
+import { generateCompetenceOptions } from '@utils/format'
 import type { HTMLAttributes } from 'vue'
+import { ref } from 'vue'
 import { cn } from '@/libs/utils'
 
 interface Props {
@@ -11,7 +20,7 @@ interface Props {
   title: string
   /** Iniciais do usuário logado exibidas no avatar (ex.: "RD"). */
   initials: string
-  /** Competência selecionada, já formatada (ex.: "Agosto 2026"). */
+  /** Competência selecionada por padrão, já formatada (ex.: "Agosto 2026"). */
   competence?: string
   class?: HTMLAttributes['class']
 }
@@ -19,6 +28,10 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   competence: 'Agosto 2026',
 })
+
+/** Últimas 12 competências disponíveis para seleção, da mais recente (mês vigente) à mais antiga. */
+const competenceOptions = generateCompetenceOptions()
+const competence = ref(props.competence)
 </script>
 
 <template>
@@ -32,14 +45,22 @@ const props = withDefaults(defineProps<Props>(), {
 
     <div class="flex items-center gap-2.5 max-md:hidden">
       <Button variant="outline" size="icon" class="size-8.5" aria-label="Alternar tema">
-        <PhMoon class="size-3.75 text-muted-foreground" aria-hidden="true" />
+        <PhMoon class="size-5 text-muted-foreground" aria-hidden="true" />
       </Button>
 
-      <Button variant="outline" class="h-8.5 gap-2 px-2.75">
-        <PhCalendarBlank class="size-3.5 text-muted-foreground" aria-hidden="true" />
-        <span class="text-meta">{{ props.competence }}</span>
-        <PhCaretDown class="size-2.75 text-muted-foreground-faint" aria-hidden="true" />
-      </Button>
+      <Select v-model="competence">
+        <SelectTrigger
+          class="h-8.5 gap-2 border-border bg-background px-2.75 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input"
+        >
+          <PhCalendarBlank class="size-5 text-muted-foreground" aria-hidden="true" />
+          <SelectValue class="text-meta" />
+        </SelectTrigger>
+        <SelectContent align="end">
+          <SelectItem v-for="option in competenceOptions" :key="option" :value="option">
+            {{ option }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
 
       <button type="button" class="flex items-center gap-1.75" aria-label="Menu do usuário">
         <Avatar>

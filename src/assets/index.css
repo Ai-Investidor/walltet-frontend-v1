@@ -239,7 +239,7 @@
 
 @utility text-eyebrow {
   font-family: var(--font-heading);
-  font-size: 0.6875rem;
+  font-size: 0.8rem;
   font-weight: 700;
   line-height: 1.4;
   letter-spacing: 0.05em;

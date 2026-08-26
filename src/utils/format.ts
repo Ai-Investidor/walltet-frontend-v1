@@ -17,6 +17,9 @@ const ratioFormatter = new Intl.NumberFormat('pt-BR', {
   maximumFractionDigits: 1,
 })
 
+/** Nome do mês por extenso, sem o "de" do formato longo do Intl (ex.: "agosto"). */
+const monthFormatter = new Intl.DateTimeFormat('pt-BR', { month: 'long' })
+
 export function formatPercent(value: number) {
   return `${percentFormatter.format(value)} %`
 }
@@ -27,4 +30,17 @@ export function formatSignedPercent(value: number) {
 
 export function formatRatio(value: number) {
   return `${ratioFormatter.format(value)} %`
+}
+
+/** Competência (mês/ano) — ex.: "Agosto 2026". */
+export function formatCompetence(date: Date) {
+  const month = monthFormatter.format(date)
+  return `${month.charAt(0).toUpperCase()}${month.slice(1)} ${date.getFullYear()}`
+}
+
+/** Últimas `count` competências, da mais recente à mais antiga, a partir do mês vigente. */
+export function generateCompetenceOptions(count = 12, from = new Date()) {
+  return Array.from({ length: count }, (_, index) =>
+    formatCompetence(new Date(from.getFullYear(), from.getMonth() - index, 1)),
+  )
 }
