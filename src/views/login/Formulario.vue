@@ -2,11 +2,16 @@
 import { Button } from '@components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@components/ui/form'
 import { Input } from '@components/ui/input'
+import type { ErrorPayload } from '@services/types'
+import { useAuthStore } from '@stores/auth'
 import { toTypedSchema } from '@vee-validate/zod'
-import { RouterLink, useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import * as z from 'zod'
 
 const router = useRouter()
+const route = useRoute()
+const auth = useAuthStore()
 
 const schema = toTypedSchema(
   z.object({
@@ -18,9 +23,23 @@ const schema = toTypedSchema(
   }),
 )
 
-// Mock: sem auth real nesta fase — qualquer envio válido navega direto pro painel.
-function onSubmit() {
-  router.push({ name: 'painel' })
+const erroGeral = ref('')
+const enviando = ref(false)
+
+async function onSubmit(values: Record<string, unknown>) {
+  erroGeral.value = ''
+  enviando.value = true
+
+  try {
+    await auth.login({ email: values.email as string, senha: values.senha as string })
+    const destino = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
+    router.push(destino)
+  } catch (err) {
+    const payload = err as ErrorPayload
+    erroGeral.value = payload.error?.message ?? 'Não foi possível entrar. Tente novamente.'
+  } finally {
+    enviando.value = false
+  }
 }
 </script>
 
@@ -86,14 +105,15 @@ function onSubmit() {
         </FormItem>
       </FormField>
 
-      <Button type="submit" class="text-table-value h-11 w-full rounded-sm">
-        Entrar
+      <p v-if="erroGeral" role="alert" class="text-label text-destructive">
+        {{ erroGeral }}
+      </p>
+
+      <Button type="submit" :disabled="enviando" class="text-table-value h-11 w-full rounded-sm">
+        {{ enviando ? 'Entrando…' : 'Entrar' }}
       </Button>
 
-      <div class="border-border flex items-center justify-between gap-2.5 border-t pt-4">
-        <RouterLink to="/recuperar-senha" class="text-table-row text-primary hover:underline">
-          Esqueci minha senha
-        </RouterLink>
+      <div class="border-border flex items-center justify-end gap-2.5 border-t pt-4">
         <RouterLink to="/criar-conta" class="text-topbar-meta text-foreground hover:underline">
           Criar conta
         </RouterLink>

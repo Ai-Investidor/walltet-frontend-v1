@@ -28,3 +28,41 @@ export function formatSignedPercent(value: number) {
 export function formatRatio(value: number) {
   return `${ratioFormatter.format(value)} %`
 }
+
+const dataCurtaFormatter = new Intl.DateTimeFormat('pt-BR', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+
+const dataLongaFormatter = new Intl.DateTimeFormat('pt-BR', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+
+/** ISO 8601 → "01/09/2026". */
+export function formatDataCurta(iso: string) {
+  return dataCurtaFormatter.format(new Date(iso))
+}
+
+/** ISO 8601 → "1 de setembro de 2026". */
+export function formatDataLonga(iso: string) {
+  return dataLongaFormatter.format(new Date(iso))
+}
+
+const UNIDADES_BYTES = ['B', 'KB', 'MB', 'GB']
+
+/** 482304 → "471 KB" — mesma escala de `tamanhoBytes` devolvido pelo backend. */
+export function formatBytes(bytes: number) {
+  if (bytes <= 0) {
+    return '0 B'
+  }
+
+  const grandeza = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), UNIDADES_BYTES.length - 1)
+  const valor = bytes / 1024 ** grandeza
+
+  return `${grandeza === 0 ? valor : valor.toFixed(0)} ${UNIDADES_BYTES[grandeza]}`
+}

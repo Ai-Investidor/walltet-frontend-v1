@@ -1,3 +1,11 @@
+<!--
+  Órfão desde a integração com o backend real: `admin/carteira/Composicao.vue` não abre mais este
+  componente. Criar/editar uma versão via POST /carteiras/:id/versoes exige `ativoId` por item, e
+  não há rota de catálogo de ativos no backend pra popular a escolha (AdicionarAtivo.vue depende
+  de `catalogAssets`, mock) — ver docs/AUDITORIA-INTEGRACAO.md, achado 4.9. Implementação mantida
+  intacta (ainda usa src/data/admin.ts) pra religar quando esse endpoint existir; só desconectada
+  do fluxo real.
+-->
 <script setup lang="ts">
 import { AssetChip } from '@components/shared/asset-chip'
 import { Button } from '@components/ui/button'

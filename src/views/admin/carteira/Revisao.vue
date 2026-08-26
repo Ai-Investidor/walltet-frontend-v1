@@ -1,3 +1,8 @@
+<!--
+  Órfão desde a integração com o backend real — mesmo motivo de Edicao.vue (ver comentário lá):
+  sem catálogo de ativos no backend, o fluxo de rascunho/revisão/publicação não tem como escolher
+  `ativoId`. Implementação intacta, só desconectada de admin/carteira/Composicao.vue.
+-->
 <script setup lang="ts">
 import { ConfirmDialog } from '@components/admin/confirm-dialog'
 import { Button } from '@components/ui/button'

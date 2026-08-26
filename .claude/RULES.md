@@ -430,21 +430,33 @@ import Saldo from '@views/wallet/Balance.vue'
 
 ## R8 — Estado e dados
 
+A camada dinâmica existe desde a integração com `carteira-sistema-backend` (ver
+`docs/AUDITORIA-INTEGRACAO.md`). `src/data/*.ts` deixou de ser o caminho padrão — só sobrevive
+para conteúdo genuinely estático (marketing/decorativo, sem endpoint correspondente).
+
 | Precisa de | Vai em |
 | --- | --- |
-| dado de seção (card, tabela, gráfico, lista) | constante tipada em `src/data/<dominio>.ts` |
+| chamada HTTP a um endpoint do backend | função em `src/services/<dominio>.ts`, tipada com os DTOs de `src/services/types.ts` |
+| sessão do usuário ou outro estado compartilhado entre páginas | store Pinia em `src/stores/<dominio>.ts` |
+| tradução de DTO da API para a prop de um componente, quando os campos não são idênticos | função de mapeamento explícita (`src/utils/<assunto>.ts`), não um cast solto |
+| conteúdo genuinely estático (texto de marketing, prova social, menu de navegação) sem endpoint | constante tipada em `src/data/<dominio>.ts`, como antes |
 | texto literal (título, rótulo, microcopy) | direto no template |
 | estado derivado de interação do usuário (filtro, paginação, seleção, open/closed) | `ref`/`reactive` na própria view |
 
-Page e view importam as constantes de `src/data/<dominio>.ts` direto, via `@data`. Sem camada intermediária: nesta fase o projeto não tem service, store nem composable de domínio — isso é conteúdo de uma skill separada, ainda não ativa. Estado puramente local de UI continua na view; antes de escrever algo genérico, verificar o VueUse.
+Toda função de `src/services/` usa a instância única `http` de `src/services/http.ts`
+(`axios.create({ baseURL: API_URL, withCredentials: true })`, com o interceptor de `401
+UNAUTHORIZED` já plugado — ver `src/config/env.ts` para `API_URL`). Nunca instanciar outro client
+axios num componente.
 
-Antes de criar arquivo novo em `src/data/`: procurar arquivo do mesmo domínio em `src/data/` e em manifests anteriores. Mesmo domínio → **estender** (novos exports), não duplicar.
+Page ou view busca o dado num `onMounted` (ou reage a props/params via `watch`), guarda o
+resultado em `ref` tipado com o DTO de `src/services/types.ts`, e cobre pelo menos três estados:
+carregando, erro (mostrar `error.message` do envelope padrão) e vazio/sem-dado (perfil sem
+avaliação, carteira não vinculada — não assumir que o campo opcional do DTO sempre vem
+preenchido). Um componente sem consumidor duplo não precisa de composable genérico de fetch — a
+lógica de `onMounted` + `ref` direto na page/view já resolve; extrair só a partir do segundo
+consumidor (R6).
 
-### Dados estáticos
-
-Um arquivo por domínio, reunindo **todo** o conteúdo mockado daquele domínio. Tipos e valores ficam juntos; a view importa os `export const` direto — sem factory, sem classe, sem fetch.
-
-❌ Errado — axios ou store soltos no componente:
+❌ Errado — axios solto no componente, sem tratar estado de carregamento/erro:
 
 ```vue
 <script setup lang="ts">
@@ -457,42 +469,61 @@ const { data } = await axios.get('https://api.exemplo.com/v1/wallet/balance')
 ✅ Certo:
 
 ```ts
-// src/data/wallet.ts
-// DADOS ESTÁTICOS — trocar por camada dinâmica (service/store/composable) quando a skill existir.
-// Assinaturas e tipos são o contrato; não alterar sem atualizar o manifesto.
+// src/services/wallet.ts
+import { http } from './http'
+import type { BalanceResponseDto } from './types'
 
-export interface Balance {
-  total: number
-  blocked: number
+export async function balance(): Promise<BalanceResponseDto> {
+  const { data } = await http.get<BalanceResponseDto>('/wallet/balance')
+  return data
 }
-
-export interface Transaction {
-  id: string
-  description: string
-  amount: number
-  data: string
-}
-
-export const balance: Balance = { total: 1240, blocked: 0 }
-
-export const transactions: Transaction[] = [
-  { id: '1', description: 'Transferência recebida', amount: 250, data: '2026-08-20' },
-  { id: '2', description: 'Pagamento', amount: -89.9, data: '2026-08-19' },
-]
 ```
 
 ```vue
 <!-- view -->
 <script setup lang="ts">
-import { balance, transactions } from '@data/wallet'
+import * as walletService from '@services/wallet'
+import type { BalanceResponseDto } from '@services/types'
+import { onMounted, ref } from 'vue'
+
+const balance = ref<BalanceResponseDto | null>(null)
+const carregando = ref(true)
+const erro = ref('')
+
+onMounted(async () => {
+  try {
+    balance.value = await walletService.balance()
+  } catch {
+    erro.value = 'Não foi possível carregar o saldo agora.'
+  } finally {
+    carregando.value = false
+  }
+})
 </script>
 
 <template>
-  <span>{{ balance.total }}</span>
+  <p v-if="carregando">Carregando…</p>
+  <p v-else-if="erro" role="alert">{{ erro }}</p>
+  <span v-else-if="balance">{{ balance.total }}</span>
 </template>
 ```
 
-**Por quê:** um arquivo por domínio mantém o conteúdo mockado legível num lugar só, sem inventar camada que ainda não existe. A view não precisa saber se o dado é estático ou dinâmico — quando a skill de dados dinâmicos existir, ela troca o import de `@data/<dominio>` pelo composable equivalente, mantendo os mesmos nomes exportados sempre que possível, e a view muda o mínimo.
+**Por quê:** a instância única de `http` mantém `baseURL`, cookie de sessão e tratamento de 401
+consistentes em todo o app; duplicar `axios.create` por componente reabre exatamente o problema
+que a integração fechou. Cobrir carregando/erro/vazio explicitamente evita telas que assumem
+dado sempre presente — o backend real modela ausência (`perfilInvestidor: null`,
+`carteiraVinculada: null`) onde o mock antigo sempre tinha valor.
+
+### Dados estáticos (o que sobra em `src/data/`)
+
+Continua um arquivo por domínio, reunindo o conteúdo mockado. Só entra aqui o que não tem — e não
+deveria ter — endpoint: menu de navegação (`navigation.ts`), texto de prova social nas telas
+públicas de login/cadastro. Antes de criar arquivo novo aqui: confirmar que não existe rota no
+backend para esse dado (ver `docs/AUDITORIA-INTEGRACAO.md`) — se existir, o caminho é
+`services/`, não `data/`.
+
+**Por quê:** o mesmo motivo de sempre — um arquivo por domínio mantém o conteúdo mockado legível
+num lugar só. A diferença é que agora "mockado" é a exceção documentada, não o padrão.
 ---
 
 ## R9 — Rotas e code-splitting
