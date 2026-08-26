@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PhSidebarSimple } from '@phosphor-icons/vue'
+import { PhList } from '@phosphor-icons/vue'
 import type { HTMLAttributes } from 'vue'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/libs/utils'
@@ -21,7 +21,7 @@ const { toggleSidebar } = useSidebar()
     :class="cn('', props.class)"
     @click="toggleSidebar"
   >
-    <PhSidebarSimple class="cn-rtl-flip" />
-    <span class="sr-only">Toggle Sidebar</span>
+    <PhList class="size-5" aria-hidden="true" />
+    <span class="sr-only">Abrir menu</span>
   </Button>
 </template>

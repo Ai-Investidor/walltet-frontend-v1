@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback } from '@components/ui/avatar'
 import { Button } from '@components/ui/button'
 import { SidebarTrigger } from '@components/ui/sidebar'
-import { PhCalendarBlank, PhCaretDown, PhMoon } from '@phosphor-icons/vue'
+import { PhCalendarBlank, PhCaretDown, PhMoon, PhUser } from '@phosphor-icons/vue'
 import type { HTMLAttributes } from 'vue'
 import { cn } from '@/libs/utils'
 
@@ -24,13 +24,13 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
   <header
     data-slot="app-topbar"
-    :class="cn('flex h-15 shrink-0 items-center gap-3 border-b border-border px-5', props.class)"
+    :class="cn('flex h-15 shrink-0 items-center gap-3 border-b border-border px-5 max-md:h-12 max-md:justify-between', props.class)"
   >
     <SidebarTrigger class="hidden max-md:flex" />
 
-    <span class="text-topbar-title flex-1">{{ props.title }}</span>
+    <span class="text-topbar-title max-md:text-card-title flex-1 max-md:flex-none">{{ props.title }}</span>
 
-    <div class="flex items-center gap-2.5">
+    <div class="flex items-center gap-2.5 max-md:hidden">
       <Button variant="outline" size="icon" class="size-8.5" aria-label="Alternar tema">
         <PhMoon class="size-3.75 text-muted-foreground" aria-hidden="true" />
       </Button>
@@ -50,5 +50,13 @@ const props = withDefaults(defineProps<Props>(), {
         <PhCaretDown class="size-2.75 text-muted-foreground-faint" aria-hidden="true" />
       </button>
     </div>
+
+    <button
+      type="button"
+      class="hidden size-7 items-center justify-center max-md:flex"
+      aria-label="Menu do usuário"
+    >
+      <PhUser class="size-5 text-muted-foreground" aria-hidden="true" />
+    </button>
   </header>
 </template>
