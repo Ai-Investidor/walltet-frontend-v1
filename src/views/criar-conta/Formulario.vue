@@ -16,8 +16,7 @@ import * as z from 'zod'
 
 const router = useRouter()
 
-const CAMPO_CLASSES =
-  'text-table-row placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3'
+const CAMPO_CLASSES = 'placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3'
 
 const schema = toTypedSchema(
   z.object({

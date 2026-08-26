@@ -35,8 +35,8 @@ const HEAD_CELL = 'text-eyebrow text-muted-foreground-faint h-auto px-4.5 py-2.5
 const BODY_CELL = 'px-4.5 py-3'
 const VALUE_CELL = 'text-table-value px-4.5 py-3 tabular-nums'
 
-/** Campo do design: 42 px de altura, raio pequeno e tipografia de parágrafo. */
-const FIELD = 'text-paragraph h-10.5 rounded-sm px-3'
+/** Campo do design: 42 px de altura e raio pequeno (tipografia já é o default do Input/Select). */
+const FIELD = 'h-10.5 rounded-sm px-3'
 
 const COLUMNS = [
   { label: 'Competência', width: '' },

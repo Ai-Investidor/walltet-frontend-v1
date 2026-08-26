@@ -80,7 +80,7 @@ function openUser(user: AdminUser) {
       <Input
         v-model="search"
         type="search"
-        class="text-paragraph h-10.5 rounded-sm pr-3 pl-9.5"
+        class="h-10.5 rounded-sm pr-3 pl-9.5"
         placeholder="Buscar por nome ou e-mail"
         aria-label="Buscar usuário por nome ou e-mail"
       />

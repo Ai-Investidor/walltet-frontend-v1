@@ -44,8 +44,8 @@ const initialValues = {
   descricao: 'Núcleo em renda fixa indexada com parcela em renda variável doméstica.',
 }
 
-/** Campo do design: largura total, 42 px de altura, raio pequeno e tipografia de parágrafo. */
-const FIELD = 'text-paragraph h-10.5 w-full rounded-sm px-3'
+/** Campo do design: largura total, 42 px de altura e raio pequeno (tipografia já é o default do Input/Select). */
+const FIELD = 'h-10.5 w-full rounded-sm px-3'
 
 function onSubmit(values: Record<string, unknown>) {
   drawerOpen.value = false
