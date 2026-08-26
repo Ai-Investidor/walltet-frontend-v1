@@ -27,11 +27,11 @@ function formatDate(isoDate: string) {
   return dateFormatter.format(new Date(`${isoDate}T00:00:00Z`))
 }
 
-const accountFields = [
+const accountFields: Array<{ label: string; labelMobile?: string; value: string }> = [
   { label: 'Nome', value: clientAccount.name },
   { label: 'E-mail', value: clientAccount.email },
   { label: 'Cliente desde', value: formatDate(clientAccount.clientSince) },
-  { label: 'Carteira vinculada', value: clientAccount.linkedWalletName },
+  { label: 'Carteira vinculada', labelMobile: 'Carteira', value: clientAccount.linkedWalletName },
 ]
 
 /** A avaliação mais recente é a posição 0 do histórico — não há registro "atual" separado. */
@@ -47,7 +47,7 @@ const HISTORY_COLUMNS = [
 </script>
 
 <template>
-  <div class="grid grid-cols-[1.35fr_1fr] items-start gap-6 max-md:grid-cols-1">
+  <div class="grid grid-cols-[1.35fr_1fr] items-start gap-6 max-md:grid-cols-1 max-sm:gap-5">
     <section :class="CARD_CLASS" aria-labelledby="conta-dados-titulo">
       <h2 id="conta-dados-titulo" :class="CARD_HEADER_CLASS">
         Dados
@@ -57,18 +57,20 @@ const HISTORY_COLUMNS = [
         <div
           v-for="field in accountFields"
           :key="field.label"
-          class="flex items-center justify-between gap-4 border-b border-border px-4.5 py-3"
+          class="flex items-center justify-between gap-4 border-b border-border px-4.5 py-3 max-sm:flex-col max-sm:items-start max-sm:gap-1 max-sm:px-3.5 max-sm:py-2.5"
         >
           <dt class="text-eyebrow text-muted-foreground">
-            {{ field.label }}
+            <span v-if="field.labelMobile" class="max-sm:hidden">{{ field.label }}</span>
+            <span v-if="field.labelMobile" class="hidden max-sm:inline">{{ field.labelMobile }}</span>
+            <template v-if="!field.labelMobile">{{ field.label }}</template>
           </dt>
-          <dd class="text-table-row text-right">
+          <dd class="text-table-row text-right max-sm:text-left">
             {{ field.value }}
           </dd>
         </div>
       </dl>
 
-      <p class="text-label px-4.5 py-3 text-muted-foreground">
+      <p class="text-label px-4.5 py-3 text-muted-foreground max-sm:px-3.5 max-sm:py-2.5">
         Para alterar nome ou e-mail, escreva para suporte@aiinvest.com.br.
       </p>
     </section>
@@ -78,7 +80,7 @@ const HISTORY_COLUMNS = [
         Perfil de investidor
       </h2>
 
-      <div class="flex flex-col items-start gap-4 border-b border-border p-4.5">
+      <div class="flex flex-col items-start gap-4 border-b border-border p-4.5 max-sm:gap-2.5 max-sm:p-3.5">
         <div class="flex items-center gap-2.5">
           <ProfileGauge
             :level="currentAssessment.profileLevel"
@@ -105,11 +107,34 @@ const HISTORY_COLUMNS = [
         </Button>
       </div>
 
-      <h3 class="text-eyebrow border-b border-border px-4.5 py-2.5 text-muted-foreground">
+      <h3 class="text-eyebrow border-b border-border px-4.5 py-2.5 text-muted-foreground max-sm:px-3.5 max-sm:py-2.5">
         Histórico de avaliações
       </h3>
 
-      <Table>
+      <ul class="hidden max-sm:block">
+        <li
+          v-for="(assessment, index) in profileAssessments"
+          :key="assessment.date"
+          class="border-border flex items-center gap-2.5 px-3.5 py-2.5 not-first:border-t"
+        >
+          <span class="text-table-row min-w-0 flex-1 truncate">
+            {{ formatDate(assessment.date) }}
+          </span>
+
+          <span class="text-table-value shrink-0 tabular-nums">
+            {{ assessment.score }}
+          </span>
+
+          <span
+            class="text-tag-sm shrink-0"
+            :class="index === 0 ? 'text-success' : 'text-muted-foreground'"
+          >
+            {{ assessment.profileLabel }}
+          </span>
+        </li>
+      </ul>
+
+      <Table class="max-sm:hidden">
         <TableCaption class="sr-only">
           Histórico de avaliações de perfil de investidor: data, pontuação e perfil resultante.
         </TableCaption>
