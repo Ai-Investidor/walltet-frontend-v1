@@ -1,49 +1,32 @@
 <script setup lang="ts">
 import { ProfileGauge } from '@components/shared/profile-gauge'
 import { Button } from '@components/ui/button'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@components/ui/table'
-import { clientAccount, profileAssessments } from '@data/cliente'
-import { cn } from '@/libs/utils'
+import { useAuthStore } from '@stores/auth'
+import { perfilParaNivel } from '@utils/perfil'
+import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
+
+const auth = useAuthStore()
 
 const CARD_CLASS = 'bg-card flex flex-col rounded-lg border border-border'
 const CARD_HEADER_CLASS = 'text-card-title border-b border-border px-4.5 py-3'
 
-const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-  timeZone: 'UTC',
-})
+// "Cliente desde" saiu: `AuthMeResponseDto` não tem `criadoEm` (docs/AUDITORIA-INTEGRACAO.md §3).
+const accountFields = computed(() => [
+  { label: 'Nome', value: auth.usuario?.nome ?? '—' },
+  { label: 'E-mail', value: auth.usuario?.email ?? '—' },
+  { label: 'Carteira vinculada', value: auth.usuario?.carteiraVinculada?.nome ?? 'Nenhuma ainda' },
+])
 
-function formatDate(isoDate: string) {
-  return dateFormatter.format(new Date(`${isoDate}T00:00:00Z`))
-}
+const nivel = computed(() =>
+  auth.usuario?.perfilInvestidor ? perfilParaNivel(auth.usuario.perfilInvestidor) : null,
+)
 
-const accountFields = [
-  { label: 'Nome', value: clientAccount.name },
-  { label: 'E-mail', value: clientAccount.email },
-  { label: 'Cliente desde', value: formatDate(clientAccount.clientSince) },
-  { label: 'Carteira vinculada', value: clientAccount.linkedWalletName },
-]
-
-/** A avaliação mais recente é a posição 0 do histórico — não há registro "atual" separado. */
-const currentAssessment = profileAssessments[0]
-
-const gaugeLabel = `Perfil ${currentAssessment.profileLabel.toLocaleLowerCase('pt-BR')}, nível ${currentAssessment.profileLevel} de 4`
-
-const HISTORY_COLUMNS = [
-  { label: 'Data', align: 'text-left' },
-  { label: 'Pontos', align: 'text-right' },
-  { label: 'Perfil', align: 'text-right' },
-]
+const gaugeLabel = computed(() =>
+  auth.usuario?.perfilInvestidor && nivel.value
+    ? `Perfil ${auth.usuario.perfilInvestidor.toLowerCase()}, nível ${nivel.value} de 4`
+    : undefined,
+)
 </script>
 
 <template>
@@ -78,76 +61,39 @@ const HISTORY_COLUMNS = [
         Perfil de investidor
       </h2>
 
-      <div class="flex flex-col items-start gap-4 border-b border-border p-4.5">
+      <div v-if="auth.usuario?.perfilInvestidor && nivel" class="flex flex-col items-start gap-4 p-4.5">
         <div class="flex items-center gap-2.5">
-          <ProfileGauge
-            :level="currentAssessment.profileLevel"
-            tone="success"
-            :label="gaugeLabel"
-          />
+          <ProfileGauge :level="nivel" tone="success" :label="gaugeLabel" />
 
           <p class="text-tag text-success">
-            {{ currentAssessment.profileLabel }}
+            {{ auth.usuario.perfilInvestidor }}
           </p>
         </div>
 
-        <p class="text-table-row text-muted-foreground">
-          Avaliação de {{ formatDate(currentAssessment.date) }} · {{ currentAssessment.score }} pontos
-        </p>
-
-        <Button
-          type="button"
-          variant="outline"
-          disabled
-          class="text-button-sm rounded-sm border-border-strong px-4"
-        >
-          Refazer avaliação
+        <Button as-child type="button" variant="outline" class="text-button-sm rounded-sm border-border-strong px-4">
+          <RouterLink to="/avaliacao-perfil">
+            Refazer avaliação
+          </RouterLink>
         </Button>
       </div>
 
-      <h3 class="text-eyebrow border-b border-border px-4.5 py-2.5 text-muted-foreground">
-        Histórico de avaliações
-      </h3>
+      <div v-else class="flex flex-col items-start gap-4 p-4.5">
+        <p class="text-table-row text-muted-foreground">
+          Você ainda não fez a avaliação de perfil.
+        </p>
+        <Button as-child type="button" class="text-button-sm rounded-sm px-4">
+          <RouterLink to="/avaliacao-perfil">
+            Fazer avaliação
+          </RouterLink>
+        </Button>
+      </div>
 
-      <Table>
-        <TableCaption class="sr-only">
-          Histórico de avaliações de perfil de investidor: data, pontuação e perfil resultante.
-        </TableCaption>
-
-        <TableHeader>
-          <TableRow class="hover:bg-transparent">
-            <TableHead
-              v-for="column in HISTORY_COLUMNS"
-              :key="column.label"
-              scope="col"
-              :class="cn('px-4.5', column.align)"
-            >
-              <span class="text-eyebrow text-muted-foreground-faint">{{ column.label }}</span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          <TableRow v-for="(assessment, index) in profileAssessments" :key="assessment.date">
-            <TableCell class="text-table-row px-4.5 py-3">
-              {{ formatDate(assessment.date) }}
-            </TableCell>
-
-            <TableCell class="text-table-value px-4.5 py-3 text-right tabular-nums">
-              {{ assessment.score }}
-            </TableCell>
-
-            <TableCell
-              :class="cn(
-                'text-tag-sm px-4.5 py-3 text-right',
-                index === 0 ? 'text-success' : 'text-muted-foreground',
-              )"
-            >
-              {{ assessment.profileLabel }}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      <!--
+        Histórico de avaliações (data, pontuação, perfil por linha) saiu: não existe rota que um
+        cliente logado possa chamar para ver o próprio histórico ou a pontuação/data da última
+        avaliação — GET /usuarios/:id/historico-suitability é admin-only, e AuthMeResponseDto só
+        tem o perfil atual. Ver docs/AUDITORIA-INTEGRACAO.md §3.3.
+      -->
     </section>
   </div>
 </template>

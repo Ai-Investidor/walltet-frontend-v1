@@ -1,14 +1,10 @@
+<!--
+  Órfão desde a integração com o backend real — mesmo motivo de Edicao.vue (ver comentário lá):
+  sem catálogo de ativos no backend, o fluxo de rascunho/revisão/publicação não tem como escolher
+  `ativoId`. Implementação intacta, só desconectada de admin/carteira/Composicao.vue.
+-->
 <script setup lang="ts">
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@components/ui/alert-dialog'
+import { ConfirmDialog } from '@components/admin/confirm-dialog'
 import { Button } from '@components/ui/button'
 import { Card } from '@components/ui/card'
 import { AssetRow } from '@components/wallet/asset-row'
@@ -122,42 +118,23 @@ function confirmPublish() {
       </p>
     </div>
 
-    <AlertDialog v-model:open="confirmOpen">
-      <AlertDialogContent class="gap-0 rounded-lg p-0 sm:max-w-115">
-        <AlertDialogHeader class="gap-3 p-5">
-          <AlertDialogTitle class="text-subtitle">
-            Publicar a versão de
-            {{ walletDetail.draftCompetence.toLocaleLowerCase('pt-BR') }}?
-          </AlertDialogTitle>
+    <ConfirmDialog
+      v-model:open="confirmOpen"
+      :title="`Publicar a versão de ${walletDetail.draftCompetence.toLocaleLowerCase('pt-BR')}?`"
+      :description="`A versão passa a ser visível para ${walletDetail.investors} investidores vinculados a esta carteira e não pode mais ser editada. A versão de ${walletDetail.currentCompetence.toLocaleLowerCase('pt-BR')} vira histórico.`"
+      confirm-label="Publicar versão"
+      @confirm="confirmPublish"
+    >
+      <p
+        class="text-label flex items-start gap-2.5 rounded-sm border border-border-strong bg-muted px-3.5 py-3 text-muted-foreground"
+      >
+        <PhWarning class="size-4 shrink-0 text-warning" aria-hidden="true" />
+        Só existe uma versão publicada por competência. Esta ação é irreversível.
+      </p>
 
-          <AlertDialogDescription class="text-paragraph-strong font-normal text-muted-foreground">
-            A versão passa a ser visível para {{ walletDetail.investors }} investidores vinculados a
-            esta carteira e não pode mais ser editada. A versão de
-            {{ walletDetail.currentCompetence.toLocaleLowerCase('pt-BR') }} vira histórico.
-          </AlertDialogDescription>
-
-          <p
-            class="text-label flex items-start gap-2.5 rounded-sm border border-border-strong bg-muted px-3.5 py-3 text-muted-foreground"
-          >
-            <PhWarning class="size-4 shrink-0 text-warning" aria-hidden="true" />
-            Só existe uma versão publicada por competência. Esta ação é irreversível.
-          </p>
-        </AlertDialogHeader>
-
-        <AlertDialogFooter class="flex-row gap-3 border-t border-border px-5 py-4">
-          <AlertDialogAction
-            class="text-button-sm h-9 gap-2.5 rounded-sm px-4"
-            @click="confirmPublish"
-          >
-            <PhPaperPlaneTilt class="size-4" aria-hidden="true" />
-            Publicar versão
-          </AlertDialogAction>
-
-          <AlertDialogCancel class="text-button-sm h-9 rounded-sm border-foreground px-4">
-            Cancelar
-          </AlertDialogCancel>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      <template #confirm-icon>
+        <PhPaperPlaneTilt class="size-4" aria-hidden="true" />
+      </template>
+    </ConfirmDialog>
   </section>
 </template>

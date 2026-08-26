@@ -2,25 +2,23 @@
 import { LegalNotice } from '@components/shared/legal-notice'
 import { ProfileGauge } from '@components/shared/profile-gauge'
 import { Button } from '@components/ui/button'
-import { assessmentProgress } from '@data/avaliacao'
-import { profileAssessments } from '@data/cliente'
 import { PhArrowRight, PhCheckCircle } from '@phosphor-icons/vue'
+import type { ResultadoAvaliacaoDto } from '@services/types'
+import { formatDataLonga } from '@utils/format'
+import { perfilParaNivel, perfilParaRotulo } from '@utils/perfil'
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+
+interface Props {
+  resultado: ResultadoAvaliacaoDto
+}
+
+const props = defineProps<Props>()
 
 defineEmits<{ restart: [] }>()
 
-const currentAssessment = profileAssessments[0]
-
-const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-})
-
-function formatLongDate(isoDate: string) {
-  return dateFormatter.format(new Date(`${isoDate}T00:00:00Z`))
-}
+const nivel = computed(() => perfilParaNivel(props.resultado.perfilResultante))
+const rotuloPerfil = computed(() => perfilParaRotulo(props.resultado.perfilResultante))
 </script>
 
 <template>
@@ -28,8 +26,7 @@ function formatLongDate(isoDate: string) {
     <div class="mx-auto flex max-w-[720px] flex-col gap-6">
       <p class="text-table-row text-muted-foreground-faint flex items-center gap-2">
         <PhCheckCircle class="text-success size-4" aria-hidden="true" />
-        Avaliação concluída em {{ formatLongDate(currentAssessment.date) }} ·
-        {{ assessmentProgress.totalSteps }} de {{ assessmentProgress.totalSteps }} respostas
+        Avaliação concluída em {{ formatDataLonga(resultado.dataAvaliacao) }}
       </p>
 
       <div class="flex flex-col gap-2">
@@ -39,26 +36,34 @@ function formatLongDate(isoDate: string) {
 
         <h1 class="text-page-title">
           <span class="text-foreground">Seu perfil é </span>
-          <span class="text-success">{{ currentAssessment.profileLabel.toLowerCase() }}</span>
+          <span class="text-success">{{ rotuloPerfil.toLowerCase() }}</span>
         </h1>
 
         <p class="text-paragraph text-muted-foreground">
-          Pontuação {{ currentAssessment.score }} de 100. A faixa moderada vai de 26 a 50 pontos.
-          A carteira abaixo é a recomendada para esse perfil na competência de agosto de 2026.
+          Pontuação {{ resultado.pontuacaoTotal }} de 100.
+          <template v-if="resultado.carteiraRecomendada">
+            A carteira abaixo é a recomendada para esse perfil na competência atual.
+          </template>
         </p>
       </div>
 
-      <div class="bg-muted border-border-strong flex items-center gap-3.5 rounded-md border p-4">
-        <ProfileGauge :level="currentAssessment.profileLevel" tone="success" />
+      <div v-if="resultado.carteiraRecomendada" class="bg-muted border-border-strong flex items-center gap-3.5 rounded-md border p-4">
+        <ProfileGauge :level="nivel" tone="success" />
 
         <p class="text-tag text-success">
-          {{ currentAssessment.profileLabel }}
+          {{ resultado.perfilResultante }}
         </p>
 
         <p class="text-table-row text-muted-foreground">
-          Tolera oscilação moderada em troca de retorno acima da inflação.
+          {{ resultado.carteiraRecomendada.descricao ?? resultado.carteiraRecomendada.nome }}
         </p>
       </div>
+
+      <!-- Sem carteira ativa para o perfil calculado ainda — ver docs/AUDITORIA-INTEGRACAO.md §5.3. -->
+      <p v-else class="bg-muted border-border-strong rounded-md border p-4 text-paragraph text-muted-foreground">
+        Ainda não há uma carteira recomendada ativa para o perfil {{ rotuloPerfil.toLowerCase() }}.
+        Assim que a equipe de análise publicar uma, ela aparece automaticamente no seu painel.
+      </p>
 
       <LegalNotice />
 

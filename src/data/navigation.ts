@@ -45,13 +45,14 @@ export const navigationGroups: NavigationGroup[] = [
   },
 ]
 
+// "Ativos" saiu do menu: /admin/ativos não tem rota (backend sem endpoint de catálogo de ativos —
+// docs/AUDITORIA-INTEGRACAO.md, achado 4.9).
 export const adminNavigationGroups: NavigationGroup[] = [
   {
     label: 'Gestão',
     items: [
       { label: 'Painel', icon: 'PhSquaresFour', to: '/admin', available: true },
       { label: 'Carteiras', icon: 'PhStack', to: '/admin/carteiras', available: true },
-      { label: 'Ativos', icon: 'PhChartBar', to: '/admin/ativos', available: true },
       { label: 'Usuários', icon: 'PhUsers', to: '/admin/usuarios', available: true },
     ],
   },

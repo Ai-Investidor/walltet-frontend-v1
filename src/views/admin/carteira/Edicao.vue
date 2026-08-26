@@ -1,3 +1,11 @@
+<!--
+  Órfão desde a integração com o backend real: `admin/carteira/Composicao.vue` não abre mais este
+  componente. Criar/editar uma versão via POST /carteiras/:id/versoes exige `ativoId` por item, e
+  não há rota de catálogo de ativos no backend pra popular a escolha (AdicionarAtivo.vue depende
+  de `catalogAssets`, mock) — ver docs/AUDITORIA-INTEGRACAO.md, achado 4.9. Implementação mantida
+  intacta (ainda usa src/data/admin.ts) pra religar quando esse endpoint existir; só desconectada
+  do fluxo real.
+-->
 <script setup lang="ts">
 import { AssetChip } from '@components/shared/asset-chip'
 import { Button } from '@components/ui/button'
@@ -7,7 +15,8 @@ import type { AdminWalletAsset } from '@data/admin'
 import { walletDetail } from '@data/admin'
 import { PhArrowRight, PhFloppyDisk, PhPencilSimple, PhPlus, PhWarning } from '@phosphor-icons/vue'
 import { formatPercent } from '@utils/format'
-import { computed } from 'vue'
+import AdicionarAtivo from '@views/admin/carteira/AdicionarAtivo.vue'
+import { computed, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
 const assets = defineModel<AdminWalletAsset[]>({ required: true })
@@ -39,6 +48,13 @@ const removedLabel = computed(() =>
     walletDetail.removedAssets,
   ),
 )
+
+const addOpen = ref(false)
+
+function addAsset(asset: AdminWalletAsset) {
+  assets.value = [...assets.value, asset]
+  toast.success(`${asset.name} adicionado à versão`)
+}
 
 function changeWeight(code: string, delta: number) {
   assets.value = assets.value.map((asset) =>
@@ -182,7 +198,7 @@ function changeWeight(code: string, delta: number) {
           variant="outline"
           size="lg"
           class="text-button-xs gap-2 rounded-sm border-border-strong px-3.5 text-muted-foreground"
-          @click="toast.info('O cadastro de ativos da versão entra na próxima etapa.')"
+          @click="addOpen = true"
         >
           <PhPlus class="size-3.5" aria-hidden="true" />
           Adicionar ativo
@@ -220,5 +236,7 @@ function changeWeight(code: string, delta: number) {
         </p>
       </div>
     </Card>
+
+    <AdicionarAtivo v-model:open="addOpen" :draft="assets" @adicionar="addAsset" />
   </section>
 </template>
