@@ -24,7 +24,7 @@ function formatLongDate(isoDate: string) {
 </script>
 
 <template>
-  <section class="px-6 py-10">
+  <section class="px-6 py-10 max-sm:flex max-sm:flex-1 max-sm:flex-col max-sm:justify-center max-sm:px-5 max-sm:py-8">
     <div class="mx-auto flex max-w-[720px] flex-col gap-6">
       <p class="text-table-row text-muted-foreground-faint flex items-center gap-2">
         <PhCheckCircle class="text-success size-4" aria-hidden="true" />
@@ -39,7 +39,7 @@ function formatLongDate(isoDate: string) {
 
         <h1 class="text-page-title">
           <span class="text-foreground">Seu perfil é </span>
-          <span class="text-success">{{ currentAssessment.profileLabel.toLowerCase() }}</span>
+          <span class="text-success max-sm:block">{{ currentAssessment.profileLabel.toLowerCase() }}</span>
         </h1>
 
         <p class="text-paragraph text-muted-foreground">
@@ -48,7 +48,9 @@ function formatLongDate(isoDate: string) {
         </p>
       </div>
 
-      <div class="bg-muted border-border-strong flex items-center gap-3.5 rounded-md border p-4">
+      <div
+        class="bg-muted border-border-strong flex items-center gap-3.5 rounded-md border p-4 max-sm:flex-col max-sm:items-start max-sm:gap-3"
+      >
         <ProfileGauge :level="currentAssessment.profileLevel" tone="success" />
 
         <p class="text-tag text-success">
@@ -62,15 +64,20 @@ function formatLongDate(isoDate: string) {
 
       <LegalNotice />
 
-      <div class="flex items-center gap-2.5">
-        <Button as-child size="lg" class="rounded-sm">
+      <div class="flex items-center gap-2.5 max-sm:flex-col max-sm:items-stretch max-sm:gap-3">
+        <Button as-child size="lg" class="rounded-sm max-sm:w-full">
           <RouterLink to="/">
             Ir para o painel
             <PhArrowRight class="size-4" aria-hidden="true" />
           </RouterLink>
         </Button>
 
-        <Button variant="outline" size="lg" class="rounded-sm" @click="$emit('restart')">
+        <Button
+          variant="outline"
+          size="lg"
+          class="rounded-sm max-sm:w-full"
+          @click="$emit('restart')"
+        >
           Refazer avaliação
         </Button>
       </div>
