@@ -20,7 +20,7 @@ function formatReportCount(total: number) {
 </script>
 
 <template>
-  <section :class="cn('flex flex-col gap-8', props.class)" aria-label="Arquivo de relatórios">
+  <section :class="cn('flex flex-col gap-8 max-sm:gap-5', props.class)" aria-label="Arquivo de relatórios">
     <div v-for="group in reportArchive" :key="group.year" class="flex flex-col gap-4">
       <div class="flex items-center gap-4">
         <h2 :id="`arquivo-ano-${group.year}`" class="text-eyebrow text-muted-foreground-faint">
@@ -49,20 +49,22 @@ function formatReportCount(total: number) {
               </p>
             </div>
 
-            <p class="text-label text-muted-foreground-faint w-55 shrink-0 max-lg:w-auto">
-              Gerado em {{ report.generatedAt }} · {{ report.sizeLabel }}
-            </p>
+            <div class="flex items-center gap-3.5 max-md:w-full max-md:justify-between max-md:gap-3">
+              <p class="text-label text-muted-foreground-faint w-55 shrink-0 max-lg:w-auto">
+                Gerado em {{ report.generatedAt }} · {{ report.sizeLabel }}
+              </p>
 
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              class="text-button-xs shrink-0 gap-1.5 rounded-sm px-3"
-              :aria-label="`Baixar ${report.title}`"
-            >
-              <PhDownloadSimple aria-hidden="true" />
-              Baixar
-            </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                class="text-button-xs shrink-0 gap-1.5 rounded-sm px-3"
+                :aria-label="`Baixar ${report.title}`"
+              >
+                <PhDownloadSimple aria-hidden="true" />
+                Baixar
+              </Button>
+            </div>
           </li>
         </ul>
       </Card>
