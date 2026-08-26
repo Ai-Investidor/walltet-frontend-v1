@@ -8,6 +8,6 @@ import PainelProva from '@views/criar-conta/PainelProva.vue'
     <main class="flex flex-1 flex-col justify-center">
       <Formulario />
     </main>
-    <PainelProva />
+    <PainelProva class="max-sm:hidden" />
   </div>
 </template>

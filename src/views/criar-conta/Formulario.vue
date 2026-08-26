@@ -39,7 +39,10 @@ function onSubmit() {
 </script>
 
 <template>
-  <section aria-labelledby="criar-conta-titulo" class="flex w-full flex-col items-center gap-6.5 px-6 py-10 max-sm:px-4">
+  <section
+    aria-labelledby="criar-conta-titulo"
+    class="flex w-full flex-col items-center gap-6.5 px-6 py-10 max-sm:px-4 max-sm:py-8"
+  >
     <div class="flex items-center gap-2.5">
       <div class="bg-foreground flex size-6.5 items-center justify-center rounded-sm">
         <span class="text-eyebrow text-background" aria-hidden="true">AI</span>
