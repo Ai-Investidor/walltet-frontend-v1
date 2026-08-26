@@ -8,9 +8,11 @@ const isComplete = ref(false)
 </script>
 
 <template>
-  <Topbar />
-  <main class="flex-1">
-    <Pergunta v-if="!isComplete" @answered="isComplete = true" />
-    <Resultado v-else @restart="isComplete = false" />
-  </main>
+  <div class="flex min-h-screen flex-col">
+    <Topbar />
+    <main class="flex flex-1 flex-col">
+      <Pergunta v-if="!isComplete" @answered="isComplete = true" />
+      <Resultado v-else @restart="isComplete = false" />
+    </main>
+  </div>
 </template>
