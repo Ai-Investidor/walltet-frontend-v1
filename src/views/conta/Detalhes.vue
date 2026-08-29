@@ -11,8 +11,15 @@ const auth = useAuthStore()
 const CARD_CLASS = 'bg-card flex flex-col rounded-lg border border-border'
 const CARD_HEADER_CLASS = 'text-card-title border-b border-border px-4.5 py-3'
 
+interface AccountField {
+  label: string
+  value: string
+  /** Rótulo mais curto pra versão mobile (ver mesmo padrão em KpiCard). */
+  labelMobile?: string
+}
+
 // "Cliente desde" saiu: `AuthMeResponseDto` não tem `criadoEm` (docs/AUDITORIA-INTEGRACAO.md §3).
-const accountFields = computed(() => [
+const accountFields = computed<AccountField[]>(() => [
   { label: 'Nome', value: auth.usuario?.nome ?? '—' },
   { label: 'E-mail', value: auth.usuario?.email ?? '—' },
   { label: 'Carteira vinculada', value: auth.usuario?.carteiraVinculada?.nome ?? 'Nenhuma ainda' },

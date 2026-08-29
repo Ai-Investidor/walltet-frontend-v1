@@ -8,9 +8,8 @@ import {
   DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu'
 import { SidebarTrigger } from '@components/ui/sidebar'
-import { PhCalendarBlank, PhCaretDown, PhMoon, PhSignOut } from '@phosphor-icons/vue'
+import { PhCaretDown, PhMoon, PhSignOut, PhUser } from '@phosphor-icons/vue'
 import type { HTMLAttributes } from 'vue'
-import { ref } from 'vue'
 import { cn } from '@/libs/utils'
 
 interface Props {
