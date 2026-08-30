@@ -21,7 +21,7 @@ const assetCount = computed(
 <template>
   <aside
     v-if="selected"
-    class="flex w-[680px] flex-col gap-2 rounded-md border border-border-strong bg-muted p-4.5"
+    class="flex w-[680px] flex-col gap-2 rounded-md border border-border-strong bg-muted p-4.5 max-sm:w-full"
     aria-label="Contexto da classe selecionada"
   >
     <p class="text-eyebrow text-muted-foreground-faint">
