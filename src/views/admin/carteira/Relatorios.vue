@@ -74,7 +74,7 @@ async function gerar() {
         <Textarea id="relatorio-comentario" v-model="comentario" class="text-paragraph h-21 rounded-sm px-3 py-2.75" />
       </div>
 
-      <Button type="button" size="lg" :disabled="gerando" class="text-button-sm w-fit gap-2 rounded-sm px-4" @click="gerar">
+      <Button type="button" size="lg" :disabled="gerando" class="text-button-sm w-fit gap-2 rounded-sm px-4 max-sm:w-full max-sm:justify-center" @click="gerar">
         <PhFileArrowDown aria-hidden="true" />
         {{ gerando ? 'Gerando…' : 'Gerar relatório' }}
       </Button>
