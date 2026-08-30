@@ -49,7 +49,7 @@ function gaugeLabel(wallet: CarteiraDetalheDto) {
 
 <template>
   <Card :class="CARD_SURFACE">
-    <Table>
+    <Table class="max-sm:hidden">
       <TableCaption class="sr-only">
         Carteiras recomendadas, com perfil-alvo e número de ativos na versão vigente.
       </TableCaption>
@@ -97,5 +97,38 @@ function gaugeLabel(wallet: CarteiraDetalheDto) {
         </TableRow>
       </TableBody>
     </Table>
+
+    <ul class="hidden max-sm:block" aria-label="Carteiras recomendadas, com perfil-alvo e número de ativos na versão vigente">
+      <li v-if="carteiras.length === 0" class="text-paragraph text-muted-foreground p-4">
+        Nenhuma carteira cadastrada ainda.
+      </li>
+
+      <li
+        v-for="wallet in carteiras"
+        :key="wallet.id"
+        class="border-border not-last:border-b flex flex-col gap-3 p-4"
+      >
+        <div class="flex items-center justify-between gap-2.5">
+          <span class="flex items-center gap-2">
+            <ProfileGauge :level="perfilParaNivel(wallet.perfilAlvo)" :label="gaugeLabel(wallet)" />
+            <span class="text-tag-sm text-muted-foreground">{{ wallet.perfilAlvo }}</span>
+          </span>
+
+          <Button as-child variant="outline" size="icon-sm" :class="ICON_ACTION" :aria-label="`Abrir ${wallet.nome}`">
+            <RouterLink :to="walletPath(wallet)">
+              <PhArrowRight class="size-3.5" aria-hidden="true" />
+            </RouterLink>
+          </Button>
+        </div>
+
+        <RouterLink :to="walletPath(wallet)" class="text-card-title hover:text-success">
+          {{ wallet.nome }}
+        </RouterLink>
+
+        <p class="text-label text-muted-foreground border-border border-t pt-2.5">
+          {{ wallet.versaoAtual?.itens.length ?? 0 }} ativos
+        </p>
+      </li>
+    </ul>
   </Card>
 </template>

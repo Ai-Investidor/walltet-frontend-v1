@@ -128,19 +128,19 @@ async function onSubmit(values: Record<string, unknown>) {
 
 <template>
   <section class="flex flex-col gap-4.5" aria-label="Rentabilidade da carteira">
-    <div class="flex items-center justify-between gap-4">
+    <div class="flex items-center justify-between gap-4 max-sm:flex-col max-sm:items-stretch max-sm:gap-3">
       <h2 class="text-subtitle">
         Histórico mensal
       </h2>
 
-      <Button type="button" size="lg" class="text-button-sm gap-2.5 rounded-sm px-4" @click="drawerOpen = true">
+      <Button type="button" size="lg" class="text-button-sm gap-2.5 rounded-sm px-4 max-sm:w-full max-sm:justify-center" @click="drawerOpen = true">
         <PhPlus class="size-4" aria-hidden="true" />
         Lançar rentabilidade
       </Button>
     </div>
 
     <Card :class="CARD_SURFACE">
-      <Table>
+      <Table class="max-sm:hidden">
         <TableCaption class="sr-only">
           Rentabilidade mensal da carteira comparada ao CDI e ao Ibovespa.
         </TableCaption>
@@ -181,13 +181,55 @@ async function onSubmit(values: Record<string, unknown>) {
           </TableRow>
         </TableBody>
       </Table>
+
+      <div class="hidden max-sm:block">
+        <p
+          v-if="!carregando && (historico?.serie.length ?? 0) === 0"
+          class="text-paragraph text-muted-foreground p-4.5"
+        >
+          Nenhum lançamento ainda.
+        </p>
+
+        <ul aria-label="Rentabilidade mensal da carteira comparada ao CDI e ao Ibovespa">
+          <li
+            v-for="row in historico?.serie ?? []"
+            :key="row.mesReferencia"
+            class="border-border flex flex-col gap-2 px-4.5 py-3 not-last:border-b"
+          >
+            <div class="flex items-center justify-between gap-3">
+              <span class="text-paragraph-strong">{{ formatCompetenciaLonga(row.mesReferencia) }}</span>
+              <span
+                class="text-table-value tabular-nums"
+                :class="row.rentabilidade >= 0 ? 'text-success' : 'text-warning'"
+              >
+                {{ formatSignedPercent(row.rentabilidade) }}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <p class="text-label flex items-center gap-1 text-muted-foreground">
+                <span class="text-eyebrow text-muted-foreground-faint">CDI</span>
+                {{ formatSignedPercent(row.cdi) }}
+              </p>
+              <p class="text-label flex items-center gap-1 text-muted-foreground">
+                <span class="text-eyebrow text-muted-foreground-faint">Ibov</span>
+                {{ formatSignedPercent(row.ibov) }}
+              </p>
+              <p class="text-label flex items-center gap-1 text-muted-foreground">
+                <span class="text-eyebrow text-muted-foreground-faint">% CDI</span>
+                {{ row.percentualCdi === null ? '—' : formatRatio(row.percentualCdi) }}
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
     </Card>
 
     <Sheet v-model:open="drawerOpen">
       <SheetContent
         side="right"
         :show-close-button="false"
-        class="gap-0 p-0 data-[side=right]:w-120! data-[side=right]:sm:max-w-120!"
+        class="gap-0 p-0 data-[side=right]:w-120! data-[side=right]:sm:max-w-120! max-sm:data-[side=right]:w-full!"
       >
         <SheetHeader class="flex-row items-center justify-between gap-3.5 border-b border-border p-5">
           <SheetTitle class="text-subtitle-strong">
@@ -207,7 +249,7 @@ async function onSubmit(values: Record<string, unknown>) {
 
         <Form v-slot="{ values }" :validation-schema="schema" class="flex min-h-0 flex-1 flex-col" @submit="onSubmit">
           <div class="flex flex-1 flex-col gap-4 overflow-y-auto p-5">
-            <div class="flex gap-4">
+            <div class="flex gap-4 max-sm:flex-col">
               <FormField v-slot="{ componentField }" name="mesReferencia">
                 <FormItem class="flex-1 gap-1.75">
                   <FormLabel class="text-eyebrow text-muted-foreground-faint">
@@ -245,7 +287,7 @@ async function onSubmit(values: Record<string, unknown>) {
               </FormItem>
             </FormField>
 
-            <div class="flex gap-4">
+            <div class="flex gap-4 max-sm:flex-col">
               <FormField v-slot="{ componentField }" name="cdiMes">
                 <FormItem class="flex-1 gap-1.75">
                   <FormLabel class="text-eyebrow text-muted-foreground-faint">

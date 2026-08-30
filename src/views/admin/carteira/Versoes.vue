@@ -41,7 +41,7 @@ const COLUMNS = [
     docs/AUDITORIA-INTEGRACAO.md, achado 4.6. A versão vigente pode ser vista na aba Composição.
   -->
   <Card :class="CARD_SURFACE">
-    <Table>
+    <Table class="max-sm:hidden">
       <TableCaption class="sr-only">
         Versões da carteira por competência, com status de publicação e número de ativos.
       </TableCaption>
@@ -80,5 +80,32 @@ const COLUMNS = [
         </TableRow>
       </TableBody>
     </Table>
+
+    <ul class="hidden max-sm:block" aria-label="Versões da carteira por competência, com status de publicação e número de ativos">
+      <li v-if="versoes.length === 0" class="text-paragraph text-muted-foreground p-4">
+        Nenhuma versão registrada ainda.
+      </li>
+
+      <li
+        v-for="versao in versoes"
+        :key="versao.id"
+        class="border-border not-last:border-b flex flex-col gap-2 p-4"
+      >
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="text-card-title">
+            {{ formatCompetenciaLonga(versao.mesReferencia) }}
+          </h3>
+
+          <StatusBadge :tone="versao.publicada ? 'success' : 'muted'" dot>
+            {{ versao.publicada ? 'Publicada' : 'Rascunho' }}
+          </StatusBadge>
+        </div>
+
+        <p class="text-label text-muted-foreground">
+          {{ versao.totalItens }} ativos ·
+          {{ versao.publicadaEm ? `Publicada em ${formatDataCurta(versao.publicadaEm)}` : 'Não publicada' }}
+        </p>
+      </li>
+    </ul>
   </Card>
 </template>

@@ -17,7 +17,7 @@ const props = defineProps<Props>()
 <template>
   <header
     data-slot="page-header"
-    :class="cn('flex items-end justify-between gap-6', props.class)"
+    :class="cn('flex items-end justify-between gap-6 max-sm:flex-col max-sm:items-stretch max-sm:gap-4', props.class)"
   >
     <div class="flex flex-col gap-2">
       <p class="text-eyebrow text-muted-foreground-faint">

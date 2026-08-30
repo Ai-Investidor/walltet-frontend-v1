@@ -6,7 +6,7 @@ import { AssetRow } from '@components/wallet/asset-row'
 import { MOVIMENTACAO_PRESENTATION } from '@constants/movimentacao'
 import type { CarteiraDetalheDto } from '@services/types'
 import { agruparPorClasse, TONS_ALOCACAO_BARE } from '@utils/alocacao'
-import { formatCompetenciaLonga } from '@utils/competencia'
+import { formatCompetenciaCurta, formatCompetenciaLonga } from '@utils/competencia'
 import { formatPercent } from '@utils/format'
 import { rotuloMovimentacao, statusParaMovimentacao } from '@utils/movimentacao'
 import { computed } from 'vue'
@@ -42,7 +42,9 @@ const allocation = computed(() =>
     <Card v-if="carteira.versaoAtual" :class="CARD_SURFACE">
       <div class="flex items-center justify-between gap-3 px-4.5 py-4">
         <h2 id="versao-vigente" class="text-card-title">
-          Versão vigente · {{ formatCompetenciaLonga(carteira.versaoAtual.mesReferencia) }}
+          Versão vigente ·
+          <span class="max-sm:hidden">{{ formatCompetenciaLonga(carteira.versaoAtual.mesReferencia) }}</span>
+          <span class="hidden max-sm:inline">{{ formatCompetenciaCurta(carteira.versaoAtual.mesReferencia) }}</span>
         </h2>
 
         <StatusBadge :tone="carteira.versaoAtual.publicada ? 'success' : 'warning'" dot>
