@@ -38,7 +38,10 @@ const kpis = computed(() => {
 </script>
 
 <template>
-  <ul class="bg-border grid grid-cols-4 gap-px overflow-hidden rounded-lg border" aria-label="Indicadores do fechamento">
+  <ul
+    class="bg-border grid grid-cols-4 gap-px overflow-hidden rounded-lg border max-sm:grid-cols-2"
+    aria-label="Indicadores do fechamento"
+  >
     <KpiCard
       v-for="kpi in kpis"
       :key="kpi.label"
