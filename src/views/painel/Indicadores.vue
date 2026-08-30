@@ -15,9 +15,18 @@ interface Props {
 
 const props = defineProps<Props>()
 
+interface Kpi {
+  label: string
+  value: string
+  /** Variante mais curta do valor pra caber na grade 2 colunas do mobile (ver KpiCard). */
+  valueMobile?: string
+  note: string
+  tone: 'positive' | 'neutral'
+}
+
 // "Aporte do mês" e "Dividendos no ano" saíram: sem fonte no backend, ver
 // docs/AUDITORIA-INTEGRACAO.md §1.1 e docs/PROPOSTA-BACKEND-PATRIMONIO.md.
-const kpis = computed(() => {
+const kpis = computed<Kpi[]>(() => {
   const mesAtual = props.performance?.mesAtual
   const acumuladoAno = props.performance?.acumuladoAno
 

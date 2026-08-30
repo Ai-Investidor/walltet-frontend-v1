@@ -169,12 +169,8 @@ const grupos = computed(() => {
           </div>
 
           <div class="flex items-center justify-between">
-            <p class="flex items-center gap-1.5" :class="ITEM_DIRECTION[item.direction].tone">
-              <component
-                :is="ITEM_DIRECTION[item.direction].icon"
-                class="size-3.5 shrink-0"
-                aria-hidden="true"
-              />
+            <p class="flex items-center gap-1.5" :class="item.tone">
+              <component :is="item.icon" class="size-3.5 shrink-0" aria-hidden="true" />
               <span class="text-eyebrow">{{ item.label }}</span>
             </p>
 
