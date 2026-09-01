@@ -8,10 +8,11 @@ import {
   DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu'
 import { SidebarTrigger } from '@components/ui/sidebar'
-import { PhCaretDown, PhMoon, PhSignOut, PhSun, PhUser } from '@phosphor-icons/vue'
+import { PhCaretDown, PhMoon, PhSignOut, PhSun, PhUser, PhUserCircle } from '@phosphor-icons/vue'
 import { useThemeStore } from '@stores/theme'
 import type { HTMLAttributes } from 'vue'
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import { cn } from '@/libs/utils'
 
 interface Props {
@@ -83,6 +84,12 @@ const temaLabel = computed(() => (theme.escuro ? 'Ativar modo claro' : 'Ativar m
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem as-child>
+            <RouterLink to="/conta">
+              <PhUserCircle class="size-4" aria-hidden="true" />
+              Minha conta
+            </RouterLink>
+          </DropdownMenuItem>
           <DropdownMenuItem @select="emit('sair')">
             <PhSignOut class="size-4" aria-hidden="true" />
             Sair
@@ -106,6 +113,12 @@ const temaLabel = computed(() => (theme.escuro ? 'Ativar modo claro' : 'Ativar m
           <PhSun v-if="theme.escuro" class="size-4" aria-hidden="true" />
           <PhMoon v-else class="size-4" aria-hidden="true" />
           {{ temaLabel }}
+        </DropdownMenuItem>
+        <DropdownMenuItem as-child>
+          <RouterLink to="/conta">
+            <PhUserCircle class="size-4" aria-hidden="true" />
+            Minha conta
+          </RouterLink>
         </DropdownMenuItem>
         <DropdownMenuItem @select="emit('sair')">
           <PhSignOut class="size-4" aria-hidden="true" />

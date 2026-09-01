@@ -71,7 +71,7 @@
   --muted: oklch(0.953 0.01 87.5);
   --muted-foreground: oklch(0.43 0.012 238.8);
   --muted-foreground-faint: oklch(0.525 0.01 248);
-  --accent: oklch(0.953 0.01 87.5);
+  --accent: oklch(0.928 0.012 87.5); /* degrau abaixo de card (hover/destaque) */
   --accent-foreground: oklch(0.206 0.007 229.3);
   --destructive: oklch(0.577 0.245 27.325);
   --success: oklch(0.515 0.11 156.8);
@@ -120,7 +120,7 @@
   --muted: oklch(0.25 0.01 248.2); /* paper-2 */
   --muted-foreground: oklch(0.785 0.008 228.9); /* ink-soft */
   --muted-foreground-faint: oklch(0.653 0.009 236.6); /* ink-faint */
-  --accent: oklch(0.25 0.01 248.2); /* paper-2 */
+  --accent: oklch(0.3 0.012 248.2); /* degrau acima de paper-2 (hover/destaque) */
   --accent-foreground: oklch(0.95 0.01 87.5);
   --destructive: oklch(0.704 0.191 22.216);
   --success: oklch(0.692 0.11 159.8); /* green */
