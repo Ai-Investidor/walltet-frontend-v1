@@ -102,28 +102,32 @@
   --sidebar-ring: oklch(0.723 0.014 214.4);
 }
 
+/* Alinhado ao design Pencil `zEVjU` (dashboard.pen, tema dark):
+   paper #16191b · paper-2 #1e2226 · desk #0d1011 · ink #f1eee7 ·
+   ink-soft #b4babd · ink-faint #8b9195 · green #57b184 · amber #d98b45 ·
+   line = ink @14% · line-strong = ink @28%. */
 .dark {
-  --background: oklch(0.211 0.006 236.9);
-  --foreground: oklch(0.95 0.01 87.5);
-  --card: oklch(0.211 0.006 236.9);
+  --background: oklch(0.211 0.006 236.9); /* paper */
+  --foreground: oklch(0.95 0.01 87.5); /* ink */
+  --card: oklch(0.25 0.01 248.2); /* paper-2 — um degrau acima do fundo */
   --card-foreground: oklch(0.95 0.01 87.5);
-  --popover: oklch(0.211 0.006 236.9);
+  --popover: oklch(0.25 0.01 248.2); /* paper-2 */
   --popover-foreground: oklch(0.95 0.01 87.5);
-  --primary: oklch(0.692 0.11 159.8);
-  --primary-foreground: oklch(0.211 0.006 236.9);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.25 0.01 248.2);
-  --muted-foreground: oklch(0.785 0.008 228.9);
-  --muted-foreground-faint: oklch(0.653 0.009 236.6);
-  --accent: oklch(0.25 0.01 248.2);
+  --primary: oklch(0.692 0.11 159.8); /* green */
+  --primary-foreground: oklch(0.211 0.006 236.9); /* paper */
+  --secondary: oklch(0.25 0.01 248.2); /* paper-2 */
+  --secondary-foreground: oklch(0.95 0.01 87.5); /* ink */
+  --muted: oklch(0.25 0.01 248.2); /* paper-2 */
+  --muted-foreground: oklch(0.785 0.008 228.9); /* ink-soft */
+  --muted-foreground-faint: oklch(0.653 0.009 236.6); /* ink-faint */
+  --accent: oklch(0.25 0.01 248.2); /* paper-2 */
   --accent-foreground: oklch(0.95 0.01 87.5);
   --destructive: oklch(0.704 0.191 22.216);
-  --success: oklch(0.692 0.11 159.8);
-  --warning: oklch(0.704 0.128 60.1);
-  --border: oklch(0.95 0.01 87.5 / 14%);
-  --border-strong: oklch(0.95 0.01 87.5 / 28%);
-  --input: oklch(1 0 0 / 15%);
+  --success: oklch(0.692 0.11 159.8); /* green */
+  --warning: oklch(0.704 0.128 60.1); /* amber */
+  --border: oklch(0.95 0.01 87.5 / 14%); /* line */
+  --border-strong: oklch(0.95 0.01 87.5 / 28%); /* line-strong */
+  --input: oklch(0.95 0.01 87.5 / 22%); /* borda de campo, família line */
   --ring: oklch(0.56 0.021 213.5);
   --chart-1: oklch(0.828 0.111 230.318);
   --chart-2: oklch(0.685 0.169 237.323);
@@ -136,11 +140,11 @@
   --data-4: oklch(0.95 0.01 87.5 / 36%);
   --data-5: oklch(0.95 0.01 87.5 / 24%);
   --data-6: oklch(0.95 0.01 87.5 / 15%);
-  --sidebar: oklch(0.25 0.01 248.2);
+  --sidebar: oklch(0.17 0.005 220); /* desk — superfície mais escura da tela */
   --sidebar-foreground: oklch(0.95 0.01 87.5);
   --sidebar-primary: oklch(0.692 0.11 159.8);
   --sidebar-primary-foreground: oklch(0.211 0.006 236.9);
-  --sidebar-accent: oklch(0.211 0.006 236.9);
+  --sidebar-accent: oklch(0.211 0.006 236.9); /* paper — pill do item ativo */
   --sidebar-accent-foreground: oklch(0.95 0.01 87.5);
   --sidebar-border: oklch(0.95 0.01 87.5 / 14%);
   --sidebar-ring: oklch(0.56 0.021 213.5);
