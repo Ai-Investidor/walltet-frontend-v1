@@ -107,7 +107,7 @@ function requestClose(dirty: boolean) {
     <SheetContent
       side="right"
       :show-close-button="false"
-      class="gap-0 p-0 data-[side=right]:w-105! data-[side=right]:sm:max-w-105!"
+      class="gap-0 p-0 data-[side=right]:w-105! data-[side=right]:sm:max-w-105! max-sm:data-[side=right]:w-full!"
     >
       <Form
         v-slot="{ meta }"

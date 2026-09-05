@@ -23,7 +23,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-8 p-8">
+  <div class="flex flex-col gap-8 p-8 max-sm:gap-5 max-sm:px-4 max-sm:py-5">
     <p v-if="carregando" class="text-paragraph text-muted-foreground">
       Carregando painel…
     </p>
@@ -36,7 +36,7 @@ onMounted(async () => {
       <Cabecalho :dashboard="dashboard" />
       <Indicadores :dashboard="dashboard" />
 
-      <div class="flex gap-6 max-lg:flex-col">
+      <div class="flex gap-6 max-lg:flex-col max-sm:gap-5">
         <Checklist :dashboard="dashboard" class="flex-1" />
         <Distribuicao :dashboard="dashboard" class="w-[366px] shrink-0 max-lg:w-full" />
       </div>

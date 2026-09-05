@@ -1,4 +1,5 @@
 import * as authService from '@services/auth'
+import * as contaService from '@services/conta'
 import type { AuthMeResponseDto } from '@services/types'
 import { perfilParaNivel } from '@utils/perfil'
 import { defineStore } from 'pinia'
@@ -51,6 +52,15 @@ export const useAuthStore = defineStore('auth', () => {
     await login({ email: payload.email, senha: payload.senha })
   }
 
+  /** Atualiza nome/e-mail do próprio cadastro e reflete o retorno no estado da sessão. */
+  async function atualizarConta(payload: contaService.AtualizarContaPayload): Promise<void> {
+    const atualizado = await contaService.atualizar(payload)
+
+    if (usuario.value) {
+      usuario.value = { ...usuario.value, ...atualizado }
+    }
+  }
+
   async function logout(): Promise<void> {
     try {
       await authService.logout()
@@ -74,6 +84,7 @@ export const useAuthStore = defineStore('auth', () => {
     carregarSessao,
     login,
     registrar,
+    atualizarConta,
     logout,
     clearSession,
   }

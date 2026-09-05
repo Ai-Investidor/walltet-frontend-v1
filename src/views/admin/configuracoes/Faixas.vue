@@ -136,7 +136,7 @@ async function save() {
         <span v-for="range in ranges" :key="range.perfil" class="h-full transition-all" :class="TONS[range.perfil]" :style="{ width: barWidth(range) }" />
       </div>
 
-      <dl class="bg-border grid grid-cols-4 gap-px overflow-hidden rounded-md border max-sm:grid-cols-2">
+      <dl class="bg-border grid grid-cols-4 gap-px overflow-hidden rounded-md border max-sm:grid-cols-1">
         <div v-for="range in ranges" :key="range.perfil" class="bg-card flex flex-col gap-2 p-4">
           <dt class="text-eyebrow text-muted-foreground-faint">
             {{ perfilParaRotulo(range.perfil) }}
@@ -182,17 +182,17 @@ async function save() {
         {{ isValid ? `As faixas cobrem 0 a ${escalaMaxima} sem lacuna nem sobreposição.` : problem }}
       </p>
 
-      <div class="flex gap-3">
-        <Button v-if="!isEditing" type="button" variant="outline" size="lg" class="text-button-sm gap-2.5 rounded-sm border-foreground px-4" @click="startEdit">
+      <div class="flex gap-3 max-sm:flex-col">
+        <Button v-if="!isEditing" type="button" variant="outline" size="lg" class="text-button-sm gap-2.5 rounded-sm border-foreground px-4 max-sm:w-full max-sm:justify-center" @click="startEdit">
           <PhPencilSimple class="size-4" aria-hidden="true" />
           Editar faixas
         </Button>
 
         <template v-else>
-          <Button type="button" size="lg" class="text-button-sm rounded-sm px-4" :disabled="!isValid || !isDirty || salvando" @click="save">
+          <Button type="button" size="lg" class="text-button-sm rounded-sm px-4 max-sm:w-full max-sm:justify-center" :disabled="!isValid || !isDirty || salvando" @click="save">
             {{ salvando ? 'Salvando…' : 'Salvar parâmetros' }}
           </Button>
-          <Button type="button" variant="outline" size="lg" class="text-button-sm rounded-sm border-foreground px-4" @click="discard">
+          <Button type="button" variant="outline" size="lg" class="text-button-sm rounded-sm border-foreground px-4 max-sm:w-full max-sm:justify-center" @click="discard">
             Cancelar
           </Button>
         </template>

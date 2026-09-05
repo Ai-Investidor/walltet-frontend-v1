@@ -1,10 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>my-vue-app</title>
+    <script>
+    ;(() => {
+      try {
+        const scheme = localStorage.getItem('vueuse-color-scheme') || 'auto'
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const dark = scheme === 'dark' || (scheme === 'auto' && prefersDark)
+        document.documentElement.classList.toggle('dark', dark)
+      } catch (_e) {
+        /* localStorage indisponível — mantém o tema padrão */
+      }
+    })()
+    </script>
   </head>
   <body>
     <div id="app"></div>

@@ -153,8 +153,8 @@ function pedirInativacao() {
 </script>
 
 <template>
-  <section class="flex flex-col gap-6" aria-label="Usuários cadastrados">
-    <div class="relative w-105">
+  <section class="flex flex-col gap-6 max-sm:gap-5" aria-label="Usuários cadastrados">
+    <div class="relative w-105 max-sm:w-full">
       <PhMagnifyingGlass class="absolute top-1/2 left-3.25 size-4 -translate-y-1/2 text-muted-foreground-faint" aria-hidden="true" />
       <Input
         v-model="search"
@@ -166,7 +166,7 @@ function pedirInativacao() {
     </div>
 
     <Card :class="CARD_SURFACE">
-      <Table>
+      <Table class="max-sm:hidden">
         <TableCaption class="sr-only">
           Usuários da plataforma, com papel e situação do cadastro.
         </TableCaption>
@@ -208,10 +208,45 @@ function pedirInativacao() {
           </TableRow>
         </TableBody>
       </Table>
+
+      <ul class="hidden max-sm:block" aria-label="Usuários da plataforma, com papel e situação do cadastro">
+        <li v-if="!usuarios.length" class="text-paragraph text-muted-foreground p-4">
+          Nenhum usuário encontrado{{ search ? ` para "${search}"` : '' }}.
+        </li>
+
+        <li v-for="user in usuarios" :key="user.id" class="border-border not-last:border-b">
+          <button
+            type="button"
+            class="flex w-full flex-col gap-2 p-4 text-left"
+            @click="selectedId = user.id"
+          >
+            <span class="flex w-full items-start justify-between gap-2.5">
+              <span class="text-paragraph-strong min-w-0 truncate">{{ user.nome }}</span>
+
+              <StatusBadge :tone="user.ativo ? 'success' : 'warning'" class="shrink-0">
+                {{ user.ativo ? 'Ativo' : 'Inativo' }}
+              </StatusBadge>
+            </span>
+
+            <span class="text-label block w-full truncate text-muted-foreground-faint">
+              {{ user.email }}
+            </span>
+
+            <span class="border-border mt-0.5 flex w-full items-center justify-between gap-3 border-t pt-2.5">
+              <span class="text-label text-muted-foreground">
+                {{ user.perfil === 'admin' ? 'Admin' : 'Cliente' }}
+              </span>
+              <span class="text-label text-muted-foreground-faint tabular-nums">
+                Desde {{ formatDataCurta(user.criadoEm) }}
+              </span>
+            </span>
+          </button>
+        </li>
+      </ul>
     </Card>
 
     <Sheet :open="Boolean(selectedUser)" @update:open="selectedId = null">
-      <SheetContent v-if="selectedUser" side="right" :show-close-button="false" class="gap-0 p-0 data-[side=right]:w-115! data-[side=right]:sm:max-w-115!">
+      <SheetContent v-if="selectedUser" side="right" :show-close-button="false" class="gap-0 p-0 data-[side=right]:w-115! data-[side=right]:sm:max-w-115! max-sm:data-[side=right]:w-full!">
         <SheetHeader class="flex-row items-start justify-between gap-3.5 border-b border-border p-5">
           <div class="flex flex-col gap-0.75">
             <SheetTitle class="text-subtitle-strong">

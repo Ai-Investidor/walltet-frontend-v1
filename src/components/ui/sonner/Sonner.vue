@@ -12,7 +12,12 @@ import type { ToasterProps } from 'vue-sonner'
 import { Toaster as Sonner } from 'vue-sonner'
 import { cn } from '@/libs/utils'
 
-const props = defineProps<ToasterProps>()
+// Defaults globais do toast (estilo "Notify.setDefaults" do Quasar): posição e aparência
+// vivem só aqui. Todo `toast(...)` do app herda isto; uma tela só passa prop pra sobrescrever.
+const props = withDefaults(defineProps<ToasterProps>(), {
+  position: 'top-right',
+  duration: 4000,
+})
 const delegatedProps = reactiveOmit(props, 'class', 'toastOptions')
 </script>
 

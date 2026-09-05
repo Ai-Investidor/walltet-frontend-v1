@@ -75,7 +75,7 @@ async function onSubmit(values: Record<string, unknown>) {
     description="Carteiras ativas por perfil. Abrir uma carteira dá acesso a composição, versões, rentabilidade e relatórios."
   >
     <template #action>
-      <Button type="button" size="lg" class="text-button-sm gap-2.5 rounded-sm px-4" @click="drawerOpen = true">
+      <Button type="button" size="lg" class="text-button-sm gap-2.5 rounded-sm px-4 max-sm:w-full max-sm:justify-center" @click="drawerOpen = true">
         <PhPlus class="size-4" aria-hidden="true" />
         Nova carteira
         <PhArrowRight class="size-3.5" aria-hidden="true" />
@@ -87,7 +87,7 @@ async function onSubmit(values: Record<string, unknown>) {
     <SheetContent
       side="right"
       :show-close-button="false"
-      class="gap-0 p-0 data-[side=right]:w-105! data-[side=right]:sm:max-w-105!"
+      class="gap-0 p-0 data-[side=right]:w-105! data-[side=right]:sm:max-w-105! max-sm:data-[side=right]:w-full!"
     >
       <SheetHeader class="flex-row items-center justify-between gap-3.5 border-b border-border p-5">
         <SheetTitle class="text-subtitle-strong">

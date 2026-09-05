@@ -1,15 +1,33 @@
 <script setup lang="ts">
 import { ProfileGauge } from '@components/shared/profile-gauge'
 import { Button } from '@components/ui/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@components/ui/dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@components/ui/form'
+import { Input } from '@components/ui/input'
+import { PhPencilSimple } from '@phosphor-icons/vue'
 import { useAuthStore } from '@stores/auth'
 import { perfilParaNivel } from '@utils/perfil'
-import { computed } from 'vue'
+import { toTypedSchema } from '@vee-validate/zod'
+import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { toast } from 'vue-sonner'
+import * as z from 'zod'
 
 const auth = useAuthStore()
 
 const CARD_CLASS = 'bg-card flex flex-col rounded-lg border border-border'
 const CARD_HEADER_CLASS = 'text-card-title border-b border-border px-4.5 py-3'
+/** Campo do formulário: mesma altura/raio usados nos formulários do admin. */
+const FIELD_CLASS = 'text-paragraph h-10.5 w-full rounded-sm px-3'
 
 interface AccountField {
   label: string
@@ -34,14 +52,133 @@ const gaugeLabel = computed(() =>
     ? `Perfil ${auth.usuario.perfilInvestidor.toLowerCase()}, nível ${nivel.value} de 4`
     : undefined,
 )
+
+const editarOpen = ref(false)
+const salvando = ref(false)
+
+const editarSchema = toTypedSchema(
+  z.object({
+    nome: z
+      .string({ message: 'Informe o nome' })
+      .trim()
+      .min(3, 'O nome precisa ter ao menos 3 caracteres'),
+    email: z.string({ message: 'Informe o e-mail' }).trim().email('Informe um e-mail válido'),
+  }),
+)
+
+const initialValues = computed(() => ({
+  nome: auth.usuario?.nome ?? '',
+  email: auth.usuario?.email ?? '',
+}))
+
+async function onSubmit(values: Record<string, unknown>): Promise<void> {
+  salvando.value = true
+
+  try {
+    await auth.atualizarConta({
+      nome: String(values.nome),
+      email: String(values.email),
+    })
+    toast.success('Dados da conta atualizados')
+    editarOpen.value = false
+  } catch {
+    toast.error('Não foi possível salvar as alterações agora.')
+  } finally {
+    salvando.value = false
+  }
+}
 </script>
 
 <template>
   <div class="grid grid-cols-[1.35fr_1fr] items-start gap-6 max-md:grid-cols-1 max-sm:gap-5">
     <section :class="CARD_CLASS" aria-labelledby="conta-dados-titulo">
-      <h2 id="conta-dados-titulo" :class="CARD_HEADER_CLASS">
-        Dados
-      </h2>
+      <div :class="`${CARD_HEADER_CLASS} flex items-center justify-between gap-3`">
+        <h2 id="conta-dados-titulo">
+          Dados
+        </h2>
+
+        <Dialog v-model:open="editarOpen">
+          <DialogTrigger as-child>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              class="rounded-sm"
+              aria-label="Editar dados da conta"
+            >
+              <PhPencilSimple class="size-4" aria-hidden="true" />
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent class="gap-5">
+            <DialogHeader>
+              <DialogTitle>Editar dados da conta</DialogTitle>
+              <DialogDescription>
+                Atualize seu nome e e-mail. As alterações valem para os próximos acessos.
+              </DialogDescription>
+            </DialogHeader>
+
+            <Form
+              :validation-schema="editarSchema"
+              :initial-values="initialValues"
+              class="flex flex-col gap-4"
+              @submit="onSubmit"
+            >
+              <FormField v-slot="{ componentField }" name="nome">
+                <FormItem class="gap-1.75">
+                  <FormLabel class="text-eyebrow text-muted-foreground-faint">
+                    Nome
+                  </FormLabel>
+                  <FormControl>
+                    <Input type="text" autocomplete="name" :class="FIELD_CLASS" v-bind="componentField" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField }" name="email">
+                <FormItem class="gap-1.75">
+                  <FormLabel class="text-eyebrow text-muted-foreground-faint">
+                    E-mail
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      inputmode="email"
+                      autocomplete="email"
+                      :class="FIELD_CLASS"
+                      v-bind="componentField"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+
+              <DialogFooter class="mt-1">
+                <DialogClose as-child>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    class="text-button-sm rounded-sm border-foreground px-4"
+                  >
+                    Cancelar
+                  </Button>
+                </DialogClose>
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  :disabled="salvando"
+                  class="text-button-sm rounded-sm px-4"
+                >
+                  {{ salvando ? 'Salvando…' : 'Salvar alterações' }}
+                </Button>
+              </DialogFooter>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      </div>
 
       <dl>
         <div
@@ -61,7 +198,7 @@ const gaugeLabel = computed(() =>
       </dl>
 
       <p class="text-label px-4.5 py-3 text-muted-foreground max-sm:px-3.5 max-sm:py-2.5">
-        Para alterar nome ou e-mail, escreva para suporte@aiinvest.com.br.
+        A carteira vinculada é definida pela nossa equipe. Para trocar, fale com o suporte.
       </p>
     </section>
 

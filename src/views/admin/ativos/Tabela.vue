@@ -56,7 +56,7 @@ const visibleAssets = computed(() =>
 
 <template>
   <Card :class="CARD_SURFACE">
-    <Table>
+    <Table class="max-sm:hidden">
       <TableCaption class="sr-only">
         Catálogo de ativos com classe, presença nas carteiras e situação do cadastro.
       </TableCaption>
@@ -151,5 +151,81 @@ const visibleAssets = computed(() =>
         </TableRow>
       </TableBody>
     </Table>
+
+    <ul class="hidden max-sm:block" aria-label="Catálogo de ativos com classe, presença nas carteiras e situação do cadastro">
+      <li v-if="!visibleAssets.length" class="text-paragraph text-muted-foreground p-4">
+        Nenhum ativo cadastrado nesta classe.
+      </li>
+
+      <li
+        v-for="asset in visibleAssets"
+        :key="asset.ticker"
+        class="border-border not-last:border-b flex flex-col gap-2.5 p-4"
+      >
+        <div class="flex items-start justify-between gap-2.5">
+          <span class="flex min-w-0 items-center gap-3">
+            <AssetChip :code="asset.code" />
+
+            <span class="min-w-0">
+              <span class="text-paragraph-strong block truncate">{{ asset.ticker }}</span>
+              <span class="text-label block truncate text-muted-foreground-faint">
+                {{ asset.name }}
+              </span>
+            </span>
+          </span>
+
+          <span class="flex shrink-0 gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              :class="ICON_ACTION"
+              :aria-label="`Editar ${asset.ticker}`"
+              @click="emit('editar', asset)"
+            >
+              <PhPencilSimple class="size-3.5" aria-hidden="true" />
+            </Button>
+
+            <Button
+              v-if="asset.active"
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              :class="ICON_ACTION"
+              :aria-label="`Inativar ${asset.ticker}`"
+              @click="emit('inativar', asset)"
+            >
+              <PhProhibit class="size-3.5" aria-hidden="true" />
+            </Button>
+
+            <Button
+              v-else
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              :class="ICON_ACTION"
+              :aria-label="`Reativar ${asset.ticker}`"
+              @click="emit('reativar', asset)"
+            >
+              <PhArrowCounterClockwise class="size-3.5" aria-hidden="true" />
+            </Button>
+          </span>
+        </div>
+
+        <div class="border-border flex items-center justify-between gap-3 border-t pt-2.5">
+          <p class="text-label text-muted-foreground">
+            {{ asset.className }} · {{ asset.walletCount }}
+            {{ asset.walletCount === 1 ? 'carteira' : 'carteiras' }}
+          </p>
+
+          <StatusBadge
+            :tone="asset.active ? 'success' : 'muted'"
+            :title="asset.active ? undefined : asset.deactivationReason"
+          >
+            {{ asset.active ? 'Ativo' : 'Inativo' }}
+          </StatusBadge>
+        </div>
+      </li>
+    </ul>
   </Card>
 </template>

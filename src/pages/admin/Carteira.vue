@@ -21,10 +21,10 @@ const TABS = [
 ]
 
 const TAB_LIST =
-  'h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0 group-data-horizontal/tabs:h-auto'
+  'h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0 group-data-horizontal/tabs:h-auto max-sm:overflow-x-auto'
 
 const TAB_TRIGGER =
-  'text-card-title h-auto flex-none rounded-none px-3.5 py-2.5 text-muted-foreground-faint dark:text-muted-foreground-faint after:bg-success group-data-horizontal/tabs:after:bottom-0'
+  'text-card-title h-auto flex-none rounded-none px-3.5 py-2.5 text-muted-foreground-faint dark:text-muted-foreground-faint after:bg-success group-data-horizontal/tabs:after:bottom-0 max-sm:px-3'
 
 const activeTab = ref('composicao')
 
@@ -51,7 +51,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-8 p-8">
+  <div class="flex flex-col gap-8 p-8 max-sm:gap-5 max-sm:px-4 max-sm:py-5">
     <p v-if="carregando" class="text-paragraph text-muted-foreground">
       Carregando carteira…
     </p>
@@ -63,7 +63,7 @@ onMounted(async () => {
     <template v-else-if="carteira">
       <Cabecalho :carteira="carteira" />
 
-      <Tabs v-model="activeTab" class="gap-8">
+      <Tabs v-model="activeTab" class="gap-8 max-sm:gap-5">
         <TabsList variant="line" :class="TAB_LIST">
           <TabsTrigger v-for="tab in TABS" :key="tab.value" :value="tab.value" :class="TAB_TRIGGER">
             {{ tab.label }}

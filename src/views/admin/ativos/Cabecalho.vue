@@ -18,7 +18,7 @@ const emit = defineEmits<{
       <Button
         type="button"
         size="lg"
-        class="text-button-sm gap-2.5 rounded-sm px-4"
+        class="text-button-sm gap-2.5 rounded-sm px-4 max-sm:w-full max-sm:justify-center"
         @click="emit('novo')"
       >
         <PhPlus class="size-4" aria-hidden="true" />

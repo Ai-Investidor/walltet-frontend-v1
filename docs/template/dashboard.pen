@@ -50965,6 +50965,1768 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "jVyc0",
+      "x": 5680,
+      "y": -924,
+      "name": "Cliente · Painel (Dark Mode 1920)",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1920,
+      "height": 1080,
+      "fill": "$paper",
+      "cornerRadius": 8,
+      "stroke": "$line-strong",
+      "strokeWidth": 1,
+      "strokeAlignment": "inner",
+      "effect": [
+        {
+          "type": "shadow",
+          "shadowType": "outer",
+          "color": "#00000066",
+          "offset": {
+            "x": 0,
+            "y": 1
+          },
+          "blur": 2
+        },
+        {
+          "type": "shadow",
+          "shadowType": "outer",
+          "color": "#000000b3",
+          "offset": {
+            "x": 0,
+            "y": 10
+          },
+          "blur": 28,
+          "spread": -14
+        }
+      ],
+      "children": [
+        {
+          "id": "bADCQ",
+          "type": "ref",
+          "ref": "QDU3a",
+          "name": "Sidebar",
+          "height": "fill_container",
+          "descendants": {
+            "B6mQN": {
+              "fill": "$paper"
+            },
+            "B6mQN/Zx7GZ": {
+              "fill": "$green"
+            },
+            "B6mQN/RPAh0": {
+              "fill": "$ink"
+            },
+            "B6mQN/Q6pNQ": {
+              "fill": "$ink",
+              "fontWeight": "600"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "S0Bcr",
+          "name": "Principal",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "ZxK9o",
+              "type": "ref",
+              "ref": "zst25",
+              "name": "Topbar",
+              "width": "fill_container",
+              "descendants": {
+                "ysFkU": {
+                  "content": "Painel"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "j7XMR",
+              "name": "Conteudo",
+              "clip": true,
+              "width": 1200,
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 32,
+              "padding": [
+                32,
+                24
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "f10GKN",
+                  "name": "Cabecalho",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "BEBqg",
+                      "name": "Eyebrow",
+                      "fill": "$ink-faint",
+                      "content": "PAINEL DO INVESTIDOR · AGOSTO 2026",
+                      "fontFamily": "$font-head",
+                      "fontSize": 10.24,
+                      "fontWeight": "700",
+                      "letterSpacing": 0.82
+                    },
+                    {
+                      "type": "text",
+                      "id": "VINg8",
+                      "name": "Titulo",
+                      "fill": "$ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Sua carteira foi revisada em agosto",
+                      "lineHeight": 1.1,
+                      "fontFamily": "$font-head",
+                      "fontSize": 28,
+                      "fontWeight": "800",
+                      "letterSpacing": -0.28
+                    },
+                    {
+                      "type": "text",
+                      "id": "xMFJB",
+                      "name": "Texto",
+                      "fill": "$ink-soft",
+                      "textGrowth": "fixed-width",
+                      "width": 480,
+                      "content": "A revisão de agosto trocou um ativo e ajustou dois pesos. O relatório completo do mês está disponível para download.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14.72,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gQY9Z",
+                  "name": "Indicadores",
+                  "clip": true,
+                  "width": "fill_container",
+                  "fill": "$line",
+                  "cornerRadius": 6,
+                  "stroke": "$line",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "gap": 1,
+                  "children": [
+                    {
+                      "id": "TVV0B",
+                      "type": "ref",
+                      "ref": "dO59A",
+                      "name": "RENTABILIDADE DO MÊS",
+                      "width": "fill_container",
+                      "descendants": {
+                        "J3LXD": {
+                          "content": "RENTABILIDADE DO MÊS"
+                        },
+                        "Ae4rL": {
+                          "content": "+1,85 %",
+                          "fill": "$green"
+                        },
+                        "CfnU7": {
+                          "content": "CDI do mês: +0,87 %"
+                        }
+                      }
+                    },
+                    {
+                      "id": "CmahL",
+                      "type": "ref",
+                      "ref": "dO59A",
+                      "name": "ACUMULADO NO ANO",
+                      "width": "fill_container",
+                      "descendants": {
+                        "J3LXD": {
+                          "content": "ACUMULADO NO ANO"
+                        },
+                        "Ae4rL": {
+                          "content": "+8,42 %",
+                          "fill": "$green"
+                        },
+                        "CfnU7": {
+                          "content": "CDI no ano: +6,80 %"
+                        }
+                      }
+                    },
+                    {
+                      "id": "COaE2",
+                      "type": "ref",
+                      "ref": "dO59A",
+                      "name": "% DO CDI NO ANO",
+                      "width": "fill_container",
+                      "descendants": {
+                        "J3LXD": {
+                          "content": "% DO CDI NO ANO"
+                        },
+                        "Ae4rL": {
+                          "content": "212,6 %",
+                          "fill": "$ink"
+                        },
+                        "CfnU7": {
+                          "content": "Carteira sobre o CDI"
+                        }
+                      }
+                    },
+                    {
+                      "id": "m8Gbl2",
+                      "type": "ref",
+                      "ref": "dO59A",
+                      "name": "ATIVOS NA CARTEIRA",
+                      "width": "fill_container",
+                      "descendants": {
+                        "J3LXD": {
+                          "content": "ATIVOS NA CARTEIRA"
+                        },
+                        "Ae4rL": {
+                          "content": "4",
+                          "fill": "$ink"
+                        },
+                        "CfnU7": {
+                          "content": "Revisada em 01/08/2026"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "d2VYH",
+                  "name": "Colunas",
+                  "width": "fill_container",
+                  "gap": 24,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dWFQP",
+                      "name": "Carteira",
+                      "clip": true,
+                      "width": 494,
+                      "fill": "$paper",
+                      "cornerRadius": 8,
+                      "stroke": "$line",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "c5nq29",
+                          "name": "Cabecalho",
+                          "width": "fill_container",
+                          "padding": [
+                            16,
+                            18
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Y3H10",
+                              "name": "Nome",
+                              "fill": "$ink",
+                              "content": "Carteira Moderada Estratégica",
+                              "fontFamily": "$font-head",
+                              "fontSize": 14.72,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "uqGGE",
+                              "name": "Competencia",
+                              "gap": 7,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "vlR6J",
+                                  "name": "Ponto",
+                                  "fill": "$green",
+                                  "width": 7,
+                                  "height": 7
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "AUosC",
+                                  "name": "Mes",
+                                  "fill": "$green",
+                                  "content": "AGOSTO 2026",
+                                  "fontFamily": "$font-head",
+                                  "fontSize": 10.88,
+                                  "fontWeight": "800",
+                                  "letterSpacing": 0.65
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "eUod1",
+                          "name": "Alocacao",
+                          "width": "fill_container",
+                          "stroke": "$line-strong",
+                          "strokeWidth": {
+                            "top": 1.5
+                          },
+                          "strokeAlignment": "inner",
+                          "layout": "vertical",
+                          "gap": 10,
+                          "padding": [
+                            16,
+                            18
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "d00DOL",
+                              "name": "Rotulo",
+                              "fill": "$ink-faint",
+                              "content": "ALOCAÇÃO POR CLASSE",
+                              "fontFamily": "$font-head",
+                              "fontSize": 9.92,
+                              "fontWeight": "700",
+                              "letterSpacing": 0.79
+                            },
+                            {
+                              "type": "frame",
+                              "id": "vf8gt",
+                              "name": "Fita",
+                              "clip": true,
+                              "width": "fill_container",
+                              "height": 10,
+                              "cornerRadius": 3,
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "GAxKc",
+                                  "name": "Renda Fixa",
+                                  "fill": "$data-1",
+                                  "width": 137,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "rbiIV",
+                                  "name": "Ações BR",
+                                  "fill": "$data-2",
+                                  "width": 229,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "f9Dtu",
+                                  "name": "FII",
+                                  "fill": "$data-3",
+                                  "width": 92,
+                                  "height": 10
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "fYepk",
+                              "name": "Legenda",
+                              "gap": 14,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "dwqGM",
+                                  "name": "Renda Fixa",
+                                  "fill": "$ink-soft",
+                                  "content": "Renda Fixa 30,00 %",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12.48,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "lHdkn",
+                                  "name": "Ações BR",
+                                  "fill": "$ink-soft",
+                                  "content": "Ações BR 50,00 %",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12.48,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "JNyy7",
+                                  "name": "FII",
+                                  "fill": "$ink-soft",
+                                  "content": "FII 20,00 %",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12.48,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pUxbH",
+                          "name": "Barra Composicao",
+                          "width": "fill_container",
+                          "stroke": "$line",
+                          "strokeWidth": {
+                            "top": 1
+                          },
+                          "strokeAlignment": "inner",
+                          "padding": [
+                            11,
+                            18
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "m03nx",
+                              "name": "Rotulo",
+                              "fill": "$ink-faint",
+                              "content": "COMPOSIÇÃO · 4 ATIVOS",
+                              "fontFamily": "$font-head",
+                              "fontSize": 10.24,
+                              "fontWeight": "800",
+                              "letterSpacing": 0.72
+                            }
+                          ]
+                        },
+                        {
+                          "id": "Pz4rD",
+                          "type": "ref",
+                          "ref": "pabok",
+                          "name": "Tesouro IPCA+ 2035",
+                          "width": "fill_container",
+                          "descendants": {
+                            "VskKf/H5msoV": {
+                              "content": "TD"
+                            },
+                            "sgfHB": {
+                              "content": "Tesouro IPCA+ 2035"
+                            },
+                            "o9ZPVx": {
+                              "content": "Renda Fixa"
+                            },
+                            "dWXCj": {
+                              "icon": "minus",
+                              "fill": "$ink-faint"
+                            },
+                            "xZBt0": {
+                              "content": "MANTER",
+                              "fill": "$ink-faint"
+                            },
+                            "GScxy": {
+                              "content": "30,00 %"
+                            }
+                          }
+                        },
+                        {
+                          "id": "pbCdI",
+                          "type": "ref",
+                          "ref": "pabok",
+                          "name": "VALE3",
+                          "width": "fill_container",
+                          "descendants": {
+                            "VskKf/H5msoV": {
+                              "content": "VL"
+                            },
+                            "sgfHB": {
+                              "content": "VALE3"
+                            },
+                            "o9ZPVx": {
+                              "content": "Ações BR · Mineração"
+                            },
+                            "dWXCj": {
+                              "icon": "minus",
+                              "fill": "$ink-faint"
+                            },
+                            "xZBt0": {
+                              "content": "MANTER",
+                              "fill": "$ink-faint"
+                            },
+                            "GScxy": {
+                              "content": "20,00 %"
+                            }
+                          }
+                        },
+                        {
+                          "id": "Ql84j",
+                          "type": "ref",
+                          "ref": "pabok",
+                          "name": "BBDC4",
+                          "width": "fill_container",
+                          "descendants": {
+                            "VskKf/H5msoV": {
+                              "content": "BB"
+                            },
+                            "sgfHB": {
+                              "content": "BBDC4"
+                            },
+                            "o9ZPVx": {
+                              "content": "Ações BR · Bancos"
+                            },
+                            "dWXCj": {
+                              "icon": "minus",
+                              "fill": "$ink-faint"
+                            },
+                            "xZBt0": {
+                              "content": "MANTER",
+                              "fill": "$ink-faint"
+                            },
+                            "GScxy": {
+                              "content": "30,00 %"
+                            }
+                          }
+                        },
+                        {
+                          "id": "C9PjFR",
+                          "type": "ref",
+                          "ref": "pabok",
+                          "name": "MXRF11",
+                          "width": "fill_container",
+                          "descendants": {
+                            "VskKf/H5msoV": {
+                              "content": "MX"
+                            },
+                            "sgfHB": {
+                              "content": "MXRF11"
+                            },
+                            "o9ZPVx": {
+                              "content": "FII · Papel"
+                            },
+                            "dWXCj": {
+                              "icon": "arrow-down-right",
+                              "fill": "$green"
+                            },
+                            "xZBt0": {
+                              "content": "ENTROU",
+                              "fill": "$green"
+                            },
+                            "GScxy": {
+                              "content": "20,00 %"
+                            }
+                          }
+                        },
+                        {
+                          "type": "frame",
+                          "id": "GwMbs",
+                          "name": "Rodape",
+                          "width": "fill_container",
+                          "stroke": "$line-strong",
+                          "strokeWidth": {
+                            "top": 1.5
+                          },
+                          "strokeAlignment": "inner",
+                          "padding": [
+                            14,
+                            18
+                          ],
+                          "justifyContent": "end",
+                          "children": [
+                            {
+                              "id": "l1tL6",
+                              "type": "ref",
+                              "ref": "BKFYq",
+                              "name": "Botao Ver carteira completa",
+                              "padding": [
+                                9,
+                                15
+                              ],
+                              "descendants": {
+                                "o34gl": {
+                                  "content": "Ver carteira completa",
+                                  "fontSize": 13.44
+                                },
+                                "bywAH": {
+                                  "enabled": true,
+                                  "icon": "arrow-right"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "qCeZK",
+                      "name": "Lateral",
+                      "width": 366,
+                      "layout": "vertical",
+                      "gap": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "k8RiUN",
+                          "name": "Movimentacoes",
+                          "clip": true,
+                          "width": "fill_container",
+                          "fill": "$paper",
+                          "cornerRadius": 8,
+                          "stroke": "$line",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "hhHXv",
+                              "name": "Cabecalho",
+                              "width": "fill_container",
+                              "stroke": "$line",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "strokeAlignment": "inner",
+                              "padding": [
+                                15,
+                                18
+                              ],
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "TwT1B",
+                                  "name": "Titulo",
+                                  "fill": "$ink",
+                                  "content": "Movimentações do mês",
+                                  "fontFamily": "$font-head",
+                                  "fontSize": 14.72,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "RPMF5",
+                                  "name": "Icone",
+                                  "width": 16,
+                                  "height": 16,
+                                  "icon": "arrow-left-right",
+                                  "library": "lucide",
+                                  "fill": "$ink-soft"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "WPkH2",
+                              "name": "MXRF11",
+                              "width": "fill_container",
+                              "stroke": "$line",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "strokeAlignment": "inner",
+                              "gap": 12,
+                              "padding": [
+                                11,
+                                18
+                              ],
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "hccSu",
+                                  "name": "Nome",
+                                  "fill": "$ink",
+                                  "content": "MXRF11",
+                                  "lineHeight": 1.55,
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 13.44,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "v47TP",
+                                  "name": "Status",
+                                  "gap": 6,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "QQLsW",
+                                      "name": "Icone",
+                                      "width": 13,
+                                      "height": 13,
+                                      "icon": "arrow-down-right",
+                                      "library": "lucide",
+                                      "fill": "$green"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "xuJ4F",
+                                      "name": "Rotulo",
+                                      "fill": "$green",
+                                      "content": "ENTROU",
+                                      "fontFamily": "$font-head",
+                                      "fontSize": 10.56,
+                                      "fontWeight": "800",
+                                      "letterSpacing": 0.65
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "stitQ",
+                              "name": "PETR4",
+                              "width": "fill_container",
+                              "stroke": "$line",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "strokeAlignment": "inner",
+                              "gap": 12,
+                              "padding": [
+                                11,
+                                18
+                              ],
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "vwHGf",
+                                  "name": "Nome",
+                                  "fill": "$ink",
+                                  "content": "PETR4",
+                                  "lineHeight": 1.55,
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 13.44,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "cmoKA",
+                                  "name": "Status",
+                                  "gap": 6,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "PGVOQ",
+                                      "name": "Icone",
+                                      "width": 13,
+                                      "height": 13,
+                                      "icon": "arrow-up-right",
+                                      "library": "lucide",
+                                      "fill": "$amber"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "y4HYjo",
+                                      "name": "Rotulo",
+                                      "fill": "$amber",
+                                      "content": "SAIU",
+                                      "fontFamily": "$font-head",
+                                      "fontSize": 10.56,
+                                      "fontWeight": "800",
+                                      "letterSpacing": 0.65
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "tnLNR",
+                              "name": "Tesouro IPCA+ 2035",
+                              "width": "fill_container",
+                              "stroke": "$line",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "strokeAlignment": "inner",
+                              "gap": 12,
+                              "padding": [
+                                11,
+                                18
+                              ],
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "HEJZn",
+                                  "name": "Nome",
+                                  "fill": "$ink",
+                                  "content": "Tesouro IPCA+ 2035",
+                                  "lineHeight": 1.55,
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 13.44,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "a5oLlM",
+                                  "name": "Status",
+                                  "gap": 6,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "V9IbMj",
+                                      "name": "Icone",
+                                      "width": 13,
+                                      "height": 13,
+                                      "icon": "arrow-up",
+                                      "library": "lucide",
+                                      "fill": "$green"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "tDpW4",
+                                      "name": "Rotulo",
+                                      "fill": "$green",
+                                      "content": "AUMENTOU",
+                                      "fontFamily": "$font-head",
+                                      "fontSize": 10.56,
+                                      "fontWeight": "800",
+                                      "letterSpacing": 0.65
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "K7Pxk",
+                              "name": "VALE3",
+                              "width": "fill_container",
+                              "stroke": "$line",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "strokeAlignment": "inner",
+                              "gap": 12,
+                              "padding": [
+                                11,
+                                18
+                              ],
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "kVu8e",
+                                  "name": "Nome",
+                                  "fill": "$ink",
+                                  "content": "VALE3",
+                                  "lineHeight": 1.55,
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 13.44,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "sZ70s",
+                                  "name": "Status",
+                                  "gap": 6,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "sqgWF",
+                                      "name": "Icone",
+                                      "width": 13,
+                                      "height": 13,
+                                      "icon": "arrow-down",
+                                      "library": "lucide",
+                                      "fill": "$amber"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "dKe69",
+                                      "name": "Rotulo",
+                                      "fill": "$amber",
+                                      "content": "REDUZIU",
+                                      "fontFamily": "$font-head",
+                                      "fontSize": 10.56,
+                                      "fontWeight": "800",
+                                      "letterSpacing": 0.65
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "A8yG53",
+                              "name": "Rodape",
+                              "width": "fill_container",
+                              "padding": [
+                                13,
+                                18
+                              ],
+                              "children": [
+                                {
+                                  "id": "UenG7",
+                                  "type": "ref",
+                                  "ref": "yUoak",
+                                  "name": "Ver detalhes"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wYYEw",
+                          "name": "Ultimo Relatorio",
+                          "clip": true,
+                          "width": "fill_container",
+                          "fill": "$paper",
+                          "cornerRadius": 8,
+                          "stroke": "$line",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "layout": "vertical",
+                          "gap": 12,
+                          "padding": 18,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "YH3wS",
+                              "name": "Rotulo",
+                              "fill": "$ink-faint",
+                              "content": "ÚLTIMO RELATÓRIO",
+                              "fontFamily": "$font-head",
+                              "fontSize": 9.92,
+                              "fontWeight": "700",
+                              "letterSpacing": 0.79
+                            },
+                            {
+                              "type": "frame",
+                              "id": "gqPoH",
+                              "name": "Arquivo",
+                              "width": "fill_container",
+                              "gap": 13,
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "y2iwb3",
+                                  "name": "Icone",
+                                  "width": 22,
+                                  "height": 22,
+                                  "icon": "file-text",
+                                  "library": "lucide",
+                                  "fill": "$ink"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "JeIYm",
+                                  "name": "Textos",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "A491f",
+                                      "name": "Titulo",
+                                      "fill": "$ink",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Relatório de Performance — Agosto/2026",
+                                      "fontFamily": "$font-head",
+                                      "fontSize": 14.72,
+                                      "fontWeight": "700"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "yODT6",
+                                      "name": "Meta",
+                                      "fill": "$ink-faint",
+                                      "content": "Gerado em 01/09/2026 · 471 KB",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12.48,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "fme1M",
+                              "type": "ref",
+                              "ref": "s4Behq",
+                              "name": "Botao Baixar PDF",
+                              "padding": [
+                                10,
+                                16
+                              ],
+                              "descendants": {
+                                "pxkCg": {
+                                  "enabled": true,
+                                  "icon": "download"
+                                },
+                                "XKi5B": {
+                                  "content": "Baixar PDF",
+                                  "fontSize": 13.44
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zEVjU",
+      "x": 7600,
+      "y": -924,
+      "name": "Cliente · Minha carteira · Composição (Dark Mode)",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1920,
+      "height": 1200,
+      "fill": "$paper",
+      "cornerRadius": 8,
+      "stroke": "$line-strong",
+      "strokeWidth": 1,
+      "strokeAlignment": "inner",
+      "effect": [
+        {
+          "type": "shadow",
+          "shadowType": "outer",
+          "color": "#00000066",
+          "offset": {
+            "x": 0,
+            "y": 1
+          },
+          "blur": 2
+        },
+        {
+          "type": "shadow",
+          "shadowType": "outer",
+          "color": "#000000b3",
+          "offset": {
+            "x": 0,
+            "y": 10
+          },
+          "blur": 28,
+          "spread": -14
+        }
+      ],
+      "children": [
+        {
+          "id": "gBHPN",
+          "type": "ref",
+          "ref": "QDU3a",
+          "name": "Sidebar",
+          "height": "fill_container",
+          "descendants": {
+            "I524Q": {
+              "fill": "$paper"
+            },
+            "I524Q/Zx7GZ": {
+              "fill": "$green"
+            },
+            "I524Q/RPAh0": {
+              "fill": "$ink"
+            },
+            "I524Q/Q6pNQ": {
+              "fill": "$ink",
+              "fontWeight": "600"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "N5mFxp",
+          "name": "Principal",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "ZTdt4",
+              "type": "ref",
+              "ref": "zst25",
+              "name": "Topbar",
+              "width": "fill_container",
+              "descendants": {
+                "ysFkU": {
+                  "content": "Minha carteira"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "H7LG4",
+              "name": "Conteudo",
+              "clip": true,
+              "width": 1200,
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 32,
+              "padding": [
+                32,
+                24
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "nmCZL",
+                  "name": "Cabecalho",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "VOjf0",
+                      "name": "Eyebrow",
+                      "fill": "$ink-faint",
+                      "content": "MINHA CARTEIRA · AGOSTO 2026",
+                      "fontFamily": "$font-head",
+                      "fontSize": 10.24,
+                      "fontWeight": "700",
+                      "letterSpacing": 0.82
+                    },
+                    {
+                      "type": "text",
+                      "id": "yNzDf",
+                      "name": "Titulo",
+                      "fill": "$ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Carteira Moderada Estratégica",
+                      "lineHeight": 1.1,
+                      "fontFamily": "$font-head",
+                      "fontSize": 28,
+                      "fontWeight": "800",
+                      "letterSpacing": -0.28
+                    },
+                    {
+                      "type": "text",
+                      "id": "H1SCuY",
+                      "name": "Texto",
+                      "fill": "$ink-soft",
+                      "textGrowth": "fixed-width",
+                      "width": 480,
+                      "content": "Composição, movimentações do mês e rentabilidade comparada aos benchmarks. Todos os dados seguem a competência selecionada na barra superior.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14.72,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tWMPn",
+                  "name": "Abas",
+                  "width": "fill_container",
+                  "stroke": "$line",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "id": "UIRNb",
+                      "type": "ref",
+                      "ref": "uSWRY",
+                      "name": "Composição",
+                      "stroke": "$green",
+                      "descendants": {
+                        "WtAb0": {
+                          "content": "Composição",
+                          "fill": "$ink"
+                        }
+                      }
+                    },
+                    {
+                      "id": "zTvmr",
+                      "type": "ref",
+                      "ref": "uSWRY",
+                      "name": "Movimentações",
+                      "stroke": "#00000000",
+                      "descendants": {
+                        "WtAb0": {
+                          "content": "Movimentações",
+                          "fill": "$ink-faint"
+                        }
+                      }
+                    },
+                    {
+                      "id": "f5Eqx",
+                      "type": "ref",
+                      "ref": "uSWRY",
+                      "name": "Performance",
+                      "stroke": "#00000000",
+                      "descendants": {
+                        "WtAb0": {
+                          "content": "Performance",
+                          "fill": "$ink-faint"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nNP8I",
+                  "name": "Composicao",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 24,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x1KvX",
+                      "name": "Carteira",
+                      "clip": true,
+                      "width": "fill_container",
+                      "fill": "$paper",
+                      "cornerRadius": 8,
+                      "stroke": "$line",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "n81LQ",
+                          "name": "Cabecalho",
+                          "width": "fill_container",
+                          "padding": [
+                            16,
+                            18
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "SvMNE",
+                              "name": "Nome",
+                              "fill": "$ink",
+                              "content": "Carteira Moderada Estratégica",
+                              "fontFamily": "$font-head",
+                              "fontSize": 14.72,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "u4wRhJ",
+                              "name": "Etiqueta",
+                              "gap": 7,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "ux2tD",
+                                  "name": "Ponto",
+                                  "fill": "$green",
+                                  "width": 7,
+                                  "height": 7
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "K50A9",
+                                  "name": "Rotulo",
+                                  "fill": "$green",
+                                  "content": "AGOSTO 2026",
+                                  "fontFamily": "$font-head",
+                                  "fontSize": 10.88,
+                                  "fontWeight": "800",
+                                  "letterSpacing": 0.65
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "OIjUa",
+                          "name": "Alocacao",
+                          "width": "fill_container",
+                          "stroke": "$line-strong",
+                          "strokeWidth": {
+                            "top": 1.5
+                          },
+                          "strokeAlignment": "inner",
+                          "layout": "vertical",
+                          "gap": 10,
+                          "padding": [
+                            16,
+                            18
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "pN8Ip",
+                              "name": "Rotulo",
+                              "fill": "$ink-faint",
+                              "content": "ALOCAÇÃO POR CLASSE",
+                              "fontFamily": "$font-head",
+                              "fontSize": 9.92,
+                              "fontWeight": "700",
+                              "letterSpacing": 0.79
+                            },
+                            {
+                              "type": "frame",
+                              "id": "n23BGo",
+                              "name": "Fita",
+                              "clip": true,
+                              "width": "fill_container",
+                              "height": 10,
+                              "cornerRadius": 3,
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "l2uWGT",
+                                  "name": "Renda Fixa",
+                                  "fill": "$data-1",
+                                  "width": 254,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "r8TIM",
+                                  "name": "Ações BR",
+                                  "fill": "$data-2",
+                                  "width": 424,
+                                  "height": 10
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "R9KOJ",
+                                  "name": "FII",
+                                  "fill": "$data-3",
+                                  "width": 170,
+                                  "height": 10
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "xD6pU",
+                              "name": "Legenda",
+                              "gap": 14,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "QUYMN",
+                                  "name": "Renda Fixa",
+                                  "fill": "$ink-soft",
+                                  "content": "Renda Fixa 30,00 %",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12.48,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "wFoj2",
+                                  "name": "Ações BR",
+                                  "fill": "$ink-soft",
+                                  "content": "Ações BR 50,00 %",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12.48,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "A6fUS",
+                                  "name": "FII",
+                                  "fill": "$ink-soft",
+                                  "content": "FII 20,00 %",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12.48,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "fxT8a",
+                          "name": "Cabecalho Colunas",
+                          "width": "fill_container",
+                          "stroke": "$line",
+                          "strokeWidth": {
+                            "top": 1
+                          },
+                          "strokeAlignment": "inner",
+                          "gap": 14,
+                          "padding": [
+                            11,
+                            18
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "hF6ig",
+                              "name": "COMPOSIÇÃO · 4 ATIVOS",
+                              "fill": "$ink-faint",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "COMPOSIÇÃO · 4 ATIVOS",
+                              "fontFamily": "$font-head",
+                              "fontSize": 10.24,
+                              "fontWeight": "800",
+                              "letterSpacing": 0.72
+                            },
+                            {
+                              "type": "text",
+                              "id": "gkfkt",
+                              "name": "MOVIMENTAÇÃO",
+                              "fill": "$ink-faint",
+                              "textGrowth": "fixed-width",
+                              "width": 150,
+                              "content": "MOVIMENTAÇÃO",
+                              "fontFamily": "$font-head",
+                              "fontSize": 10.24,
+                              "fontWeight": "800",
+                              "letterSpacing": 0.72
+                            },
+                            {
+                              "type": "text",
+                              "id": "Chgyg",
+                              "name": "PESO",
+                              "fill": "$ink-faint",
+                              "textGrowth": "fixed-width",
+                              "width": 76,
+                              "content": "PESO",
+                              "textAlign": "right",
+                              "fontFamily": "$font-head",
+                              "fontSize": 10.24,
+                              "fontWeight": "800",
+                              "letterSpacing": 0.72
+                            }
+                          ]
+                        },
+                        {
+                          "id": "IBHyQ",
+                          "type": "ref",
+                          "ref": "pabok",
+                          "name": "Tesouro IPCA+ 2035",
+                          "width": "fill_container",
+                          "descendants": {
+                            "VskKf/H5msoV": {
+                              "content": "TD"
+                            },
+                            "sgfHB": {
+                              "content": "Tesouro IPCA+ 2035"
+                            },
+                            "o9ZPVx": {
+                              "content": "Renda Fixa"
+                            },
+                            "dWXCj": {
+                              "icon": "minus",
+                              "fill": "$ink-faint"
+                            },
+                            "xZBt0": {
+                              "content": "MANTER",
+                              "fill": "$ink-faint"
+                            },
+                            "GScxy": {
+                              "content": "30,00 %"
+                            }
+                          }
+                        },
+                        {
+                          "id": "sQA5V",
+                          "type": "ref",
+                          "ref": "pabok",
+                          "name": "VALE3",
+                          "width": "fill_container",
+                          "descendants": {
+                            "VskKf/H5msoV": {
+                              "content": "VL"
+                            },
+                            "sgfHB": {
+                              "content": "VALE3"
+                            },
+                            "o9ZPVx": {
+                              "content": "Ações BR · Mineração"
+                            },
+                            "dWXCj": {
+                              "icon": "minus",
+                              "fill": "$ink-faint"
+                            },
+                            "xZBt0": {
+                              "content": "MANTER",
+                              "fill": "$ink-faint"
+                            },
+                            "GScxy": {
+                              "content": "20,00 %"
+                            }
+                          }
+                        },
+                        {
+                          "id": "a1q86d",
+                          "type": "ref",
+                          "ref": "pabok",
+                          "name": "BBDC4",
+                          "width": "fill_container",
+                          "descendants": {
+                            "VskKf/H5msoV": {
+                              "content": "BB"
+                            },
+                            "sgfHB": {
+                              "content": "BBDC4"
+                            },
+                            "o9ZPVx": {
+                              "content": "Ações BR · Bancos"
+                            },
+                            "dWXCj": {
+                              "icon": "minus",
+                              "fill": "$ink-faint"
+                            },
+                            "xZBt0": {
+                              "content": "MANTER",
+                              "fill": "$ink-faint"
+                            },
+                            "GScxy": {
+                              "content": "30,00 %"
+                            }
+                          }
+                        },
+                        {
+                          "id": "rHlRM",
+                          "type": "ref",
+                          "ref": "pabok",
+                          "name": "MXRF11",
+                          "width": "fill_container",
+                          "descendants": {
+                            "VskKf/H5msoV": {
+                              "content": "MX"
+                            },
+                            "sgfHB": {
+                              "content": "MXRF11"
+                            },
+                            "o9ZPVx": {
+                              "content": "FII · Papel"
+                            },
+                            "dWXCj": {
+                              "icon": "arrow-down-right",
+                              "fill": "$green"
+                            },
+                            "xZBt0": {
+                              "content": "ENTROU",
+                              "fill": "$green"
+                            },
+                            "GScxy": {
+                              "content": "20,00 %"
+                            }
+                          }
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ifuBK",
+                          "name": "Total",
+                          "width": "fill_container",
+                          "fill": "$paper-2",
+                          "stroke": "$line-strong",
+                          "strokeWidth": {
+                            "top": 1.5
+                          },
+                          "strokeAlignment": "inner",
+                          "padding": [
+                            13,
+                            18
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "M94N4L",
+                              "name": "Rotulo",
+                              "fill": "$ink-soft",
+                              "content": "TOTAL",
+                              "fontFamily": "$font-head",
+                              "fontSize": 10.88,
+                              "fontWeight": "800",
+                              "letterSpacing": 0.65
+                            },
+                            {
+                              "type": "text",
+                              "id": "vvcbY",
+                              "name": "Valor",
+                              "fill": "$ink",
+                              "content": "100,00 %",
+                              "fontFamily": "$font-head",
+                              "fontSize": 14.72,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rYsYc",
+                      "name": "Justificativa",
+                      "clip": true,
+                      "width": "fill_container",
+                      "fill": "$paper",
+                      "cornerRadius": 8,
+                      "stroke": "$line",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "d9OYj",
+                          "name": "Cabecalho",
+                          "width": "fill_container",
+                          "padding": [
+                            16,
+                            18
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "cqCyF",
+                              "name": "Titulo",
+                              "fill": "$ink",
+                              "content": "Justificativa da revisão de agosto",
+                              "fontFamily": "$font-head",
+                              "fontSize": 14.72,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "C68LF",
+                              "name": "Seta",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-up",
+                              "library": "lucide",
+                              "fill": "$ink-soft"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "EZk5L",
+                          "name": "Corpo",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "padding": [
+                            0,
+                            18,
+                            18,
+                            18
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Oz8Ko",
+                              "name": "Texto",
+                              "fill": "$ink-soft",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "A entrada de MXRF11 substitui a posição em PETR4, encerrada após a mudança de política de distribuição. O peso em Tesouro IPCA+ 2035 subiu de 25% para 30% para sustentar a parcela indexada à inflação, e VALE3 caiu de 25% para 20% por concentração setorial. A carteira segue dentro da faixa de risco do perfil moderado.",
+                              "lineHeight": 1.6,
+                              "fontFamily": "Public Sans",
+                              "fontSize": 14.72,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "AesA5",
+                      "type": "ref",
+                      "ref": "mknb1",
+                      "name": "Aviso Legal",
+                      "width": 680
+                    },
+                    {
+                      "type": "frame",
+                      "id": "v1dMEN",
+                      "name": "Acoes",
+                      "width": "fill_container",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "YLhsX",
+                          "type": "ref",
+                          "ref": "s4Behq",
+                          "name": "Botao Baixar relatório do mês",
+                          "padding": [
+                            11,
+                            17
+                          ],
+                          "descendants": {
+                            "pxkCg": {
+                              "enabled": true,
+                              "icon": "download"
+                            },
+                            "XKi5B": {
+                              "content": "Baixar relatório do mês",
+                              "fontSize": 13.76
+                            }
+                          }
+                        },
+                        {
+                          "id": "zWBjn",
+                          "type": "ref",
+                          "ref": "BKFYq",
+                          "name": "Botao Ver movimentações",
+                          "padding": [
+                            11,
+                            17
+                          ],
+                          "descendants": {
+                            "o34gl": {
+                              "content": "Ver movimentações",
+                              "fontSize": 13.76
+                            },
+                            "bywAH": {
+                              "enabled": true,
+                              "icon": "arrow-right"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
