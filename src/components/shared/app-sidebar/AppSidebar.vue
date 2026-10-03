@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BrandLogo } from '@components/shared/brand-logo'
 import { Button } from '@components/ui/button'
 import {
   Sidebar,
@@ -78,12 +79,7 @@ const darkModeEnabled = ref(false)
     <SidebarHeader
       class="gap-2 px-5.5 pt-5.5 pb-4.5 max-md:flex-row max-md:items-center max-md:justify-between max-md:gap-0 max-md:border-b max-md:border-border max-md:px-5 max-md:py-4"
     >
-      <div class="flex items-center gap-2.25">
-        <div class="flex size-6.5 items-center justify-center rounded-sm bg-foreground">
-          <span class="text-eyebrow text-background">AI</span>
-        </div>
-        <span class="text-card-title">AI Invest</span>
-      </div>
+      <BrandLogo class="h-10 group-data-[collapsible=icon]:h-5" />
 
       <Button
         v-if="isMobile"

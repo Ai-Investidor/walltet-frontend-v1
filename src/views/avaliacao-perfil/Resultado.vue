@@ -26,7 +26,7 @@ const rotuloPerfil = computed(() => perfilParaRotulo(props.resultado.perfilResul
     <div class="mx-auto flex max-w-[720px] flex-col gap-6">
       <p class="text-table-row text-muted-foreground-faint flex items-center gap-2">
         <PhCheckCircle class="text-success size-4" aria-hidden="true" />
-        Avaliação concluída em {{ formatDataLonga(resultado.dataAvaliacao) }}
+        Avaliação concluída em {{ formatDataLonga(resultado.dataAvaliacao ?? new Date().toISOString()) }}
       </p>
 
       <div class="flex flex-col gap-2">

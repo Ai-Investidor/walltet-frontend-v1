@@ -1,6 +1,7 @@
 import * as authService from '@services/auth'
 import * as contaService from '@services/conta'
-import type { AuthMeResponseDto } from '@services/types'
+import * as lgpdService from '@services/lgpd'
+import type { AuthMeResponseDto, TermoPendenteResponseDto } from '@services/types'
 import { perfilParaNivel } from '@utils/perfil'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -10,6 +11,11 @@ export const useAuthStore = defineStore('auth', () => {
   const usuario = ref<AuthMeResponseDto | null>(null)
   /** `null` = ainda não verificamos a sessão nesta carga da aplicação (ver router guard). */
   const carregado = ref(false)
+  // LGPD: termos obrigatórios vigentes que o usuário logado ainda não aceitou — alimenta o modal
+  // bloqueante (LgpdConsentModal). O backend (LgpdConsentGuard) também aplica essa regra em toda
+  // rota protegida; isso aqui é a checagem proativa que evita o usuário nem chegar a ver o 403.
+  const termosPendentes = ref<TermoPendenteResponseDto[]>([])
+  const temTermosPendentes = computed(() => termosPendentes.value.length > 0)
 
   const isAuthenticated = computed(() => usuario.value !== null)
   const isAdmin = computed(() => usuario.value?.perfil === 'admin')
@@ -40,6 +46,29 @@ export const useAuthStore = defineStore('auth', () => {
     } finally {
       carregado.value = true
     }
+
+    if (usuario.value) {
+      await carregarTermosPendentes()
+    } else {
+      termosPendentes.value = []
+    }
+  }
+
+  /** Checagem proativa de consentimento — chamada após todo login/registro/boot autenticado. */
+  async function carregarTermosPendentes(): Promise<void> {
+    try {
+      termosPendentes.value = await lgpdService.termosPendentes()
+    } catch {
+      // Falha de rede aqui não deve travar o app inteiro — o LgpdConsentGuard do backend
+      // continua sendo a garantia real; o modal só reaparece na próxima carga bem-sucedida.
+      termosPendentes.value = []
+    }
+  }
+
+  /** Registra o aceite/recusa de um termo e atualiza a lista local de pendências. */
+  async function responderConsentimento(termoId: string, consentiu: boolean): Promise<void> {
+    await lgpdService.registrarConsentimento({ termoId, consentiu })
+    termosPendentes.value = termosPendentes.value.filter((termo) => termo.id !== termoId)
   }
 
   async function login(payload: authService.LoginPayload): Promise<void> {
@@ -72,6 +101,7 @@ export const useAuthStore = defineStore('auth', () => {
   /** Só limpa o estado local — usada pelo interceptor 401, que não deve chamar a API de novo. */
   function clearSession(): void {
     usuario.value = null
+    termosPendentes.value = []
   }
 
   return {
@@ -81,7 +111,11 @@ export const useAuthStore = defineStore('auth', () => {
     isAdmin,
     iniciais,
     nivelPerfilInvestidor,
+    termosPendentes,
+    temTermosPendentes,
     carregarSessao,
+    carregarTermosPendentes,
+    responderConsentimento,
     login,
     registrar,
     atualizarConta,

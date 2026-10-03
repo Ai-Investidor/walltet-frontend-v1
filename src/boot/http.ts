@@ -1,6 +1,6 @@
 import { API_URL } from '@config/env'
-import axios, { type AxiosError } from 'axios'
 import type { ErrorPayload } from '@services/types'
+import axios, { type AxiosError } from 'axios'
 
 // Fluxo de cookie (INTEGRATION_PROMPT.md §1): `withCredentials` é obrigatório pro cookie HttpOnly
 // `access_token` ir/voltar. O backend já libera CORS com `credentials: true` refletindo a origem.
@@ -11,7 +11,17 @@ export const http = axios.create({
 })
 
 http.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (String(response.headers['content-type'] ?? '').includes('text/html')) {
+      return Promise.reject({
+        error: {
+          code: 'API_UNAVAILABLE',
+          message: 'O serviço está indisponível. Tente novamente em instantes.',
+        },
+      })
+    }
+    return response
+  },
   async (error: AxiosError<ErrorPayload>) => {
     const code = error.response?.data?.error?.code
     const isLoginCall = error.config?.url?.includes('/auth/login')

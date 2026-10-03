@@ -1,8 +1,8 @@
 import { http } from '@boot/http'
 import type {
+  HistoricoSuitabilidadeItemDto,
   PaginatedResult,
   PerfilUsuario,
-  ResultadoAvaliacaoDto,
   UsuarioListagemDto,
 } from './types'
 
@@ -35,11 +35,9 @@ export async function atualizar(
   return data
 }
 
-// O shape de retorno não está documentado no contrato (docs/AUDITORIA-INTEGRACAO.md, achado 4.5) —
-// `ResultadoAvaliacaoDto[]` é a melhor aproximação disponível (mesmos campos de
-// `POST /suitability/avaliar`). Confirmar contra o backend real antes de confiar cegamente nisso;
-// ajustar aqui se o shape observado for diferente.
-export async function historicoSuitability(id: string): Promise<ResultadoAvaliacaoDto[]> {
-  const { data } = await http.get<ResultadoAvaliacaoDto[]>(`/usuarios/${id}/historico-suitability`)
+export async function historicoSuitability(id: string): Promise<HistoricoSuitabilidadeItemDto[]> {
+  const { data } = await http.get<HistoricoSuitabilidadeItemDto[]>(
+    `/usuarios/${id}/historico-suitability`,
+  )
   return data
 }

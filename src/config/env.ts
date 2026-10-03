@@ -5,7 +5,11 @@
 // fixo abaixo duplicava o prefixo na URL final.
 const rawBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? '').trim()
 
-const withProtocol = /^https?:\/\//i.test(rawBaseUrl) ? rawBaseUrl : `https://${rawBaseUrl}`
+const withProtocol = !rawBaseUrl
+  ? ''
+  : /^https?:\/\//i.test(rawBaseUrl)
+    ? rawBaseUrl
+    : `https://${rawBaseUrl}`
 
 export const API_BASE_URL = withProtocol.replace(/\/+$/, '')
 

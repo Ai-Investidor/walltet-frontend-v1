@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BrandLogo } from '@components/shared/brand-logo'
 import { Button } from '@components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@components/ui/form'
 import { Input } from '@components/ui/input'
@@ -42,12 +43,7 @@ function reenviar() {
     aria-labelledby="recuperar-senha-titulo"
     class="flex w-full flex-col items-center gap-6.5 px-6 py-10 max-sm:px-4 max-sm:py-8"
   >
-    <div class="flex items-center gap-2.5">
-      <div class="bg-foreground flex size-6.5 items-center justify-center rounded-sm">
-        <span class="text-eyebrow text-background" aria-hidden="true">AI</span>
-      </div>
-      <span class="text-card-title">AI Invest</span>
-    </div>
+    <BrandLogo class="h-14" />
 
     <div class="bg-card border-border flex w-full max-w-105 flex-col gap-5 rounded-lg border px-6 py-6.5">
       <template v-if="!enviado">

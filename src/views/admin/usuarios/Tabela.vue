@@ -32,8 +32,8 @@ import {
 import { PhArrowCounterClockwise, PhMagnifyingGlass, PhProhibit, PhX } from '@phosphor-icons/vue'
 import type {
   ErrorPayload,
+  HistoricoSuitabilidadeItemDto,
   PerfilUsuario,
-  ResultadoAvaliacaoDto,
   UsuarioListagemDto,
 } from '@services/types'
 import * as usuariosService from '@services/usuarios'
@@ -80,7 +80,7 @@ const selectedUser = computed(
   () => props.usuarios.find((user) => user.id === selectedId.value) ?? null,
 )
 
-const historico = ref<ResultadoAvaliacaoDto[] | null>(null)
+const historico = ref<HistoricoSuitabilidadeItemDto[] | null>(null)
 const historicoErro = ref(false)
 
 watch(selectedUser, async (user) => {

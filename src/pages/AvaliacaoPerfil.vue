@@ -42,13 +42,16 @@ async function enviarAvaliacao() {
   erro.value = ''
 
   try {
-    // §4.2 do INTEGRATION_PROMPT.md: a rota não lê a sessão sozinha — precisa do `usuarioId`.
+    // Achado de segurança corrigido: o backend não aceita mais `usuarioId` no corpo (era um IDOR
+    // — qualquer chamador podia vincular a avaliação a outro usuário só informando o id). A rota
+    // já lê a sessão sozinha via cookie HttpOnly (`withCredentials`, ver boot/http.ts); esta tela
+    // só é alcançável autenticada (guard de rota em routers/index.ts), então o vínculo acontece
+    // automaticamente do lado do backend.
     resultado.value = await suitabilityService.avaliar({
       respostas: Object.entries(respostas.value).map(([perguntaId, opcaoId]) => ({
         perguntaId,
         opcaoId,
       })),
-      usuarioId: auth.usuario?.id,
     })
 
     // O perfil e a carteira vinculada do usuário mudaram no backend — recarrega a sessão.

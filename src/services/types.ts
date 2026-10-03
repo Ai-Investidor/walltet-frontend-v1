@@ -180,12 +180,17 @@ export interface RespostaSuitabilityDto {
 
 export interface AvaliarSuitabilityDto {
   respostas: RespostaSuitabilityDto[]
-  usuarioId?: string
+  // Não existe mais `usuarioId` aqui (achado de segurança corrigido no backend — IDOR: o campo
+  // era aceito do corpo da requisição e permitia vincular a avaliação a QUALQUER usuário por
+  // id, sem sessão nenhuma). O backend agora só vincula ao dono do cookie de sessão
+  // (`withCredentials`, ver boot/http.ts) — sem sessão, calcula e devolve o resultado sem
+  // persistir nem vincular a ninguém.
 }
 
 export interface ResultadoAvaliacaoDto {
-  id: string
-  usuarioId: string
+  // `null` quando a chamada foi feita sem sessão autenticada — ver nota acima.
+  id: string | null
+  usuarioId: string | null
   pontuacaoTotal: number
   perfilResultante: PerfilInvestidor
   carteiraRecomendada: {
@@ -194,7 +199,80 @@ export interface ResultadoAvaliacaoDto {
     perfilAlvo: PerfilInvestidor
     descricao: string | null
   } | null
+  dataAvaliacao: string | null
+}
+
+// Shape real de GET /usuarios/:id/historico-suitability (admin) — distinto de
+// ResultadoAvaliacaoDto (resposta de POST /suitability/avaliar, que pode vir nula quando a
+// submissão não tem sessão autenticada). Historicamente os dois foram tratados como o mesmo tipo
+// aqui (comentário em services/usuarios.ts já registrava isso como aproximação, sem contrato
+// documentado) — separados para não herdar a nulabilidade de um no outro.
+export interface HistoricoSuitabilidadeItemDto {
+  id: string
+  pontuacaoTotal: number
+  perfilResultante: PerfilInvestidor
   dataAvaliacao: string
+}
+
+// ---- LGPD (governança de privacidade) --------------------------------------
+
+export type TipoTermo = 'TERMOS_DE_USO' | 'POLITICA_PRIVACIDADE' | 'COMUNICACAO_MARKETING'
+
+export interface TermoPendenteResponseDto {
+  id: string
+  tipo: TipoTermo
+  versaoTermo: string
+  obrigatorio: boolean
+  conteudoResumido: string
+}
+
+export interface ConsentimentoResponseDto {
+  id: string
+  termoId: string
+  tipo: TipoTermo
+  versaoTermo: string
+  obrigatorio: boolean
+  consentiu: boolean
+  dataConsentimento: string
+  dataRevogacao: string | null
+}
+
+export interface MeusDadosResponseDto {
+  dadosCadastrais: {
+    id: string
+    nome: string
+    email: string
+    perfil: PerfilUsuario
+    criadoEm: string
+    atualizadoEm: string
+  }
+  avaliacoesSuitability: Array<{
+    id: string
+    pontuacaoTotal: number
+    perfilResultante: PerfilInvestidor
+    respostas: unknown
+    dataAvaliacao: string
+  }>
+  historicoCarteiras: Array<{
+    carteiraId: string
+    carteiraNome: string
+    dataInicio: string
+    dataFim: string | null
+  }>
+  posicoesPatrimoniais: Array<{
+    mesReferencia: string
+    patrimonioTotal: number
+    aporte: number
+    dividendos: number
+  }>
+  relatoriosGerados: Array<{
+    id: string
+    mesReferencia: string
+    nomeArquivo: string
+    geradoEm: string
+  }>
+  consentimentos: ConsentimentoResponseDto[]
+  exportadoEm: string
 }
 
 // ---- Relatórios PDF -------------------------------------------------------------

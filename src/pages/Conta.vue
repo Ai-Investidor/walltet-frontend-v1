@@ -4,6 +4,7 @@ import { Button } from '@components/ui/button'
 import { PhSignOut } from '@phosphor-icons/vue'
 import Cabecalho from '@views/conta/Cabecalho.vue'
 import Detalhes from '@views/conta/Detalhes.vue'
+import Privacidade from '@views/conta/Privacidade.vue'
 import { RouterLink } from 'vue-router'
 </script>
 
@@ -11,6 +12,7 @@ import { RouterLink } from 'vue-router'
   <div class="flex flex-col gap-8 p-8 max-sm:gap-5 max-sm:px-4 max-sm:py-5">
     <Cabecalho />
     <Detalhes />
+    <Privacidade />
     <LegalNotice class="hidden max-sm:flex" />
 
     <Button as-child variant="outline" size="lg" class="hidden rounded-sm max-sm:flex">

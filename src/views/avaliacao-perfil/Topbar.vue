@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BrandLogo } from '@components/shared/brand-logo'
 import { RouterLink } from 'vue-router'
 </script>
 
@@ -6,7 +7,7 @@ import { RouterLink } from 'vue-router'
   <header
     class="bg-card border-border flex h-14 w-full shrink-0 items-center justify-between gap-3 border-b px-5"
   >
-    <span class="text-card-title text-foreground">AI Invest</span>
+    <BrandLogo class="h-9" />
 
     <RouterLink
       to="/"
