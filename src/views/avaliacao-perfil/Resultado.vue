@@ -40,9 +40,9 @@ const rotuloPerfil = computed(() => perfilParaRotulo(props.resultado.perfilResul
         </h1>
 
         <p class="text-paragraph text-muted-foreground">
-          Pontuação {{ resultado.pontuacaoTotal }} de 100.
+          Pontuação: {{ resultado.pontuacaoTotal }} pontos.
           <template v-if="resultado.carteiraRecomendada">
-            A carteira abaixo é a recomendada para esse perfil na competência atual.
+            Confira a carteira recomendada para o seu perfil.
           </template>
         </p>
       </div>
@@ -54,18 +54,19 @@ const rotuloPerfil = computed(() => perfilParaRotulo(props.resultado.perfilResul
         <ProfileGauge :level="nivel" tone="success" />
 
         <p class="text-tag text-success">
-          {{ resultado.perfilResultante }}
+          {{ rotuloPerfil }}
         </p>
 
-        <p class="text-table-row text-muted-foreground">
-          {{ resultado.carteiraRecomendada.descricao ?? resultado.carteiraRecomendada.nome }}
-        </p>
+        <div class="flex flex-col gap-1">
+          <h2 class="text-card-title">{{ resultado.carteiraRecomendada.nome }}</h2>
+          <p class="text-table-row text-muted-foreground">{{ resultado.carteiraRecomendada.descricao }}</p>
+        </div>
       </div>
 
       <!-- Sem carteira ativa para o perfil calculado ainda — ver docs/AUDITORIA-INTEGRACAO.md §5.3. -->
       <p v-else class="bg-muted border-border-strong rounded-md border p-4 text-paragraph text-muted-foreground">
         Ainda não há uma carteira recomendada ativa para o perfil {{ rotuloPerfil.toLowerCase() }}.
-        Assim que a equipe de análise publicar uma, ela aparece automaticamente no seu painel.
+        Consulte as carteiras disponíveis no painel ou fale com a equipe de atendimento.
       </p>
 
       <LegalNotice />
