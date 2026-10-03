@@ -33,7 +33,12 @@ async function onSubmit(values: Record<string, unknown>) {
 
   try {
     await auth.login({ email: values.email as string, senha: values.senha as string })
-    const destino = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
+    const destino =
+      typeof route.query.redirect === 'string'
+        ? route.query.redirect
+        : auth.isAdmin
+          ? '/admin'
+          : '/'
     router.push(destino)
   } catch (err) {
     const payload = err as ErrorPayload

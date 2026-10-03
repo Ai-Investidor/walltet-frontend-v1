@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { PageHeader } from '@components/shared/page-header'
-</script>
+import { Button } from '@components/ui/button'
+import { PhPlus } from '@phosphor-icons/vue'
 
+const emit = defineEmits<{ novo: [] }>()
+</script>
 <template>
-  <!--
-    "Novo usuário" saiu: não existe POST /usuarios — o único jeito de um usuário nascer é o
-    próprio auto-cadastro em /criar-conta (sempre perfil "cliente"). Ver
-    docs/AUDITORIA-INTEGRACAO.md, achado 4.3.
-  -->
-  <PageHeader
-    eyebrow="Gestão"
-    title="Usuários"
-    description="Clique em um usuário para ver dados, papel e situação do cadastro."
-  />
+  <PageHeader eyebrow="Administração" title="Usuários" description="Cadastre pessoas, ajuste permissões e gerencie o acesso à plataforma.">
+    <template #action><Button @click="emit('novo')"><PhPlus aria-hidden="true" />Novo usuário</Button></template>
+  </PageHeader>
 </template>

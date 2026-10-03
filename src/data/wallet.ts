@@ -315,25 +315,6 @@ export const recommendedWallets: RecommendedWallet[] = [
     meta: '3 ativos · Ações BR 55 %',
     isOwn: false,
   },
-  {
-    slug: 'sofisticado',
-    profileLabel: 'SOFISTICADO',
-    profileLevel: 4,
-    name: 'Carteira Sofisticada Global',
-    description: 'Renda variável global, câmbio e ativos alternativos.',
-    allocationPreview: [
-      { label: 'Renda Fixa', percent: 10, tone: 'data-1' },
-      { label: 'Renda Variável Global', percent: 45, tone: 'data-2' },
-      { label: 'Alternativos', percent: 45, tone: 'data-3' },
-    ],
-    composicao: [
-      { code: 'TI', name: 'Tesouro IPCA+ 2045', className: 'Renda Fixa', weightPercent: 10 },
-      { code: 'IV', name: 'IVVB11', className: 'Renda Variável Global · ETF', weightPercent: 45 },
-      { code: 'GO', name: 'GOLD11', className: 'Alternativos · Ouro', weightPercent: 45 },
-    ],
-    meta: '3 ativos · Global 45 %',
-    isOwn: false,
-  },
 ]
 
 export const performanceIndicators: Kpi[] = [

@@ -148,7 +148,7 @@ router.beforeEach(async (to) => {
     const redirectIfAuthenticated = to.matched.some((record) => record.meta.redirectIfAuthenticated)
 
     if (redirectIfAuthenticated && auth.isAuthenticated) {
-      return { name: 'painel' }
+      return { name: auth.isAdmin ? 'admin-painel' : 'painel' }
     }
 
     return true

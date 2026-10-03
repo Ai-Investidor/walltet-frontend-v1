@@ -1,34 +1,19 @@
 <script setup lang="ts">
 import { PageHeader } from '@components/shared/page-header'
+import { Button } from '@components/ui/button'
 import type { AdminDashboardResponseDto } from '@services/types'
 import { formatCompetenciaLonga } from '@utils/competencia'
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 
-interface Props {
-  dashboard: AdminDashboardResponseDto
-}
-
-const props = defineProps<Props>()
-
-const competenciaLonga = computed(() =>
-  formatCompetenciaLonga(props.dashboard.fechamentoMesAtual.mesReferencia),
-)
-const mesCurto = computed(() => competenciaLonga.value.split(' ')[0].toLowerCase())
-
+const props = defineProps<{ dashboard: AdminDashboardResponseDto }>()
 const descricao = computed(() => {
-  const { versoesPublicadas, relatoriosGerados } = props.dashboard.fechamentoMesAtual
-  return `${versoesPublicadas} versão${versoesPublicadas === 1 ? '' : 'ões'} publicada${versoesPublicadas === 1 ? '' : 's'} e ${relatoriosGerados} relatório${relatoriosGerados === 1 ? '' : 's'} gerado${relatoriosGerados === 1 ? '' : 's'} nesta competência.`
+  const { versoesPublicadas, relatoriosGerados, mesReferencia } = props.dashboard.fechamentoMesAtual
+  return `${formatCompetenciaLonga(mesReferencia)} · ${versoesPublicadas} ${versoesPublicadas === 1 ? 'versão publicada' : 'versões publicadas'} e ${relatoriosGerados} ${relatoriosGerados === 1 ? 'relatório gerado' : 'relatórios gerados'}.`
 })
 </script>
-
 <template>
-  <PageHeader
-    :eyebrow="`Painel administrativo · Fechamento de ${mesCurto}`"
-    :description="descricao"
-  >
-    <template #title>
-      Fechamento de <span class="text-success">{{ mesCurto }}</span>
-      {{ dashboard.fechamentoMesAtual.pendente ? 'em andamento' : 'concluído' }}
-    </template>
+  <PageHeader eyebrow="Administração" title="Visão geral" :description="descricao">
+    <template #action><Button as-child variant="outline"><RouterLink to="/admin/usuarios">Gerenciar usuários</RouterLink></Button></template>
   </PageHeader>
 </template>

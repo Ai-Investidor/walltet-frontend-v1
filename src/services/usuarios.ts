@@ -4,6 +4,7 @@ import type {
   PaginatedResult,
   PerfilUsuario,
   UsuarioListagemDto,
+  UsuarioResponseDto,
 } from './types'
 
 export interface ListarUsuariosParams {
@@ -39,5 +40,17 @@ export async function historicoSuitability(id: string): Promise<HistoricoSuitabi
   const { data } = await http.get<HistoricoSuitabilidadeItemDto[]>(
     `/usuarios/${id}/historico-suitability`,
   )
+  return data
+}
+
+export interface CriarUsuarioPayload {
+  nome: string
+  email: string
+  senha: string
+  perfil: PerfilUsuario
+}
+
+export async function criar(payload: CriarUsuarioPayload): Promise<UsuarioResponseDto> {
+  const { data } = await http.post<UsuarioResponseDto>('/usuarios', payload)
   return data
 }

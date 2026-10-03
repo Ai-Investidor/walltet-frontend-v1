@@ -14,6 +14,20 @@ const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 
+const grupos = computed(() =>
+  auth.isAdmin
+    ? [
+        ...navigationGroups,
+        {
+          label: 'Administração',
+          items: [
+            { label: 'Gerenciar sistema', icon: 'PhUsers' as const, to: '/admin', available: true },
+          ],
+        },
+      ]
+    : navigationGroups,
+)
+
 const pageTitle = computed(() => resolveRouteTitle(route))
 
 const rotuloPerfil = computed(() =>
@@ -28,7 +42,7 @@ async function sair() {
 
 <template>
   <SidebarProvider :default-open="true">
-    <AppSidebar :groups="navigationGroups">
+    <AppSidebar :groups="grupos">
       <!-- Estado "sem avaliação ainda" — ver docs/AUDITORIA-INTEGRACAO.md §3.2. -->
       <template v-if="auth.nivelPerfilInvestidor && rotuloPerfil" #footer>
         <div class="flex flex-col gap-2 rounded-md border border-border bg-card p-3.5">

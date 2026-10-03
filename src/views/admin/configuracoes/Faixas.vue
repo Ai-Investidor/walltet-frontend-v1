@@ -29,6 +29,7 @@ const escalaMaxima = ref(100)
 const saved = ref<Faixa[]>([])
 const ranges = ref<Faixa[]>([])
 const carregando = ref(true)
+const erro = ref('')
 const isEditing = ref(false)
 const salvando = ref(false)
 
@@ -38,11 +39,14 @@ function snapshot(source: Faixa[]) {
 
 async function carregar() {
   carregando.value = true
+  erro.value = ''
   try {
     const config = await configuracoesService.suitabilityVigente()
     escalaMaxima.value = config.escalaMaxima
     saved.value = snapshot(config.faixas)
     ranges.value = snapshot(config.faixas)
+  } catch {
+    erro.value = 'Não foi possível carregar os parâmetros.'
   } finally {
     carregando.value = false
   }
@@ -62,11 +66,11 @@ const isDirty = computed(() =>
 const problem = computed(() => {
   const list = ranges.value
 
-  if (list.some((range) => !Number.isFinite(range.min) || !Number.isFinite(range.max))) {
-    return 'Preencha todos os limites com números.'
+  if (list.some((range) => !Number.isInteger(range.min) || !Number.isInteger(range.max))) {
+    return 'Preencha todos os limites com números inteiros.'
   }
-  if (list.some((range) => range.max < range.min)) {
-    return 'O limite superior de cada faixa precisa ser maior ou igual ao inferior.'
+  if (list.some((range) => range.max <= range.min)) {
+    return 'O limite superior de cada faixa precisa ser maior que o inferior.'
   }
   if (list[0]?.min !== 0) {
     return 'A primeira faixa precisa começar em 0.'
@@ -126,6 +130,7 @@ async function save() {
     Carregando parâmetros…
   </p>
 
+  <div v-else-if="erro" role="alert" class="flex items-center gap-4 text-label text-destructive">{{ erro }}<Button variant="outline" @click="carregar">Tentar novamente</Button></div>
   <Card v-else :class="CARD_SURFACE">
     <div class="flex flex-col gap-4 p-4.5">
       <div

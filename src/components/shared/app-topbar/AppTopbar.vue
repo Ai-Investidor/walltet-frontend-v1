@@ -38,7 +38,7 @@ const temaLabel = computed(() => (theme.escuro ? 'Ativar modo claro' : 'Ativar m
 <template>
   <header
     data-slot="app-topbar"
-    :class="cn('flex h-15 shrink-0 items-center gap-3 border-b border-border px-5 max-md:h-12 max-md:justify-between', props.class)"
+    :class="cn('flex h-15 shrink-0 items-center gap-3 border-b border-border bg-card px-8 max-md:h-12 max-md:justify-between', props.class)"
   >
     <SidebarTrigger class="hidden max-md:flex" />
 

@@ -22,7 +22,7 @@ async function sair() {
 
 <template>
   <SidebarProvider :default-open="true">
-    <AppSidebar :groups="adminNavigationGroups" />
+    <AppSidebar :groups="[...adminNavigationGroups, { label: 'Minha área', items: [{ label: 'Área do investidor', icon: 'PhChartPie', to: '/', available: true }, { label: 'Minha conta', icon: 'PhUser', to: '/conta', available: true }] }]" />
 
     <SidebarInset>
       <AppTopbar :title="pageTitle" :initials="auth.iniciais" @sair="sair" />

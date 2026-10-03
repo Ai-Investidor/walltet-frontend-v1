@@ -16,8 +16,6 @@ import {
 import { Switch } from '@components/ui/switch'
 import type { NavigationGroup, NavigationIcon } from '@data/navigation'
 import {
-  PhCalendarBlank,
-  PhCaretDown,
   PhChartBar,
   PhChartPie,
   PhFileText,
@@ -29,8 +27,9 @@ import {
   PhUsers,
   PhX,
 } from '@phosphor-icons/vue'
+import { useThemeStore } from '@stores/theme'
 import type { Component, HTMLAttributes } from 'vue'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 interface Props {
@@ -71,7 +70,7 @@ const activeTo = computed(() =>
 )
 
 const { isMobile, setOpenMobile } = useSidebar()
-const darkModeEnabled = ref(false)
+const theme = useThemeStore()
 </script>
 
 <template>
@@ -94,18 +93,6 @@ const darkModeEnabled = ref(false)
     </SidebarHeader>
 
     <SidebarContent class="gap-1 px-3 max-md:gap-2 max-md:px-4 max-md:pt-4 max-md:pb-2">
-      <Button
-        v-if="isMobile && $slots.footer"
-        variant="outline"
-        class="h-9 w-41.5 justify-between gap-2.5 px-3.5"
-      >
-        <span class="flex items-center gap-2.5">
-          <PhCalendarBlank class="size-4 text-muted-foreground" aria-hidden="true" />
-          <span class="text-meta">Agosto 2026</span>
-        </span>
-        <PhCaretDown class="size-3.25 text-muted-foreground-faint" aria-hidden="true" />
-      </Button>
-
       <nav aria-label="Navegação principal">
         <SidebarGroup v-for="group in props.groups" :key="group.label" class="gap-1.5 px-0 py-1.5">
           <SidebarGroupLabel class="text-eyebrow text-muted-foreground-faint px-3.5">
@@ -119,7 +106,7 @@ const darkModeEnabled = ref(false)
                 :is-active="item.to === activeTo"
                 class="relative h-auto px-3.5 py-2.5 [&_svg]:size-4.5"
               >
-                <RouterLink :to="item.to" class="flex items-center gap-2.75">
+                <RouterLink :to="item.to" class="flex items-center gap-2.75" @click="isMobile && setOpenMobile(false)">
                   <span
                     class="absolute inset-y-1.5 left-0 w-0.5 rounded-full"
                     :class="item.to === activeTo ? 'bg-sidebar-primary' : 'bg-transparent'"
@@ -150,7 +137,7 @@ const darkModeEnabled = ref(false)
           <PhMoon class="size-4 text-muted-foreground" aria-hidden="true" />
           <span class="text-label-strong">Tema escuro</span>
         </div>
-        <Switch v-model:checked="darkModeEnabled" aria-label="Alternar tema escuro" />
+        <Switch :model-value="theme.escuro" @update:model-value="theme.alternar()" aria-label="Alternar tema escuro" />
       </div>
     </div>
 
