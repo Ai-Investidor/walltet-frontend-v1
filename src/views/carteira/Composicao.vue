@@ -10,6 +10,7 @@ import * as carteirasService from '@services/carteiras'
 import * as relatoriosService from '@services/relatorios'
 import type {
   CarteiraDetalheDto,
+  ErrorPayload,
   MeuRelatorioResponseDto,
   MovimentacoesResponseDto,
 } from '@services/types'
@@ -66,14 +67,25 @@ const allocation = computed(() =>
 const movimentacoes = ref<MovimentacoesResponseDto | null>(null)
 const ultimoRelatorio = ref<MeuRelatorioResponseDto | null>(null)
 const baixando = ref(false)
+const erroDados = ref('')
+const activeTab = ref('composicao')
 
 onMounted(async () => {
-  const [mov, relatorios] = await Promise.all([
-    carteirasService.movimentacoes(props.carteira.id),
-    relatoriosService.meusRelatorios({ pageSize: 1 }),
-  ])
-  movimentacoes.value = mov
-  ultimoRelatorio.value = relatorios.items[0] ?? null
+  try {
+    const [mov, relatorios] = await Promise.all([
+      props.carteira.versaoAtual
+        ? carteirasService.movimentacoes(props.carteira.id).catch((err: ErrorPayload) => {
+            if (err.error?.code === 'NOT_FOUND') return null
+            throw err
+          })
+        : Promise.resolve(null),
+      relatoriosService.meusRelatorios({ pageSize: 1 }),
+    ])
+    movimentacoes.value = mov
+    ultimoRelatorio.value = relatorios.items[0] ?? null
+  } catch {
+    erroDados.value = 'Não foi possível carregar movimentações e relatórios agora.'
+  }
 })
 
 // Não existe um campo único de "justificativa da revisão" no backend — cada entrada/saída pode
@@ -106,7 +118,8 @@ async function baixarUltimoRelatorio() {
 
 <template>
   <section :class="cn(props.class)" aria-label="Carteira recomendada">
-    <Tabs default-value="composicao" class="gap-6">
+    <p v-if="erroDados" role="alert" class="text-label text-destructive">{{ erroDados }}</p>
+    <Tabs v-model="activeTab" class="gap-6">
       <TabsList :class="TAB_LIST" aria-label="Seções da carteira">
         <TabsTrigger value="composicao" :class="TAB_TRIGGER">
           Composição
@@ -273,6 +286,7 @@ async function baixarUltimoRelatorio() {
             variant="outline"
             size="lg"
             class="text-button-sm hover:border-border-strong h-10 justify-center gap-2.5 rounded-sm px-6 max-sm:w-full"
+            @click="activeTab = 'movimentacoes'"
           >
             Ver movimentações
             <PhArrowRight class="size-4" aria-hidden="true" />

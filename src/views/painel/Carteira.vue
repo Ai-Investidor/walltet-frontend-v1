@@ -122,7 +122,9 @@ function highlightAllocation(label: string | null) {
 
     <Card v-else :class="CARD_SURFACE">
       <CardContent class="p-5.5">
-        <p class="text-paragraph text-muted-foreground">
+        <h2 id="carteira-titulo" class="text-card-title mb-2">{{ carteira ? carteira.nome : 'Sua carteira' }}</h2>
+        <p v-if="carteira" class="text-paragraph text-muted-foreground">Sua carteira está vinculada. A composição será exibida quando uma versão for publicada.</p>
+        <p v-else class="text-paragraph text-muted-foreground">
           Você ainda não tem uma carteira recomendada vinculada. Complete a avaliação de perfil
           para receber uma.
         </p>

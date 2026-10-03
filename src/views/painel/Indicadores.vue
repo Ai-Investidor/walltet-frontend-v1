@@ -28,7 +28,11 @@ interface Kpi {
 // docs/AUDITORIA-INTEGRACAO.md §1.1 e docs/PROPOSTA-BACKEND-PATRIMONIO.md.
 const kpis = computed<Kpi[]>(() => {
   const mesAtual = props.performance?.mesAtual
-  const acumuladoAno = props.performance?.acumuladoAno
+  const anoAtual = String(new Date().getFullYear())
+  const temHistoricoNoAno = props.performance?.historicoUltimosMeses.some((item) =>
+    item.mes.startsWith(anoAtual),
+  )
+  const acumuladoAno = temHistoricoNoAno ? props.performance?.acumuladoAno : null
 
   // % do CDI no ano não vem pronto de `MinhaCarteiraPerformanceResponseDto` (só o valor do mês
   // atual vem, em `mesAtual.percentualCdi`) — deriva de rentabilidade/CDI acumulados.
