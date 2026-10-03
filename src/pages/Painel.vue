@@ -6,6 +6,7 @@ import * as relatoriosService from '@services/relatorios'
 import type {
   CarteiraDetalheDto,
   DashboardInvestidorResponseDto,
+  ErrorPayload,
   MeuRelatorioResponseDto,
   MinhaCarteiraPerformanceResponseDto,
   MovimentacoesResponseDto,
@@ -44,11 +45,16 @@ onMounted(async () => {
 
     if (carteiraId) {
       tarefas.push(
-        carteirasService.detalhar(carteiraId).then((data) => {
+        carteirasService.detalhar(carteiraId).then(async (data) => {
           carteira.value = data
-        }),
-        carteirasService.movimentacoes(carteiraId).then((data) => {
-          movimentacoes.value = data
+          if (!data.versaoAtual) return
+          try {
+            movimentacoes.value = await carteirasService.movimentacoes(carteiraId)
+          } catch (err) {
+            // Uma carteira pode ter versão anterior, mas nenhuma na competência atual.
+            // Isso é um estado vazio; falhas de serviço continuam sendo exibidas.
+            if ((err as ErrorPayload).error?.code !== 'NOT_FOUND') throw err
+          }
         }),
       )
     }
