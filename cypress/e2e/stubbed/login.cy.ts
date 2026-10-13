@@ -7,6 +7,8 @@ describe('Login', () => {
   const credenciais = { email: 'maria@teste.com', senha: 'senha-correta' }
 
   beforeEach(() => {
+    // Primeiro o bloqueio: o stub definido por último tem prioridade sobre o anterior.
+    cy.bloquearApi()
     cy.stubLogin(credenciais)
     cy.visit('/login')
   })

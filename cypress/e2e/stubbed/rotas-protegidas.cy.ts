@@ -4,6 +4,10 @@
 // sem passar pela tela de login — nenhum teste aqui depende do backend.
 
 describe('Rotas protegidas', () => {
+  beforeEach(() => {
+    cy.bloquearApi()
+  })
+
   it('visitante abre rota privada → é mandado para o login com o destino em ?redirect', () => {
     cy.stubSemSessao()
 

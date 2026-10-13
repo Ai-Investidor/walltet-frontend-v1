@@ -1,10 +1,11 @@
-// Comandos customizados dos testes E2E.
+// Comandos da suíte com API stubada (cypress/e2e/stubbed).
 //
-// Princípio: os testes NÃO dependem do backend. Toda chamada a `/api/v1/**` é interceptada pelo
-// Cypress; o que não tiver stub explícito responde 501 (ver `bloquearApi`). Assim a suíte roda
-// igual em qualquer máquina, sem `carteira-sistema-backend` no ar e sem banco.
+// Princípio: os testes dessa suíte NÃO dependem do backend. Toda chamada a `/api/v1/**` é
+// interceptada pelo Cypress; o que não tiver stub explícito responde 501 (ver `bloquearApi`,
+// chamado no beforeEach de cada spec stubado). Assim a suíte roda igual em qualquer máquina, sem
+// `carteira-sistema-backend` no ar e sem banco.
 
-type Perfil = 'cliente' | 'admin'
+import type { Perfil } from './tipos'
 
 interface Credenciais {
   email: string
@@ -80,5 +81,3 @@ Cypress.Commands.add('stubLogin', ({ email, senha }) => {
     })
   }).as('login')
 })
-
-export {}

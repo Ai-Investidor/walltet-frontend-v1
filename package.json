@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "dev:e2e": "vite --port 5173 --strictPort",
+    "dev:e2e": "vite --mode e2e --port 5173 --strictPort",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "lint": "biome lint .",
@@ -13,7 +13,11 @@
     "check": "biome check .",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
+    "cy:run:stubbed": "cypress run --spec \"cypress/e2e/stubbed/**/*.cy.ts\"",
+    "cy:run:real": "cypress run --spec \"cypress/e2e/real/**/*.cy.ts\"",
     "e2e": "start-server-and-test dev:e2e http://localhost:5173 cy:run",
+    "e2e:stubbed": "start-server-and-test dev:e2e http://localhost:5173 cy:run:stubbed",
+    "e2e:real": "start-server-and-test dev:e2e http://localhost:5173 cy:run:real",
     "e2e:open": "start-server-and-test dev:e2e http://localhost:5173 cy:open"
   },
   "dependencies": {
