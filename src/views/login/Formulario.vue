@@ -81,6 +81,7 @@ async function onSubmit(values: Record<string, unknown>) {
             <Input
               type="email"
               autocomplete="email"
+              data-cy="login-email"
               placeholder="nome@email.com"
               class="placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
               v-bind="componentField"
@@ -99,6 +100,7 @@ async function onSubmit(values: Record<string, unknown>) {
             <Input
               type="password"
               autocomplete="current-password"
+              data-cy="login-senha"
               placeholder="Sua senha"
               class="placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3"
               v-bind="componentField"
@@ -108,11 +110,16 @@ async function onSubmit(values: Record<string, unknown>) {
         </FormItem>
       </FormField>
 
-      <p v-if="erroGeral" role="alert" class="text-label text-destructive">
+      <p v-if="erroGeral" role="alert" data-cy="login-erro" class="text-label text-destructive">
         {{ erroGeral }}
       </p>
 
-      <Button type="submit" :disabled="enviando" class="text-table-value h-11 w-full rounded-sm">
+      <Button
+        type="submit"
+        data-cy="login-submit"
+        :disabled="enviando"
+        class="text-table-value h-11 w-full rounded-sm"
+      >
         {{ enviando ? 'Entrando…' : 'Entrar' }}
       </Button>
 

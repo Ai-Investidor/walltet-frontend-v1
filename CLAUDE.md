@@ -12,6 +12,12 @@ Conteúdo de página vem do backend `carteira-sistema-backend` (NestJS + Prisma 
 
 **Sempre ler e seguir `.claude/RULES.md` antes de escrever, revisar ou explicar código.** Esse arquivo é a **única fonte da verdade** para as regras de código do projeto — tokens, tipografia, aliases, anatomia de componente, estado e dados, ícones, imagens, responsividade, semântica e tooling. Nenhuma convenção deste projeto deve ser inventada ou assumida fora dele; se `RULES.md` não cobrir um caso, perguntar antes de decidir por conta própria.
 
+### Exceção: testes Cypress
+
+Tudo que envolve Cypress — arquivos em `cypress/`, `cypress.config.ts`, specs `*.cy.ts`, ou qualquer uso dos skills `cypress-*` — segue as convenções e a documentação oficial do Cypress (docs.cypress.io), **não** o `.claude/RULES.md`. Isso vale para estrutura de pastas, seletores, comandos customizados, fixtures, config e estilo dos testes. Em caso de conflito, o Cypress vence.
+
+O `RULES.md` continua valendo para o código de app, inclusive quando ele é alterado por causa de um teste (por exemplo, adicionar `data-cy` num componente). A formatação segue o Biome do projeto em todos os arquivos.
+
 ## Boas práticas
 
 Ao escrever código, seguir Clean Code e os princípios SOLID: nomes claros, funções pequenas com responsabilidade única, baixo acoplamento, sem duplicação, sem abstração prematura. Isso vale além do que `RULES.md` especifica — `RULES.md` define as convenções deste projeto; Clean Code e SOLID guiam a qualidade do código em si.

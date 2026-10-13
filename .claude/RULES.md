@@ -4,6 +4,8 @@ Template para iniciar **SaaS em SPA**. Clonar, renomear e começar pela primeira
 
 Este arquivo é a fonte única de regras de código. Skills e agents referenciam, não duplicam.
 
+**Exceção:** testes Cypress (`cypress/`, `cypress.config.ts`, `*.cy.ts`) seguem as convenções do Cypress, não este arquivo. Ver `CLAUDE.md`.
+
 ## Arquitetura
 
 | Camada | Tecnologia |
