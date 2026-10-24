@@ -55,3 +55,73 @@ describe('Rotas protegidas', () => {
     cy.location('pathname').should('eq', '/admin')
   })
 })
+
+// AUT 01 · AUT 03 · AUT 04 (P0) — Plano_de_Testes_QA_MatchWallet.md §3.
+// A garantia de autorização no SERVIDOR é coberta em cypress/e2e/real/autorizacao.cy.ts.
+describe('Plano QA · Autenticação e controle de acesso (P0)', () => {
+  const MENU_USUARIO = '[aria-label="Menu do usuário"]:visible'
+
+  beforeEach(() => {
+    cy.bloquearApi()
+  })
+
+  it('AUT 01 · cliente e admin autenticados → cada sessão mostra o próprio usuário', () => {
+    cy.stubSessao('cliente')
+    cy.visit('/conta')
+    cy.wait('@me').its('response.body.perfil').should('eq', 'cliente')
+    cy.contains('Maria Teste').should('be.visible')
+    cy.contains('maria@teste.com').should('be.visible')
+
+    // Sessão separada: o Cypress limpa a página entre os `visit`, o stub novo vira o admin.
+    cy.stubSessao('admin')
+    cy.visit('/admin')
+    cy.wait('@me').its('response.body.perfil').should('eq', 'admin')
+    cy.location('pathname').should('eq', '/admin')
+  })
+
+  it('AUT 03 · cliente abre cada rota administrativa → cai em /403 sem pedir dado admin à API', () => {
+    cy.stubSessao('cliente')
+
+    for (const rota of ['/admin', '/admin/usuarios', '/admin/carteiras', '/admin/configuracoes']) {
+      cy.visit(rota)
+      cy.location('pathname').should('eq', '/403')
+    }
+
+    // Nenhuma leitura administrativa saiu do navegador: tudo que não é /auth/me ficaria em 501.
+    cy.get('@apiSemStub.all').should('have.length', 0)
+  })
+
+  it('AUT 04 · usuário clica em Sair → chama POST /auth/logout, vai ao login e o histórico não reabre a área privada', () => {
+    cy.stubSessao('cliente')
+    cy.stubApi('POST', '/auth/logout', { statusCode: 204 }, 'logout')
+
+    cy.visit('/conta')
+    cy.get(MENU_USUARIO).click()
+    cy.contains('[role="menuitem"]', 'Sair').click()
+
+    cy.wait('@logout')
+    cy.location('pathname').should('eq', '/login')
+
+    // Voltar no histórico recai no guard: a sessão local foi limpa, então a rota privada é barrada.
+    cy.go('back')
+    cy.location('pathname').should('eq', '/login')
+    cy.contains('Maria Teste').should('not.exist')
+  })
+
+  it('AUT 04 · API devolve 401 UNAUTHORIZED no meio da sessão → sessão local é limpa e vai ao login', () => {
+    cy.stubSessao('cliente')
+    cy.stubErroApi(
+      'GET',
+      '/carteiras*',
+      { status: 401, code: 'UNAUTHORIZED', message: 'Sessão inválida ou expirada.' },
+      'carteirasExpirada',
+    )
+
+    cy.visit('/carteiras')
+
+    cy.wait('@carteirasExpirada')
+    cy.location('pathname').should('eq', '/login')
+  })
+})
+
+export {}

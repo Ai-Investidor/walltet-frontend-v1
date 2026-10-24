@@ -64,17 +64,17 @@ async function gerar() {
         <label for="relatorio-competencia" class="text-eyebrow text-muted-foreground-faint">
           Competência (AAAA-MM)
         </label>
-        <Input id="relatorio-competencia" v-model="mesReferencia" type="text" :class="FIELD" />
+        <Input id="relatorio-competencia" v-model="mesReferencia" type="text" :class="FIELD" data-cy="relatorio-competencia" />
       </div>
 
       <div class="flex flex-col gap-1.75">
         <label for="relatorio-comentario" class="text-eyebrow text-muted-foreground-faint">
           Comentário de mercado (opcional)
         </label>
-        <Textarea id="relatorio-comentario" v-model="comentario" class="text-paragraph h-21 rounded-sm px-3 py-2.75" />
+        <Textarea id="relatorio-comentario" v-model="comentario" data-cy="relatorio-comentario" class="text-paragraph h-21 rounded-sm px-3 py-2.75" />
       </div>
 
-      <Button type="button" size="lg" :disabled="gerando" class="text-button-sm w-fit gap-2 rounded-sm px-4 max-sm:w-full max-sm:justify-center" @click="gerar">
+      <Button type="button" size="lg" :disabled="gerando" class="text-button-sm w-fit gap-2 rounded-sm px-4 max-sm:w-full max-sm:justify-center" data-cy="relatorio-gerar" @click="gerar">
         <PhFileArrowDown aria-hidden="true" />
         {{ gerando ? 'Gerando…' : 'Gerar relatório' }}
       </Button>

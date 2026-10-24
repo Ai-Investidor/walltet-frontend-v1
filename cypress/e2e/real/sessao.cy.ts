@@ -14,4 +14,17 @@ describe('Sessão real (fumaça)', () => {
     cy.location('pathname').should('eq', '/')
     cy.getCookie('access_token').should('exist')
   })
+
+  it('AUT 04 · cliente sai da sessão → /auth/me passa a responder 401 e a rota privada leva ao login', () => {
+    cy.apiRequest({ method: 'POST', url: '/auth/logout' })
+      .its('status')
+      .should('be.within', 200, 299)
+
+    cy.apiRequest({ method: 'GET', url: '/auth/me', failOnStatusCode: false })
+      .its('status')
+      .should('eq', 401)
+
+    cy.visit('/conta')
+    cy.location('pathname').should('eq', '/login')
+  })
 })

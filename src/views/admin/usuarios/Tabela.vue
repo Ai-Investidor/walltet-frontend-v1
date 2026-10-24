@@ -162,6 +162,7 @@ function pedirInativacao() {
         class="h-10.5 rounded-sm pr-3 pl-9.5"
         placeholder="Buscar por nome ou e-mail"
         aria-label="Buscar usuário por nome ou e-mail"
+        data-cy="usuarios-busca"
       />
     </div>
 
@@ -186,7 +187,7 @@ function pedirInativacao() {
 
           <TableRow v-for="user in usuarios" :key="user.id">
             <TableCell :class="BODY_CELL">
-              <button type="button" class="block text-left" @click="selectedId = user.id">
+              <button type="button" class="block text-left" data-cy="usuario-linha" @click="selectedId = user.id">
                 <span class="text-paragraph-strong block hover:text-success">{{ user.nome }}</span>
                 <span class="text-label block text-muted-foreground-faint">{{ user.email }}</span>
               </button>
@@ -282,6 +283,7 @@ function pedirInativacao() {
                 size="lg"
                 :disabled="salvandoPerfil || perfilEmEdicao === selectedUser.perfil"
                 class="text-button-sm shrink-0 rounded-sm px-4"
+                data-cy="usuario-papel-salvar"
                 @click="salvarPerfil"
               >
                 Salvar
@@ -336,6 +338,7 @@ function pedirInativacao() {
               variant="outline"
               size="lg"
               class="text-button-xs gap-2 rounded-sm border-warning px-3.5 text-warning hover:bg-warning/10 hover:text-warning"
+              data-cy="usuario-inativar"
               @click="pedirInativacao"
             >
               <PhProhibit aria-hidden="true" />
@@ -348,6 +351,7 @@ function pedirInativacao() {
               variant="outline"
               size="lg"
               class="text-button-xs gap-2 rounded-sm border-success px-3.5 text-success hover:bg-success/10 hover:text-success"
+              data-cy="usuario-reativar"
               @click="alternarStatus"
             >
               <PhArrowCounterClockwise aria-hidden="true" />

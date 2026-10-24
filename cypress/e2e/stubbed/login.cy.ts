@@ -52,3 +52,5 @@ describe('Login', () => {
     cy.location('pathname').should('eq', '/')
   })
 })
+
+export {}

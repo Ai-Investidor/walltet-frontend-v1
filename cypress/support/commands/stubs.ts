@@ -5,6 +5,7 @@
 // chamado no beforeEach de cada spec stubado). Assim a suíte roda igual em qualquer máquina, sem
 // `carteira-sistema-backend` no ar e sem banco.
 
+import type { Method } from 'cypress/types/net-stubbing'
 import type { Perfil } from './tipos'
 
 interface Credenciais {
@@ -39,6 +40,24 @@ declare global {
        * certas; depois disso passa a devolver o cliente logado. Credencial errada → 401.
        */
       stubLogin(credenciais: Credenciais): Chainable<void>
+      /**
+       * Stub genérico de uma rota da API. `rota` é relativa a `/api/v1` e pode terminar em `*`
+       * (casa a query string, ex.: `/usuarios*`). `resposta` é o body ou um `StaticResponse`
+       * (ex.: `{ statusCode: 409, body: { error: {...} } }`). Declare DEPOIS de `bloquearApi()`.
+       */
+      stubApi(
+        metodo: Method,
+        rota: string,
+        resposta: object | unknown[],
+        alias: string,
+      ): Chainable<null>
+      /** Atalho de `stubApi` para erro no contrato `{ error: { code, message } }`. */
+      stubErroApi(
+        metodo: Method,
+        rota: string,
+        erro: { status: number; code: string; message: string },
+        alias: string,
+      ): Chainable<null>
     }
   }
 }
@@ -81,3 +100,18 @@ Cypress.Commands.add('stubLogin', ({ email, senha }) => {
     })
   }).as('login')
 })
+
+Cypress.Commands.add('stubApi', (metodo, rota, resposta, alias) => {
+  // Array ou objeto sem `body`/`statusCode`/`fixture` é tratado como body direto.
+  const estatica = isRespostaEstatica(resposta) ? resposta : { statusCode: 200, body: resposta }
+
+  return cy.intercept(metodo, `${API}${rota}`, estatica).as(alias)
+})
+
+Cypress.Commands.add('stubErroApi', (metodo, rota, { status, code, message }, alias) => {
+  return cy.stubApi(metodo, rota, { statusCode: status, body: { error: { code, message } } }, alias)
+})
+
+function isRespostaEstatica(resposta: object): boolean {
+  return !Array.isArray(resposta) && ('statusCode' in resposta || 'fixture' in resposta)
+}

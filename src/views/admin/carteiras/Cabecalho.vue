@@ -75,7 +75,7 @@ async function onSubmit(values: Record<string, unknown>) {
     description="Carteiras ativas por perfil. Abrir uma carteira dá acesso a composição, versões, rentabilidade e relatórios."
   >
     <template #action>
-      <Button type="button" size="lg" class="text-button-sm gap-2.5 rounded-sm px-4 max-sm:w-full max-sm:justify-center" @click="drawerOpen = true">
+      <Button type="button" size="lg" class="text-button-sm gap-2.5 rounded-sm px-4 max-sm:w-full max-sm:justify-center" data-cy="carteira-nova" @click="drawerOpen = true">
         <PhPlus class="size-4" aria-hidden="true" />
         Nova carteira
         <PhArrowRight class="size-3.5" aria-hidden="true" />
@@ -113,7 +113,7 @@ async function onSubmit(values: Record<string, unknown>) {
                 Nome da carteira
               </FormLabel>
               <FormControl>
-                <Input type="text" :class="FIELD" v-bind="componentField" />
+                <Input type="text" :class="FIELD" data-cy="carteira-nome" v-bind="componentField" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -126,7 +126,7 @@ async function onSubmit(values: Record<string, unknown>) {
               </FormLabel>
               <Select v-bind="componentField">
                 <FormControl>
-                  <SelectTrigger :class="FIELD">
+                  <SelectTrigger :class="FIELD" data-cy="carteira-perfil">
                     <SelectValue placeholder="Selecione o perfil" />
                   </SelectTrigger>
                 </FormControl>
@@ -149,7 +149,7 @@ async function onSubmit(values: Record<string, unknown>) {
                 Descrição
               </FormLabel>
               <FormControl>
-                <Textarea class="text-paragraph h-21 rounded-sm px-3 py-2.75" v-bind="componentField" />
+                <Textarea class="text-paragraph h-21 rounded-sm px-3 py-2.75" data-cy="carteira-descricao" v-bind="componentField" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -157,7 +157,7 @@ async function onSubmit(values: Record<string, unknown>) {
         </div>
 
         <div class="flex gap-3 border-t border-border-strong px-5 py-4.5">
-          <Button type="submit" size="lg" :disabled="salvando" class="text-button-sm rounded-sm px-4">
+          <Button type="submit" size="lg" :disabled="salvando" class="text-button-sm rounded-sm px-4" data-cy="carteira-salvar">
             {{ salvando ? 'Salvando…' : 'Salvar carteira' }}
           </Button>
 

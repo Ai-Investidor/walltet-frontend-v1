@@ -177,22 +177,23 @@ async function save() {
         class="text-label flex items-center gap-2.5 rounded-md border px-3.75 py-3.25"
         :class="isValid ? 'border-border-strong bg-muted text-muted-foreground' : 'border-warning bg-warning/10 text-foreground'"
         role="status"
+        data-cy="faixas-status"
       >
         <component :is="isValid ? PhCheckCircle : PhWarning" class="size-4 shrink-0" :class="isValid ? 'text-success' : 'text-warning'" aria-hidden="true" />
         {{ isValid ? `As faixas cobrem 0 a ${escalaMaxima} sem lacuna nem sobreposição.` : problem }}
       </p>
 
       <div class="flex gap-3 max-sm:flex-col">
-        <Button v-if="!isEditing" type="button" variant="outline" size="lg" class="text-button-sm gap-2.5 rounded-sm border-foreground px-4 max-sm:w-full max-sm:justify-center" @click="startEdit">
+        <Button v-if="!isEditing" type="button" variant="outline" size="lg" class="text-button-sm gap-2.5 rounded-sm border-foreground px-4 max-sm:w-full max-sm:justify-center" data-cy="faixas-editar" @click="startEdit">
           <PhPencilSimple class="size-4" aria-hidden="true" />
           Editar faixas
         </Button>
 
         <template v-else>
-          <Button type="button" size="lg" class="text-button-sm rounded-sm px-4 max-sm:w-full max-sm:justify-center" :disabled="!isValid || !isDirty || salvando" @click="save">
+          <Button type="button" size="lg" class="text-button-sm rounded-sm px-4 max-sm:w-full max-sm:justify-center" :disabled="!isValid || !isDirty || salvando" data-cy="faixas-salvar" @click="save">
             {{ salvando ? 'Salvando…' : 'Salvar parâmetros' }}
           </Button>
-          <Button type="button" variant="outline" size="lg" class="text-button-sm rounded-sm border-foreground px-4 max-sm:w-full max-sm:justify-center" @click="discard">
+          <Button type="button" variant="outline" size="lg" class="text-button-sm rounded-sm border-foreground px-4 max-sm:w-full max-sm:justify-center" data-cy="faixas-cancelar" @click="discard">
             Cancelar
           </Button>
         </template>

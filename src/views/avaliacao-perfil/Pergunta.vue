@@ -62,7 +62,7 @@ function handleKeydown(event: KeyboardEvent) {
             </p>
           </div>
 
-          <Progress :model-value="progressValue" />
+          <Progress :model-value="progressValue" data-cy="avaliacao-progresso" />
         </div>
 
         <h1 :id="PROMPT_ID" class="max-w-[420px] text-page-title text-foreground max-sm:text-page-title-sm">
@@ -72,11 +72,13 @@ function handleKeydown(event: KeyboardEvent) {
         <fieldset
           :aria-labelledby="PROMPT_ID"
           class="flex flex-col gap-2.5 max-sm:gap-2"
+          data-cy="avaliacao-opcoes"
           @keydown="handleKeydown"
         >
           <label
             v-for="(opcao, index) in pergunta.opcoes"
             :key="opcao.id"
+            data-cy="avaliacao-opcao"
             class="bg-card border-border has-focus-visible:border-ring has-focus-visible:ring-ring/50 flex cursor-pointer items-center gap-3.5 rounded-sm border px-4.5 py-4 has-focus-visible:ring-1 max-sm:gap-3 max-sm:px-4 max-sm:py-3.5"
           >
             <input
@@ -99,7 +101,7 @@ function handleKeydown(event: KeyboardEvent) {
       </div>
 
       <div class="border-border flex items-center gap-4 border-t pt-3 max-sm:justify-between">
-        <Button variant="outline" size="sm" :disabled="currentStep === 1" @click="emit('voltar')">
+        <Button variant="outline" size="sm" :disabled="currentStep === 1" data-cy="avaliacao-voltar" @click="emit('voltar')">
           Voltar
         </Button>
 

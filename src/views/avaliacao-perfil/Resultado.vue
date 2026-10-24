@@ -22,7 +22,7 @@ const rotuloPerfil = computed(() => perfilParaRotulo(props.resultado.perfilResul
 </script>
 
 <template>
-  <section class="px-6 py-10 max-sm:flex max-sm:flex-1 max-sm:flex-col max-sm:justify-center max-sm:px-5 max-sm:py-8">
+  <section data-cy="avaliacao-resultado" class="px-6 py-10 max-sm:flex max-sm:flex-1 max-sm:flex-col max-sm:justify-center max-sm:px-5 max-sm:py-8">
     <div class="mx-auto flex max-w-[720px] flex-col gap-6">
       <p class="text-table-row text-muted-foreground-faint flex items-center gap-2">
         <PhCheckCircle class="text-success size-4" aria-hidden="true" />
@@ -36,10 +36,10 @@ const rotuloPerfil = computed(() => perfilParaRotulo(props.resultado.perfilResul
 
         <h1 class="text-page-title">
           <span class="text-foreground">Seu perfil é </span>
-          <span class="text-success max-sm:block">{{ rotuloPerfil.toLowerCase() }}</span>
+          <span class="text-success max-sm:block" data-cy="avaliacao-perfil-resultado">{{ rotuloPerfil.toLowerCase() }}</span>
         </h1>
 
-        <p class="text-paragraph text-muted-foreground">
+        <p class="text-paragraph text-muted-foreground" data-cy="avaliacao-pontuacao">
           Pontuação {{ resultado.pontuacaoTotal }} de 100.
           <template v-if="resultado.carteiraRecomendada">
             A carteira abaixo é a recomendada para esse perfil na competência atual.
@@ -63,7 +63,7 @@ const rotuloPerfil = computed(() => perfilParaRotulo(props.resultado.perfilResul
       </div>
 
       <!-- Sem carteira ativa para o perfil calculado ainda — ver docs/AUDITORIA-INTEGRACAO.md §5.3. -->
-      <p v-else class="bg-muted border-border-strong rounded-md border p-4 text-paragraph text-muted-foreground">
+      <p v-else data-cy="avaliacao-sem-carteira" class="bg-muted border-border-strong rounded-md border p-4 text-paragraph text-muted-foreground">
         Ainda não há uma carteira recomendada ativa para o perfil {{ rotuloPerfil.toLowerCase() }}.
         Assim que a equipe de análise publicar uma, ela aparece automaticamente no seu painel.
       </p>
@@ -82,6 +82,7 @@ const rotuloPerfil = computed(() => perfilParaRotulo(props.resultado.perfilResul
           variant="outline"
           size="lg"
           class="rounded-sm max-sm:w-full"
+          data-cy="avaliacao-refazer"
           @click="$emit('restart')"
         >
           Refazer avaliação

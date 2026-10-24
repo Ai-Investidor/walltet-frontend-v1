@@ -133,7 +133,7 @@ async function onSubmit(values: Record<string, unknown>) {
         Histórico mensal
       </h2>
 
-      <Button type="button" size="lg" class="text-button-sm gap-2.5 rounded-sm px-4 max-sm:w-full max-sm:justify-center" @click="drawerOpen = true">
+      <Button type="button" size="lg" class="text-button-sm gap-2.5 rounded-sm px-4 max-sm:w-full max-sm:justify-center" data-cy="rentab-lancar" @click="drawerOpen = true">
         <PhPlus class="size-4" aria-hidden="true" />
         Lançar rentabilidade
       </Button>
@@ -158,7 +158,7 @@ async function onSubmit(values: Record<string, unknown>) {
             Nenhum lançamento ainda.
           </TableEmpty>
 
-          <TableRow v-for="row in historico?.serie ?? []" :key="row.mesReferencia">
+          <TableRow v-for="row in historico?.serie ?? []" :key="row.mesReferencia" data-cy="rentab-linha">
             <TableCell :class="[BODY_CELL, 'text-table-row']">
               {{ formatCompetenciaLonga(row.mesReferencia) }}
             </TableCell>
@@ -256,7 +256,7 @@ async function onSubmit(values: Record<string, unknown>) {
                     Competência (AAAA-MM)
                   </FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="2026-09" :class="FIELD" v-bind="componentField" />
+                    <Input type="text" placeholder="2026-09" :class="FIELD" data-cy="rentab-competencia" v-bind="componentField" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -268,7 +268,7 @@ async function onSubmit(values: Record<string, unknown>) {
                     Carteira no mês (%)
                   </FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.01" inputmode="decimal" :class="FIELD" v-bind="componentField" />
+                    <Input type="number" step="0.01" inputmode="decimal" :class="FIELD" data-cy="rentab-carteira" v-bind="componentField" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -281,7 +281,7 @@ async function onSubmit(values: Record<string, unknown>) {
                   Acumulado no ano (%)
                 </FormLabel>
                 <FormControl>
-                  <Input type="number" step="0.01" inputmode="decimal" :class="FIELD" v-bind="componentField" />
+                  <Input type="number" step="0.01" inputmode="decimal" :class="FIELD" data-cy="rentab-acumulado" v-bind="componentField" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -294,7 +294,7 @@ async function onSubmit(values: Record<string, unknown>) {
                     CDI (%)
                   </FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.01" inputmode="decimal" :class="FIELD" v-bind="componentField" />
+                    <Input type="number" step="0.01" inputmode="decimal" :class="FIELD" data-cy="rentab-cdi" v-bind="componentField" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -306,7 +306,7 @@ async function onSubmit(values: Record<string, unknown>) {
                     Ibovespa (%)
                   </FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.01" inputmode="decimal" :class="FIELD" v-bind="componentField" />
+                    <Input type="number" step="0.01" inputmode="decimal" :class="FIELD" data-cy="rentab-ibov" v-bind="componentField" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -315,14 +315,14 @@ async function onSubmit(values: Record<string, unknown>) {
 
             <div class="flex items-center justify-between gap-3 rounded-md border border-border-strong bg-muted px-4 py-3.5">
               <span class="text-eyebrow text-muted-foreground-faint">Prévia · % do CDI no mês</span>
-              <output class="text-subtitle-strong text-success tabular-nums">
+              <output data-cy="rentab-previa" class="text-subtitle-strong text-success tabular-nums">
                 {{ previewRatio(values) }}
               </output>
             </div>
           </div>
 
           <div class="flex gap-3 border-t border-border-strong px-5 py-4.5">
-            <Button type="submit" size="lg" :disabled="salvando" class="text-button-sm rounded-sm px-4">
+            <Button type="submit" size="lg" :disabled="salvando" class="text-button-sm rounded-sm px-4" data-cy="rentab-submit">
               {{ salvando ? 'Lançando…' : 'Lançar rentabilidade' }}
             </Button>
 
