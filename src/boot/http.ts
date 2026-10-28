@@ -25,6 +25,7 @@ http.interceptors.response.use(
   async (error: AxiosError<ErrorPayload>) => {
     const code = error.response?.data?.error?.code
     const isLoginCall = error.config?.url?.includes('/auth/login')
+    const isSessionCheck = error.config?.url === '/auth/me'
 
     // 401 → sessão expirada/revogada: limpa a sessão local e manda pro login (§2.3). Evita loop
     // quando a própria chamada com erro já era a de login. Imports dinâmicos pra não criar
@@ -32,7 +33,7 @@ http.interceptors.response.use(
     // que importam este arquivo — importar `router`/`useAuthStore` no topo daria um ciclo
     // (boot/http.ts → routers/index.ts → stores/auth.ts → services/auth.ts →
     // boot/http.ts) que quebrava o guard de rota no dev server.
-    if (code === 'UNAUTHORIZED' && !isLoginCall) {
+    if (code === 'UNAUTHORIZED' && !isLoginCall && !isSessionCheck) {
       const [{ useAuthStore }, { router }] = await Promise.all([
         import('@stores/auth'),
         import('@routers/index'),

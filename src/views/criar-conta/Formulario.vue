@@ -11,37 +11,67 @@ import {
   FormMessage,
 } from '@components/ui/form'
 import { Input } from '@components/ui/input'
+import type { ConfiguracaoCadastro } from '@services/assinaturas'
+import * as assinaturasService from '@services/assinaturas'
 import type { ErrorPayload } from '@services/types'
 import { useAuthStore } from '@stores/auth'
 import { toTypedSchema } from '@vee-validate/zod'
-import { ref } from 'vue'
+import CadastroPago from '@views/criar-conta/CadastroPago.vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import * as z from 'zod'
 
 const router = useRouter()
 const auth = useAuthStore()
+const configuracao = ref<ConfiguracaoCadastro | null>(null)
+const erroConfiguracao = ref(false)
+const desafio = ref<{ email: string; desafioId: string } | null>(null)
+async function carregarConfiguracao() {
+  erroConfiguracao.value = false
+  try {
+    configuracao.value = await assinaturasService.configuracaoCadastro()
+  } catch {
+    erroConfiguracao.value = true
+  }
+}
+onMounted(carregarConfiguracao)
 
 const CAMPO_CLASSES = 'placeholder:text-muted-foreground-faint border-border h-10.5 rounded-sm px-3'
 
 // Regra do backend (INTEGRATION_PROMPT.md §4.1): mín. 8 caracteres, 1 número, 1 caractere
 // especial. O front valida o mesmo antes de enviar, pra não depender só do erro da API.
-const schema = toTypedSchema(
-  z.object({
-    nome: z.string({ message: 'Informe seu nome completo' }).min(1, 'Informe seu nome completo'),
-    email: z
-      .string({ message: 'Informe seu e-mail' })
-      .min(1, 'Informe seu e-mail')
-      .email('Informe um e-mail válido'),
-    senha: z
-      .string({ message: 'Informe uma senha' })
-      .min(8, 'A senha precisa ter no mínimo 8 caracteres')
-      .regex(/\d/, 'A senha precisa de ao menos 1 número')
-      .regex(/[^A-Za-z0-9]/, 'A senha precisa de ao menos 1 caractere especial'),
-  }),
+const schema = computed(() =>
+  toTypedSchema(
+    z.object({
+      codigoConfirmacao: configuracao.value?.exigirPagamento
+        ? z
+            .string({ message: 'Informe o código recebido' })
+            .regex(/^\d{8}$/, 'O código precisa ter 8 dígitos')
+        : z.string().optional(),
+      nome: z.string({ message: 'Informe seu nome completo' }).min(2, 'Informe seu nome completo'),
+      email: z
+        .string({ message: 'Informe seu e-mail' })
+        .min(1, 'Informe seu e-mail')
+        .email('Informe um e-mail válido'),
+      senha: z
+        .string({ message: 'Informe uma senha' })
+        .min(8, 'A senha precisa ter no mínimo 8 caracteres')
+        .regex(/\d/, 'A senha precisa de ao menos 1 número')
+        .regex(/[^A-Za-z0-9]/, 'A senha precisa de ao menos 1 caractere especial'),
+    }),
+  ),
 )
 
 const erroGeral = ref('')
 const enviando = ref(false)
+function receberDesafio(dados: { email: string; desafioId: string }) {
+  desafio.value = dados
+  erroGeral.value = ''
+}
+function reiniciarConfirmacao() {
+  desafio.value = null
+  erroGeral.value = ''
+}
 
 async function onSubmit(values: Record<string, unknown>) {
   erroGeral.value = ''
@@ -52,6 +82,12 @@ async function onSubmit(values: Record<string, unknown>) {
       nome: values.nome as string,
       email: values.email as string,
       senha: values.senha as string,
+      ...(configuracao.value?.exigirPagamento && desafio.value
+        ? {
+            desafioId: desafio.value.desafioId,
+            codigoConfirmacao: values.codigoConfirmacao as string,
+          }
+        : {}),
     })
     router.push({ name: 'avaliacao-perfil' })
   } catch (err) {
@@ -70,7 +106,20 @@ async function onSubmit(values: Record<string, unknown>) {
   >
     <BrandLogo class="h-14" />
 
-    <Form
+    <div v-if="erroConfiguracao" role="alert" class="flex max-w-105 flex-col gap-4 text-label text-destructive">
+      Não foi possível verificar o cadastro agora. Tente novamente.
+      <Button variant="outline" @click="carregarConfiguracao">Tentar novamente</Button>
+    </div>
+    <p v-else-if="!configuracao" role="status" class="text-label text-muted-foreground">Verificando acesso ao cadastro…</p>
+    <div v-else-if="configuracao.cadastroDisponivel === false" class="flex w-full max-w-105 flex-col gap-5 rounded-lg border border-border bg-card p-6">
+      <h1 id="criar-conta-titulo" class="text-page-title-sm">Cadastro temporariamente indisponível</h1>
+      <p class="text-label text-muted-foreground">Se você já comprou o plano anual, fale com nossa equipe para ativar seu acesso.</p>
+      <a href="mailto:suporte@aiinvest.com.br" class="text-label text-primary underline">suporte@aiinvest.com.br</a>
+      <Button as-child variant="outline"><RouterLink to="/login">Já tenho conta · Entrar</RouterLink></Button>
+    </div>
+    <CadastroPago v-else-if="configuracao.exigirPagamento && !desafio" :checkout-url="configuracao.checkoutUrl" @codigo-enviado="receberDesafio" />
+    <Form v-else
+      :initial-values="{ email: desafio?.email ?? '' }"
       class="bg-card border-border flex w-full max-w-105 flex-col gap-5 rounded-lg border px-6 py-6.5"
       :validation-schema="schema"
       @submit="onSubmit"
@@ -114,6 +163,7 @@ async function onSubmit(values: Record<string, unknown>) {
             <Input
               type="email"
               autocomplete="email"
+              :readonly="Boolean(desafio)"
               placeholder="nome@email.com"
               :class="CAMPO_CLASSES"
               v-bind="componentField"
@@ -123,6 +173,13 @@ async function onSubmit(values: Record<string, unknown>) {
         </FormItem>
       </FormField>
 
+      <div v-if="desafio" class="flex flex-col gap-3">
+        <p class="text-label text-muted-foreground">Enviamos um código para {{ desafio.email }}. Ele vale por 10 minutos.</p>
+        <FormField v-slot="{ componentField }" name="codigoConfirmacao">
+          <FormItem><FormLabel>Código de confirmação</FormLabel><FormControl><Input autocomplete="one-time-code" inputmode="numeric" maxlength="8" v-bind="componentField" /></FormControl><FormMessage /></FormItem>
+        </FormField>
+        <Button type="button" variant="outline" @click="reiniciarConfirmacao">Usar outro e-mail ou solicitar novo código</Button>
+      </div>
       <FormField v-slot="{ componentField }" name="senha">
         <FormItem class="gap-2">
           <FormLabel class="text-eyebrow text-muted-foreground-faint">
@@ -144,7 +201,7 @@ async function onSubmit(values: Record<string, unknown>) {
           </div>
 
           <FormDescription class="text-label text-muted-foreground">
-            Use 8 caracteres ou mais, com letras e números.
+            Use 8 caracteres ou mais, com pelo menos um número e um símbolo.
           </FormDescription>
 
           <FormMessage />
@@ -156,7 +213,7 @@ async function onSubmit(values: Record<string, unknown>) {
       </p>
 
       <Button type="submit" :disabled="enviando" class="text-table-value h-11 w-full rounded-sm">
-        {{ enviando ? 'Criando conta…' : 'Criar conta' }}
+        {{ enviando ? 'Criando conta…' : desafio ? 'Confirmar e criar conta' : 'Criar conta' }}
       </Button>
 
       <p class="text-label text-muted-foreground">

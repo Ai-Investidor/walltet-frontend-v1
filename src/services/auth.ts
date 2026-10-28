@@ -5,6 +5,8 @@ export interface RegisterPayload {
   nome: string
   email: string
   senha: string
+  desafioId?: string
+  codigoConfirmacao?: string
 }
 
 export interface LoginPayload {
