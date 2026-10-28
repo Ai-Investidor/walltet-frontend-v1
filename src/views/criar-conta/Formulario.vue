@@ -26,7 +26,10 @@ const CAMPO_CLASSES = 'placeholder:text-muted-foreground-faint border-border h-1
 // especial. O front valida o mesmo antes de enviar, pra não depender só do erro da API.
 const schema = toTypedSchema(
   z.object({
-    nome: z.string({ message: 'Informe seu nome completo' }).min(1, 'Informe seu nome completo'),
+    nome: z
+      .string({ message: 'Informe seu nome completo' })
+      .trim()
+      .min(1, 'Informe seu nome completo'),
     email: z
       .string({ message: 'Informe seu e-mail' })
       .min(1, 'Informe seu e-mail')
@@ -43,6 +46,9 @@ const erroGeral = ref('')
 const enviando = ref(false)
 
 async function onSubmit(values: Record<string, unknown>) {
+  if (enviando.value) {
+    return
+  }
   erroGeral.value = ''
   enviando.value = true
 

@@ -95,6 +95,9 @@ function previewRatio(values: Record<string, unknown>) {
 }
 
 async function onSubmit(values: Record<string, unknown>) {
+  if (salvando.value) {
+    return
+  }
   salvando.value = true
 
   try {

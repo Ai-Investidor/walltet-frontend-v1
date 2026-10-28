@@ -119,8 +119,7 @@ describe('Plano QA · Área do investidor (painel)', () => {
     cy.location('pathname').should('eq', '/avaliacao-perfil')
   })
 
-  // ATENÇÃO — deve FALHAR hoje: no painel a instrução "Responda a avaliação de perfil…" é texto
-  // puro, sem link. O plano (INV 01) pede que os CTAs levem à avaliação.
+  // O plano (INV 01) pede que os CTAs do painel levem à avaliação de perfil.
   it('INV 01 · painel de cliente sem avaliação → a instrução oferece link para a avaliação de perfil', () => {
     cy.intercept('GET', '**/api/v1/auth/me', CLIENTE_SEM_AVALIACAO).as('me')
     cy.stubApi(

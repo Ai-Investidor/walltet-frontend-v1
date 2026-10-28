@@ -14,7 +14,10 @@ http.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<ErrorPayload>) => {
     const code = error.response?.data?.error?.code
-    const isLoginCall = error.config?.url?.includes('/auth/login')
+    const url = error.config?.url ?? ''
+    // `/auth/me` é a sonda de sessão do guard na carga inicial: o 401 de visitante é esperado e o
+    // próprio guard decide o destino (rota pública passa; privada vai pro login com `?redirect=`).
+    const isSessionProbe = url.includes('/auth/login') || url.endsWith('/auth/me')
 
     // 401 → sessão expirada/revogada: limpa a sessão local e manda pro login (§2.3). Evita loop
     // quando a própria chamada com erro já era a de login. Imports dinâmicos pra não criar
@@ -22,15 +25,17 @@ http.interceptors.response.use(
     // que importam este arquivo — importar `router`/`useAuthStore` no topo daria um ciclo
     // (boot/http.ts → routers/index.ts → stores/auth.ts → services/auth.ts →
     // boot/http.ts) que quebrava o guard de rota no dev server.
-    if (code === 'UNAUTHORIZED' && !isLoginCall) {
+    if (code === 'UNAUTHORIZED' && !isSessionProbe) {
       const [{ useAuthStore }, { router }] = await Promise.all([
         import('@stores/auth'),
         import('@routers/index'),
       ])
       useAuthStore().clearSession()
 
-      if (router.currentRoute.value.name !== 'login') {
-        router.push({ name: 'login' })
+      const atual = router.currentRoute.value
+      const isPublic = atual.matched.some((route) => route.meta.public)
+      if (!isPublic && atual.name !== 'login') {
+        router.push({ name: 'login', query: { redirect: atual.fullPath } })
       }
     }
 

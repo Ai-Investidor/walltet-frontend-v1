@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from '@components/ui/button'
 import * as suitabilityService from '@services/suitability'
 import type { PerguntaSuitabilityResponseDto, ResultadoAvaliacaoDto } from '@services/types'
 import { useAuthStore } from '@stores/auth'
@@ -17,6 +18,7 @@ const resultado = ref<ResultadoAvaliacaoDto | null>(null)
 const carregandoPerguntas = ref(true)
 const enviandoResultado = ref(false)
 const erro = ref('')
+const etapaDoErro = ref<'carga' | 'envio'>('carga')
 
 const perguntaAtual = computed<PerguntaSuitabilityResponseDto | null>(
   () => perguntas.value[indiceAtual.value] ?? null,
@@ -29,6 +31,7 @@ async function carregarPerguntas() {
   try {
     perguntas.value = await suitabilityService.listarPerguntas()
   } catch {
+    etapaDoErro.value = 'carga'
     erro.value = 'Não foi possível carregar a avaliação de perfil. Tente novamente mais tarde.'
   } finally {
     carregandoPerguntas.value = false
@@ -54,6 +57,7 @@ async function enviarAvaliacao() {
     // O perfil e a carteira vinculada do usuário mudaram no backend — recarrega a sessão.
     await auth.carregarSessao()
   } catch {
+    etapaDoErro.value = 'envio'
     erro.value = 'Não foi possível concluir a avaliação. Tente novamente.'
   } finally {
     enviandoResultado.value = false
@@ -98,9 +102,20 @@ function reiniciar() {
         Carregando avaliação de perfil…
       </p>
 
-      <p v-else-if="erro && !resultado" role="alert" class="text-paragraph text-destructive px-6 py-10">
-        {{ erro }}
-      </p>
+      <div v-else-if="erro && !resultado" class="flex flex-col items-start gap-4 px-6 py-10">
+        <p role="alert" class="text-paragraph text-destructive">
+          {{ erro }}
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          data-cy="avaliacao-tentar-novamente"
+          @click="etapaDoErro === 'envio' ? enviarAvaliacao() : carregarPerguntas()"
+        >
+          Tentar novamente
+        </Button>
+      </div>
 
       <Resultado v-else-if="resultado" :resultado="resultado" @restart="reiniciar" />
 

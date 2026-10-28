@@ -38,6 +38,7 @@ const schema = toTypedSchema(
   z.object({
     nome: z
       .string({ message: 'Informe o nome da carteira' })
+      .trim()
       .min(3, 'O nome precisa ter ao menos 3 caracteres'),
     perfilAlvo: z.string({ message: 'Selecione o perfil-alvo' }),
     descricao: z.string().max(240, 'A descrição pode ter no máximo 240 caracteres').optional(),
@@ -48,6 +49,9 @@ const schema = toTypedSchema(
 const FIELD = 'h-10.5 w-full rounded-sm px-3'
 
 async function onSubmit(values: Record<string, unknown>) {
+  if (salvando.value) {
+    return
+  }
   salvando.value = true
 
   try {

@@ -61,8 +61,12 @@ describe('Plano QA · Painel administrativo — fechamento', () => {
       cy.wait('@dashboard')
 
       cy.contains('Competência 2026-10').should('be.visible')
-      cy.contains('li', 'Versões publicadas').should('contain.text', estado.versoes)
-      cy.contains('li', 'Relatórios gerados').should('contain.text', estado.relatorios)
+      cy.get('ul[aria-labelledby="checklist-fechamento"]')
+        .contains('li', 'Versões publicadas')
+        .should('contain.text', estado.versoes)
+      cy.get('ul[aria-labelledby="checklist-fechamento"]')
+        .contains('li', 'Relatórios gerados')
+        .should('contain.text', estado.relatorios)
       cy.contains(estado.nota).should('be.visible')
     })
   }
@@ -74,8 +78,12 @@ describe('Plano QA · Painel administrativo — fechamento', () => {
 
     cy.contains('Competência 2026-11').should('be.visible')
     cy.contains('Competência 2026-10').should('not.exist')
-    cy.contains('li', 'Versões publicadas').should('contain.text', '0 de 3')
-    cy.contains('li', 'Relatórios gerados').should('contain.text', '0 de 3')
+    cy.get('ul[aria-labelledby="checklist-fechamento"]')
+      .contains('li', 'Versões publicadas')
+      .should('contain.text', '0 de 3')
+    cy.get('ul[aria-labelledby="checklist-fechamento"]')
+      .contains('li', 'Relatórios gerados')
+      .should('contain.text', '0 de 3')
   })
 })
 

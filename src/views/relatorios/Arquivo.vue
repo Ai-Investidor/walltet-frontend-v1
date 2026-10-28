@@ -3,11 +3,12 @@ import { Button } from '@components/ui/button'
 import { Card } from '@components/ui/card'
 import { PhDownloadSimple, PhFileText } from '@phosphor-icons/vue'
 import * as relatoriosService from '@services/relatorios'
-import type { MeuRelatorioResponseDto } from '@services/types'
+import type { ErrorPayload, MeuRelatorioResponseDto } from '@services/types'
 import { formatCompetenciaLonga } from '@utils/competencia'
 import { formatBytes, formatDataCurta } from '@utils/format'
 import type { HTMLAttributes } from 'vue'
 import { computed, onMounted, ref } from 'vue'
+import { toast } from 'vue-sonner'
 import { cn } from '@/libs/utils'
 
 const props = defineProps<{
@@ -58,6 +59,9 @@ async function baixar(relatorio: MeuRelatorioResponseDto) {
   baixandoId.value = relatorio.id
   try {
     await relatoriosService.baixar(relatorio.id, `${relatorio.titulo}.pdf`)
+  } catch (err) {
+    const payload = err as ErrorPayload
+    toast.error(payload.error?.message ?? 'Não foi possível baixar o relatório.')
   } finally {
     baixandoId.value = null
   }

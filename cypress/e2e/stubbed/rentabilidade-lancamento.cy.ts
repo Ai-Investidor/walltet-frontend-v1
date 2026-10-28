@@ -223,13 +223,15 @@ describe('Plano QA · Lançamento de rentabilidade (UI)', () => {
     })
 
     // Letras não entram em campo numérico: o campo fica vazio e a obrigatoriedade aparece.
-    cy.get('[data-cy="rentab-carteira"]').clear().type('abc')
+    cy.get('[data-cy="rentab-carteira"]').clear()
+    cy.get('[data-cy="rentab-carteira"]').type('abc')
     cy.get('[data-cy="rentab-carteira"]').should('have.value', '')
     salvar()
     cy.contains('Informe a rentabilidade do mês').should('be.visible')
 
     // Vírgula: ou é rejeitada (campo vazio) ou vale 1,5 — jamais vira 15.
-    cy.get('[data-cy="rentab-carteira"]').clear().type('1,5')
+    cy.get('[data-cy="rentab-carteira"]').clear()
+    cy.get('[data-cy="rentab-carteira"]').type('1,5')
     cy.get('[data-cy="rentab-carteira"]')
       .invoke('val')
       .should((valor) => {

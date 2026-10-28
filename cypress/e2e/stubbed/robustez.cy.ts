@@ -139,6 +139,14 @@ describe('Plano QA · Falhas de rede e servidor (QUA 01)', () => {
       req.reply({ statusCode: 201, body: banco[0] })
     }).as('criar')
 
+    // A listagem recarrega após criar e busca o detalhe de cada carteira.
+    cy.stubApi(
+      'GET',
+      '/carteiras/cart-nova',
+      { ...CARTEIRA, id: 'cart-nova', nome: 'Carteira Resiliente' },
+      'detalheNova',
+    )
+
     cy.visit('/admin/carteiras')
     cy.wait('@listar')
     cy.get('[data-cy="carteira-nova"]').click()
@@ -327,11 +335,13 @@ function semRolagemHorizontal() {
   })
 }
 
-/** O elemento está inteiro dentro da janela, na horizontal. */
+/** O elemento está inteiro dentro da janela, na horizontal. Use com `.should` para repetir até a animação de entrada terminar. */
 function dentroDaJanela($elemento: JQuery<HTMLElement>) {
   const { left, right } = $elemento[0].getBoundingClientRect()
   expect(left, 'borda esquerda').to.be.at.least(0)
-  expect(right, 'borda direita').to.be.at.most(Cypress.config('viewportWidth'))
+  expect(right, 'borda direita').to.be.at.most(
+    $elemento[0].ownerDocument.defaultView?.innerWidth ?? 0,
+  )
 }
 
 describe('Plano QA · Responsividade (QUA 03)', () => {
@@ -355,9 +365,10 @@ describe('Plano QA · Responsividade (QUA 03)', () => {
       // Lista de carteiras: tabela no desktop, lista empilhada no celular.
       cy.visit('/admin/carteiras')
       cy.wait('@detalhe')
-      cy.contains('Moderada Base').should('be.visible')
+      // A tabela some no celular (`max-sm:hidden`): procura a carteira no contêiner visível.
+      cy.contains(largura < 640 ? 'li' : 'tr', 'Moderada Base').should('be.visible')
       semRolagemHorizontal()
-      cy.get('[data-cy="carteira-nova"]').should('be.visible').then(dentroDaJanela)
+      cy.get('[data-cy="carteira-nova"]').should('be.visible').should(dentroDaJanela)
       if (largura < 640) {
         cy.get('tbody tr').should('not.be.visible')
       } else {
@@ -366,14 +377,14 @@ describe('Plano QA · Responsividade (QUA 03)', () => {
 
       // Formulário de cadastro: todos os campos e o Salvar alcançáveis.
       cy.get('[data-cy="carteira-nova"]').click()
-      cy.get('[role="dialog"]').should('be.visible').then(dentroDaJanela)
+      cy.get('[role="dialog"]').should('be.visible').should(dentroDaJanela)
       for (const campo of ['carteira-nome', 'carteira-perfil', 'carteira-descricao']) {
-        cy.get(`[data-cy="${campo}"]`).scrollIntoView().should('be.visible').then(dentroDaJanela)
+        cy.get(`[data-cy="${campo}"]`).scrollIntoView().should('be.visible').should(dentroDaJanela)
       }
       cy.get('[data-cy="carteira-salvar"]')
         .scrollIntoView()
         .should('be.visible')
-        .then(dentroDaJanela)
+        .should(dentroDaJanela)
       cy.contains('[role="dialog"] button', 'Cancelar').should('be.visible').click()
 
       // Detalhe: cabeçalho e as quatro abas existem; a faixa de abas rola por dentro, não a página.
@@ -385,7 +396,7 @@ describe('Plano QA · Responsividade (QUA 03)', () => {
       cy.get('[data-cy="relatorio-gerar"]')
         .scrollIntoView()
         .should('be.visible')
-        .then(dentroDaJanela)
+        .should(dentroDaJanela)
       semRolagemHorizontal()
     })
 
@@ -401,17 +412,17 @@ describe('Plano QA · Responsividade (QUA 03)', () => {
         .find('button')
         .last()
         .should('be.visible')
-        .then(dentroDaJanela)
+        .should(dentroDaJanela)
 
       cy.visit('/conta')
-      cy.get('[aria-label="Editar dados da conta"]').should('be.visible').then(dentroDaJanela)
+      cy.get('[aria-label="Editar dados da conta"]').should('be.visible').should(dentroDaJanela)
       semRolagemHorizontal()
       cy.get('[aria-label="Editar dados da conta"]').click()
-      cy.get('[role="dialog"]').should('be.visible').then(dentroDaJanela)
+      cy.get('[role="dialog"]').should('be.visible').should(dentroDaJanela)
       cy.contains('[role="dialog"] button', 'Salvar alterações')
         .scrollIntoView()
         .should('be.visible')
-        .then(dentroDaJanela)
+        .should(dentroDaJanela)
     })
   }
 })
@@ -471,7 +482,7 @@ describe('Plano QA · Acessibilidade por teclado (QUA 04)', () => {
     cy.get('[role="tab"][aria-selected="true"]')
       .should('have.length', 1)
       .and('contain.text', 'Composição')
-    cy.get('[role="tabpanel"]').should('have.length', 1)
+    cy.get('[role="tabpanel"][data-state="active"]').should('have.length', 1)
 
     // Seta para a direita move foco e seleção para a aba seguinte.
     cy.contains('[role="tab"]', 'Composição').focus().type('{rightarrow}')

@@ -131,6 +131,8 @@ describe('Plano QA · Rentabilidade vista pelo cliente', () => {
       .and('contain.text', 'CDI do mês: +1,00 %')
 
     cy.visit('/carteira')
+    // A série de performance só é buscada quando a aba "Performance" é aberta.
+    cy.contains('[role="tab"]', 'Performance').click()
     cy.wait('@histA')
     cy.contains('[data-slot="kpi-card"]', 'Mês')
       .should('contain.text', '+1,50 %')
@@ -214,8 +216,23 @@ describe('Plano QA · Rentabilidade vista pelo cliente', () => {
       ]),
       'historico',
     )
+    // A aba "Composição" também busca movimentações e o último relatório ao montar.
+    cy.stubApi(
+      'GET',
+      `/carteiras/${A.id}/movimentacoes*`,
+      MOVIMENTACOES(A.id, '2025-12'),
+      'movimentacoes',
+    )
+    cy.stubApi(
+      'GET',
+      '/relatorios/meus-relatorios*',
+      { items: [], total: 0, page: 1, pageSize: 1 },
+      'relatorios',
+    )
 
     cy.visit('/carteira')
+    // A série de performance só é buscada quando a aba "Performance" é aberta.
+    cy.contains('[role="tab"]', 'Performance').click()
     cy.wait('@historico')
 
     // Ou mostra "sem dado" para janeiro, ou rotula a competência (dez); nunca o valor solto.

@@ -14,7 +14,9 @@ describe('Rotas protegidas', () => {
     cy.visit('/carteira')
 
     cy.location('pathname').should('eq', '/login')
-    cy.location('search').should('include', 'redirect=%2Fcarteira')
+    cy.location('search').should((search) => {
+      expect(new URLSearchParams(search).get('redirect')).to.eq('/carteira')
+    })
   })
 
   it('visitante faz login vindo de uma rota privada → volta para o destino original', () => {

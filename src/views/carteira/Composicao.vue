@@ -10,6 +10,7 @@ import * as carteirasService from '@services/carteiras'
 import * as relatoriosService from '@services/relatorios'
 import type {
   CarteiraDetalheDto,
+  ErrorPayload,
   MeuRelatorioResponseDto,
   MovimentacoesResponseDto,
 } from '@services/types'
@@ -19,6 +20,7 @@ import { formatPercent } from '@utils/format'
 import { rotuloMovimentacao, statusParaMovimentacao } from '@utils/movimentacao'
 import type { HTMLAttributes } from 'vue'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
+import { toast } from 'vue-sonner'
 import { cn } from '@/libs/utils'
 
 interface Props {
@@ -67,13 +69,20 @@ const movimentacoes = ref<MovimentacoesResponseDto | null>(null)
 const ultimoRelatorio = ref<MeuRelatorioResponseDto | null>(null)
 const baixando = ref(false)
 
+// Dados complementares: se falharem, a composição segue visível sem justificativas nem atalho de
+// download (as abas e o card de relatório já tratam `null`).
 onMounted(async () => {
-  const [mov, relatorios] = await Promise.all([
-    carteirasService.movimentacoes(props.carteira.id),
-    relatoriosService.meusRelatorios({ pageSize: 1 }),
-  ])
-  movimentacoes.value = mov
-  ultimoRelatorio.value = relatorios.items[0] ?? null
+  try {
+    const [mov, relatorios] = await Promise.all([
+      carteirasService.movimentacoes(props.carteira.id),
+      relatoriosService.meusRelatorios({ pageSize: 1 }),
+    ])
+    movimentacoes.value = mov
+    ultimoRelatorio.value = relatorios.items[0] ?? null
+  } catch {
+    movimentacoes.value = null
+    ultimoRelatorio.value = null
+  }
 })
 
 // Não existe um campo único de "justificativa da revisão" no backend — cada entrada/saída pode
@@ -98,6 +107,9 @@ async function baixarUltimoRelatorio() {
   baixando.value = true
   try {
     await relatoriosService.baixar(ultimoRelatorio.value.id, `${ultimoRelatorio.value.titulo}.pdf`)
+  } catch (err) {
+    const payload = err as ErrorPayload
+    toast.error(payload.error?.message ?? 'Não foi possível baixar o relatório.')
   } finally {
     baixando.value = false
   }

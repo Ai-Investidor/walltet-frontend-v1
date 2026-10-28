@@ -150,16 +150,14 @@ describe('Plano QA · Avaliação de perfil · atalhos de teclado (SUI 03)', () 
     cy.stubApi('POST', '/suitability/avaliar', resultado(25, 'MODERADO'), 'avaliar')
   })
 
-  // Os atalhos escutam `keydown` no <fieldset>; o evento sobe da opção focada, como no teclado real.
+  // Os atalhos escutam `keydown` na janela; o evento é disparado no <fieldset> e sobe até lá. O radio é
+  // `sr-only` e o Cypress sempre o considera coberto, então não se dispara nele.
   for (const tecla of [1, 2, 3]) {
     it(`SUI 03 · tecla ${tecla} na primeira pergunta → escolhe a opção ${tecla}, avança uma só pergunta e envia essa opção`, () => {
       cy.visit('/avaliacao-perfil')
       cy.contains('Pergunta 1 de 5').should('be.visible')
 
-      cy.get('[data-cy="avaliacao-opcao"] input')
-        .first()
-        .focus()
-        .trigger('keydown', { key: String(tecla) })
+      cy.get('[data-cy="avaliacao-opcoes"]').trigger('keydown', { key: String(tecla) })
       cy.contains('Pergunta 2 de 5').should('be.visible')
 
       for (let n = 2; n <= 5; n++) responder(n, 1)
@@ -175,7 +173,7 @@ describe('Plano QA · Avaliação de perfil · atalhos de teclado (SUI 03)', () 
 
     // 0, 4 (acima de 3 opções), letra, espaço e Enter não respondem nada.
     for (const key of ['0', '4', 'a', ' ', 'Enter', '-']) {
-      cy.get('[data-cy="avaliacao-opcao"] input').first().focus().trigger('keydown', { key })
+      cy.get('[data-cy="avaliacao-opcoes"]').trigger('keydown', { key })
     }
     cy.contains('Pergunta 1 de 5').should('be.visible')
     cy.get('[data-cy="avaliacao-opcao"] input:checked').should('not.exist')
@@ -200,9 +198,8 @@ describe('Plano QA · Avaliação de perfil · atalhos de teclado (SUI 03)', () 
     )
   })
 
-  // ATENÇÃO — deve FALHAR: o `keydown` não ignora `event.repeat`. Segurar a tecla 2 dispara
-  // repetições que respondem a pergunta seguinte, uma após a outra, e saltam o questionário.
-  it('SUI 03 · tecla repetida (segurada) → não responde as perguntas seguintes (falha até ignorar event.repeat)', () => {
+  // Segurar a tecla 2 dispara repetições; `event.repeat` é ignorado para não saltar o questionário.
+  it('SUI 03 · tecla repetida (segurada) → não responde as perguntas seguintes', () => {
     cy.visit('/avaliacao-perfil')
     cy.get('[data-cy="avaliacao-opcoes"]').trigger('keydown', { key: '2' })
     cy.contains('Pergunta 2 de 5').should('be.visible')
@@ -212,9 +209,8 @@ describe('Plano QA · Avaliação de perfil · atalhos de teclado (SUI 03)', () 
     cy.get('@avaliar.all').should('have.length', 0)
   })
 
-  // ATENÇÃO — deve FALHAR: a dica da tela promete "use as teclas 1 a 3 para responder", mas o
-  // `keydown` está no <fieldset>: sem foco prévio numa opção, a tecla vai para o <body> e some.
-  it('SUI 03 · tecla 2 logo ao abrir, sem focar nada → responde (falha até o atalho escutar a página)', () => {
+  // A dica da tela promete "use as teclas 1 a 3 para responder": o atalho vale sem foco prévio.
+  it('SUI 03 · tecla 2 logo ao abrir, sem focar nada → responde', () => {
     cy.visit('/avaliacao-perfil')
     cy.contains('Pergunta 1 de 5').should('be.visible')
     cy.get('body').type('2')

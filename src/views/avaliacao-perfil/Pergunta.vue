@@ -2,6 +2,7 @@
 import { Button } from '@components/ui/button'
 import { Progress } from '@components/ui/progress'
 import type { PerguntaSuitabilityResponseDto } from '@services/types'
+import { useEventListener } from '@vueuse/core'
 import { ref, watch } from 'vue'
 
 const PROMPT_ID = 'avaliacao-perfil-pergunta'
@@ -39,13 +40,35 @@ watch(selectedOptionId, (value) => {
   }
 })
 
+function isTypingTarget(target: EventTarget | null) {
+  return (
+    target instanceof HTMLElement &&
+    (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) &&
+    !(target instanceof HTMLInputElement && target.type === 'radio')
+  )
+}
+
+// Escuta a janela (não só o fieldset) pra o atalho funcionar sem foco prévio. Ignora tecla
+// segurada (`repeat`), combinações com modificador e campos de digitação.
 function handleKeydown(event: KeyboardEvent) {
+  if (
+    event.repeat ||
+    event.ctrlKey ||
+    event.metaKey ||
+    event.altKey ||
+    isTypingTarget(event.target)
+  ) {
+    return
+  }
+
   const digit = Number(event.key)
 
   if (Number.isInteger(digit) && digit >= 1 && digit <= props.pergunta.opcoes.length) {
     selectedOptionId.value = props.pergunta.opcoes[digit - 1].id
   }
 }
+
+useEventListener(window, 'keydown', handleKeydown)
 </script>
 
 <template>
@@ -73,7 +96,6 @@ function handleKeydown(event: KeyboardEvent) {
           :aria-labelledby="PROMPT_ID"
           class="flex flex-col gap-2.5 max-sm:gap-2"
           data-cy="avaliacao-opcoes"
-          @keydown="handleKeydown"
         >
           <label
             v-for="(opcao, index) in pergunta.opcoes"

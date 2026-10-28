@@ -21,7 +21,16 @@ export async function meusRelatorios(
  * `Content-Disposition`; sem ele, cai no nome informado.
  */
 export async function baixar(id: string, nomeArquivoPadrao: string): Promise<void> {
-  const response = await http.get(`/relatorios/${id}/download`, { responseType: 'blob' })
+  const response = await http
+    .get(`/relatorios/${id}/download`, { responseType: 'blob' })
+    .catch(async (err: unknown) => {
+      // Com `responseType: 'blob'` o envelope de erro também chega como Blob: decodifica pra que
+      // o chamador receba o mesmo `ErrorPayload` das outras chamadas.
+      if (err instanceof Blob) {
+        throw JSON.parse(await err.text())
+      }
+      throw err
+    })
 
   const nomeArquivo =
     (response.headers['content-disposition'] as string | undefined)?.match(
