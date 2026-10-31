@@ -6,6 +6,18 @@
   VITE_API_BASE_URL = ""
 
 [[redirects]]
+  from = "/api/auth/google"
+  to = "https://162.35.26.5/api/auth/google"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/auth/google/*"
+  to = "https://162.35.26.5/api/auth/google/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/v1/*"
   to = "https://162.35.26.5/api/v1/:splat"
   status = 200

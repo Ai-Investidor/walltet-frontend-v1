@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/auth/google/:path*",
+      "destination": "https://162.35.26.5/api/auth/google/:path*"
+    },
+    {
       "source": "/api/v1/:path*",
       "destination": "https://162.35.26.5/api/v1/:path*"
     },
