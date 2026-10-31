@@ -3,16 +3,21 @@ import { BrandLogo } from '@components/shared/brand-logo'
 import { Button } from '@components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@components/ui/form'
 import { Input } from '@components/ui/input'
+import { googleOAuthUrl, mensagemErroGoogle } from '@services/google'
 import type { ErrorPayload } from '@services/types'
 import { useAuthStore } from '@stores/auth'
 import { toTypedSchema } from '@vee-validate/zod'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import * as z from 'zod'
 
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
+const erroGoogle = computed(() => mensagemErroGoogle(route.query.erro))
+const linkGoogle = computed(() =>
+  googleOAuthUrl(false, typeof route.query.redirect === 'string' ? route.query.redirect : '/'),
+)
 
 const schema = toTypedSchema(
   z.object({
@@ -72,6 +77,16 @@ async function onSubmit(values: Record<string, unknown>) {
           Use o e-mail cadastrado para acessar sua carteira recomendada.
         </p>
       </header>
+
+      <p v-if="erroGoogle" role="alert" class="text-label text-destructive">
+        {{ erroGoogle }}
+      </p>
+
+      <Button as-child variant="outline" class="text-table-value h-11 w-full rounded-sm">
+        <a :href="linkGoogle">Continuar com Google</a>
+      </Button>
+
+      <p class="text-label text-muted-foreground text-center">ou entre com e-mail e senha</p>
 
       <FormField v-slot="{ componentField }" name="email">
         <FormItem class="gap-2">

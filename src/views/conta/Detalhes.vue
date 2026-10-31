@@ -14,15 +14,20 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { PhPencilSimple } from '@phosphor-icons/vue'
+import { googleOAuthUrl, mensagemErroGoogle } from '@services/google'
 import { useAuthStore } from '@stores/auth'
 import { perfilParaNivel } from '@utils/perfil'
 import { toTypedSchema } from '@vee-validate/zod'
 import { computed, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { toast } from 'vue-sonner'
 import * as z from 'zod'
 
 const auth = useAuthStore()
+const route = useRoute()
+const erroGoogle = computed(() => mensagemErroGoogle(route.query.erro))
+const googleVinculado = computed(() => route.query.google === 'vinculado')
+const linkGoogle = googleOAuthUrl(true, '/conta')
 
 const CARD_CLASS = 'bg-card flex flex-col rounded-lg border border-border'
 const CARD_HEADER_CLASS = 'text-card-title border-b border-border px-4.5 py-3'
@@ -200,6 +205,21 @@ async function onSubmit(values: Record<string, unknown>): Promise<void> {
       <p class="text-label px-4.5 py-3 text-muted-foreground max-sm:px-3.5 max-sm:py-2.5">
         A carteira vinculada é definida pela nossa equipe. Para trocar, fale com o suporte.
       </p>
+      <div class="border-border flex flex-col items-start gap-3 border-t px-4.5 py-4 max-sm:px-3.5">
+        <h3 class="text-card-title">Acesso com Google</h3>
+        <p class="text-label text-muted-foreground">
+          Vincule sua conta para entrar com o Google nos próximos acessos. Sua senha continua válida.
+        </p>
+        <p v-if="googleVinculado" role="status" class="text-label text-success">
+          Google vinculado. Você já pode usar essa conta Google para entrar.
+        </p>
+        <p v-if="erroGoogle" role="alert" class="text-label text-destructive">
+          {{ erroGoogle }}
+        </p>
+        <Button as-child variant="outline" class="text-button-sm rounded-sm px-4">
+          <a :href="linkGoogle">Vincular Google</a>
+        </Button>
+      </div>
     </section>
 
     <section :class="CARD_CLASS" aria-labelledby="conta-perfil-titulo">
